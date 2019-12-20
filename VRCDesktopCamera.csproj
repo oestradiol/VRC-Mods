@@ -58,12 +58,19 @@
     <Reference Include="VRCModLoader">
       <HintPath>D:\SteamLibrary\steamapps\common\VRChat\VRChat_Data\Managed\VRCModLoader.dll</HintPath>
     </Reference>
+    <Reference Include="VRCSDK2, Version=0.0.0.0, Culture=neutral, PublicKeyToken=67033c44591afb45, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SteamLibrary\steamapps\common\VRChat\VRChat_Data\Managed\VRCSDK2.dll</HintPath>
+    </Reference>
     <Reference Include="VRCTools.0.8.2, Version=0.6.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\SteamLibrary\steamapps\common\VRChat\Mods\VRCTools.0.8.2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buttons\BaseButton.cs" />
+    <Compile Include="Buttons\SingleButton.cs" />
+    <Compile Include="InstanceUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VRCDesktopCamera.cs" />
   </ItemGroup>
