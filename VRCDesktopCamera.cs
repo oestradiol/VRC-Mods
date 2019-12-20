@@ -19,12 +19,8 @@ namespace VRCDesktopCamera {
         private void OnLevelWasLoaded(int level) {
             if (!initialized) {
                 initialized = true;
-                //ModManager.StartCoroutine(Setup());
+                ModManager.StartCoroutine(Setup());
             }
-        }
-
-        private void Update() {
-            if (Input.GetKeyDown(KeyCode.F1)) ModManager.StartCoroutine(Setup());
         }
 
         private bool cameraEnabled = false;
