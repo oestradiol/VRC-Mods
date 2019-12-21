@@ -11,7 +11,7 @@ namespace VRCDesktopCamera {
 
         private static Transform menuTemplate;
         public static Transform MenuTemplate() {
-            if (menuTemplate == null) menuTemplate = QuickMenuUtils.GetQuickMenuInstance().transform.Find("EmoteMenu");
+            if (menuTemplate == null) menuTemplate = QuickMenuUtils.GetQuickMenuInstance().transform.Find("CameraMenu");
             return menuTemplate;
         }
     }
