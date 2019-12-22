@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Linq;
 using VRCModLoader;
 using UnityEngine;
 using VRCDesktopCamera.Buttons;
@@ -72,6 +73,11 @@ namespace VRCDesktopCamera {
                 if (Input.GetKey(KeyCode.Keypad1)) {
                     UserCameraController.Instance.viewFinder.transform.LookAt(VRCPlayer.Instance.transform);
                     UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(30f, 0f));
+                }
+
+                // Take pic
+                if (Input.GetKeyDown(KeyCode.KeypadPlus)) {
+                    ModManager.StartCoroutine((IEnumerator)typeof(UserCameraController).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Where(x => (x.GetParameters().Length == 1) && (x.GetParameters()[0].ParameterType == typeof(int)) && (x.ReturnType == typeof(IEnumerator))).ToArray()[0].Invoke(UserCameraController.Instance, new object[] { 0 }));
                 }
             }
         }
@@ -207,7 +213,7 @@ namespace VRCDesktopCamera {
                     SingleButton timer1Button = new SingleButton("Timer1", "Timer\n<color=yellow>3 seconds</color>", "Takes a picture after 3 seconds", 3, 0, cameraMenu);
                     timer1Button.setAction(() => {
                         if (cameraEnabled) {
-                            ModManager.StartCoroutine((IEnumerator)typeof(UserCameraController).GetMethod("MAMFMABILIC", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(UserCameraController.Instance, new object[] { 3 }));
+                            ModManager.StartCoroutine((IEnumerator)typeof(UserCameraController).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Where(x => (x.GetParameters().Length == 1) && (x.GetParameters()[0].ParameterType == typeof(int)) && (x.ReturnType == typeof(IEnumerator))).ToArray()[0].Invoke(UserCameraController.Instance, new object[] { 3 }));
                         }
                     });
 
@@ -221,7 +227,7 @@ namespace VRCDesktopCamera {
                     SingleButton timer3Button = new SingleButton("Timer3", "Timer\n<color=yellow>10 seconds</color>", "Takes a picture after 10 seconds", 3, 2, cameraMenu);
                     timer3Button.setAction(() => {
                         if (cameraEnabled) {
-                            ModManager.StartCoroutine((IEnumerator)typeof(UserCameraController).GetMethod("MAMFMABILIC", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(UserCameraController.Instance, new object[] { 10 }));
+                            ModManager.StartCoroutine((IEnumerator)typeof(UserCameraController).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Where(x => (x.GetParameters().Length == 1) && (x.GetParameters()[0].ParameterType == typeof(int)) && (x.ReturnType == typeof(IEnumerator))).ToArray()[0].Invoke(UserCameraController.Instance, new object[] { 10 }));
                         }
                     });
 
