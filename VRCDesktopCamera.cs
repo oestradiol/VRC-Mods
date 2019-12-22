@@ -270,7 +270,7 @@ namespace VRCDesktopCamera {
                         }
                     });
 
-                    SingleButton gitHubButton = new SingleButton("GitHubPage", "GitHub\nPage", "Opens the GitHub page", 4, 0, cameraMenu);
+                    SingleButton gitHubButton = new SingleButton("GitHubPage", "GitHub\nPage", "Opens the GitHub page of the mod", 4, 0, cameraMenu);
                     gitHubButton.setAction(() => {
                         Application.OpenURL("https://github.com/nitrog0d/VRCDesktopCamera");
                     });
