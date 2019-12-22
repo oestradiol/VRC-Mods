@@ -13,7 +13,7 @@ Just another try to let Desktop users use the Camera, plus bad code, yay!
 > Click the Camera button in the ESC menu, you'll have some new options.
 
 > **Arrow Keys feature explanation:** You can move the camera position using the arrows keys in your keyboard **(tip: if you hold shift it moves 2x faster)**.  
-> If you have a numpad, you can rotate it pressing 2 and 8 (tilt up and down), 4 and 6 (tilt left and right), 7 and 9 (orientation), you can make the camera look at you pressing 1 and you can also reset the camera pressing 3.  
+> If you have a numpad, you can rotate it pressing 2 and 8 (tilt up and down), 4 and 6 (tilt left and right), 7 and 9 (orientation), you can make the camera look at you pressing 1, and you can also reset the camera pressing 3, and you can take a picture pressing +.  
 > You can also change the camera's proximity using Page Up (moves away) and Page Down (moves close).
 
 > **Move Around Camera feature explanation:** The camera will rotate around the user's camera instead of just going to another dimension.
