@@ -70,9 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Buttons\SingleButton.cs" />
-    <Compile Include="InstanceUtils.cs" />
+    <Compile Include="Utils\InstanceUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuickMenuUtils.cs" />
+    <Compile Include="Utils\QuickMenuUtils.cs" />
     <Compile Include="VRCDesktopCamera.cs" />
   </ItemGroup>
   <ItemGroup>

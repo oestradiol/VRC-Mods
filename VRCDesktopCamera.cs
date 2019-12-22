@@ -250,13 +250,13 @@ namespace VRCDesktopCamera {
                         }
                     });
 
-                    SingleButton toggleArrowKeysButton = new SingleButton("ArrowKeys", "Arrow Keys\n<color=green>On</color>", "Toggles something i cba to write tbh", 0, 2, cameraMenu);
+                    SingleButton toggleArrowKeysButton = new SingleButton("ArrowKeys", "Arrow Keys\n<color=green>On</color>", "Allows you to change the camera position\nand rotation using arrow keys and numpad keys\n(for more info check the GitHub page)", 0, 2, cameraMenu);
                     toggleArrowKeysButton.setAction(() => {
                         arrowKeysEnabled = !arrowKeysEnabled;
                         toggleArrowKeysButton.setText("Arrow Keys\n<color=" + (arrowKeysEnabled ? "green>On" : "red>Off") + "</color>");
                     });
 
-                    SingleButton rotateAroundCameraButton = new SingleButton("RotateAroundCamera", "Rotate\nAround\nCamera\n<color=red>Off</color>", "Toggles something i cba to write tbh", 1, 2, cameraMenu);
+                    SingleButton rotateAroundCameraButton = new SingleButton("RotateAroundCamera", "Rotate\nAround\nCamera\n<color=red>Off</color>", "Makes the camera rotate around the user's camera\ninstead of just saying bye bye\n(for more info check the GitHub page)", 1, 2, cameraMenu);
                     rotateAroundCameraButton.setAction(() => {
                         rotateAroundCamera = !rotateAroundCamera;
                         rotateAroundCameraButton.setText("Rotate\nAround\nCamera\n<color=" + (rotateAroundCamera ? "green>On" : "red>Off") + "</color>");
@@ -268,6 +268,11 @@ namespace VRCDesktopCamera {
                             UserCameraController.Instance.actionExtender(GetInstigatorId());
                             toggleExtenderButton.setText("Extender\n<color=" + (UserCameraController.Instance.extender.activeSelf ? "green>On" : "red>Off") + "</color>");
                         }
+                    });
+
+                    SingleButton gitHubButton = new SingleButton("GitHubPage", "GitHub\nPage", "Opens the GitHub page", 4, 0, cameraMenu);
+                    gitHubButton.setAction(() => {
+                        Application.OpenURL("https://github.com/nitrog0d/VRCDesktopCamera");
                     });
 
                     Transform filtersMenu = UnityEngine.Object.Instantiate(InstanceUtils.MenuTemplate(), quickMenu.transform);
@@ -289,7 +294,6 @@ namespace VRCDesktopCamera {
                     SingleButton filtersButton = new SingleButton("Filters", "Filters", "Opens the filter menu", 2, 2, cameraMenu);
                     filtersButton.setAction(() => {
                         QuickMenuUtils.ShowQuickmenuPage("FiltersMenu", "CameraMenu");
-                        //typeof(QuickMenuUtils).GetMethod("ShowQuickmenuPage", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { "FiltersMenu" });
                     });
 
                     Dictionary<string, int> filters = new Dictionary<string, int>()
