@@ -9,7 +9,7 @@ using VRCDesktopCamera.Buttons;
 using UnityEngine.UI;
 
 namespace VRCDesktopCamera {
-    [VRCModInfo("VRCDesktopCamera", "1.0", "nitro.")]
+    [VRCModInfo("VRCDesktopCamera", "1.0.0", "nitro.")]
     public class VRCDesktopCamera : VRCMod {
 
         private bool initialized = false;
@@ -276,7 +276,7 @@ namespace VRCDesktopCamera {
                         }
                     });
 
-                    SingleButton gitHubButton = new SingleButton("GitHubPage", "GitHub\nPage", "Opens the GitHub page of the mod", 4, 0, cameraMenu);
+                    SingleButton gitHubButton = new SingleButton("GitHubPage", "GitHub\nPage", "Opens the GitHub page of the mod\nVersion: 1.0.0", 4, 0, cameraMenu);
                     gitHubButton.setAction(() => {
                         Application.OpenURL("https://github.com/nitrog0d/VRCDesktopCamera");
                     });
