@@ -1,4 +1,3 @@
-﻿
 # VRCDesktopCamera
 Just another try to let Desktop users use the VRChat Camera feature, yay!
 
