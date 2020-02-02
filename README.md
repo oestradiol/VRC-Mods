@@ -1,5 +1,5 @@
 ﻿# VRCDesktopCamera
-Just another try to let Desktop users use the Camera, plus bad code, yay!
+Just another try to let Desktop users use the Camera.
 
 > **Disclaimer:**
 > This mod uses [VRCModLoader](https://github.com/Slaynash/VRCModLoader) to work properly, so you will need to install that first.
