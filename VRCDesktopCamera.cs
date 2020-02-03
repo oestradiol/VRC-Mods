@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Linq;
 using VRCModLoader;
 using UnityEngine;
 using VRCDesktopCamera.Buttons;
 using UnityEngine.UI;
+using VRCDesktopCamera.Utils;
 
 namespace VRCDesktopCamera {
-    [VRCModInfo("VRCDesktopCamera", "1.0.0", "nitro.")]
+    [VRCModInfo("VRCDesktopCamera", "1.0.1", "nitro.", "https://github.com/nitrog0d/VRCDesktopCamera/releases/download/v1.0.1/VRCDesktopCamera.1.0.1.dll")]
     public class VRCDesktopCamera : VRCMod {
 
         private bool initialized = false;
@@ -25,182 +24,242 @@ namespace VRCDesktopCamera {
             }
         }
 
-        private bool arrowKeysEnabled = true;
-        private bool rotateAroundCamera = false;
+        private SingleButton cameraMovementButton;
 
-        // Thanks janni watermelon uwu
-        private int GetInstigatorId() {
-            return VRC.PlayerManager.GetPlayer(VRC.Core.APIUser.CurrentUser.id).GetInstigatorId().Value;
-        }
-
+        // This is a mess please don't look
+        // and also pull request to improve it thx
         private void OnUpdate() {
-            if (cameraEnabled && arrowKeysEnabled) {
+            if (Settings.cameraEnabled && Settings.arrowKeysEnabled) {
                 // Location
-
                 if (Input.GetKey(KeyCode.LeftArrow)) {
-                    if (rotateAroundCamera) UserCameraController.Instance.viewFinder.transform.RotateAround(Camera.main.transform.position, Camera.main.transform.up, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f);
-                    else UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -0.01f : -0.005f, 0f, 0f);
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) {
+                            if (Settings.rotateAroundUserCamera) CameraUtils.RotateAround(InstanceUtils.GetMainCamera().transform.position, InstanceUtils.GetMainCamera().transform.up, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f);
+                            else CameraUtils.worldCameraVector += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 0.01f : 0.005f);
+                        }
+                    } else {
+                        if (Settings.rotateAroundUserCamera) UserCameraController.Instance.viewFinder.transform.RotateAround(InstanceUtils.GetMainCamera().transform.position, InstanceUtils.GetMainCamera().transform.up, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f);
+                        else UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -0.01f : -0.005f, 0f, 0f);
+                    }
                 }
                 if (Input.GetKey(KeyCode.RightArrow)) {
-                    if (rotateAroundCamera) UserCameraController.Instance.viewFinder.transform.RotateAround(Camera.main.transform.position, Camera.main.transform.up, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f);
-                    else UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 0.01f : 0.005f, 0f, 0f);
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) {
+                            if (Settings.rotateAroundUserCamera) CameraUtils.RotateAround(InstanceUtils.GetMainCamera().transform.position, InstanceUtils.GetMainCamera().transform.up, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f);
+                            else CameraUtils.worldCameraVector += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -0.01f : -0.005f);
+                        }
+                    } else {
+                        if (Settings.rotateAroundUserCamera) UserCameraController.Instance.viewFinder.transform.RotateAround(InstanceUtils.GetMainCamera().transform.position, InstanceUtils.GetMainCamera().transform.up, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f);
+                        else UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 0.01f : 0.005f, 0f, 0f);
+                    }
                 }
                 if (Input.GetKey(KeyCode.UpArrow)) {
-                    if (rotateAroundCamera) UserCameraController.Instance.viewFinder.transform.RotateAround(Camera.main.transform.position, Camera.main.transform.right, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f);
-                    else UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 0.01f : 0.005f, 0f);
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) {
+                            if (Settings.rotateAroundUserCamera) CameraUtils.RotateAround(InstanceUtils.GetMainCamera().transform.position, InstanceUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f);
+                            else CameraUtils.worldCameraVector += new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 0.01f : 0.005f, 0f);
+                        }
+                    } else {
+                        if (Settings.rotateAroundUserCamera) UserCameraController.Instance.viewFinder.transform.RotateAround(InstanceUtils.GetMainCamera().transform.position, InstanceUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f);
+                        else UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 0.01f : 0.005f, 0f);
+                    }
                 }
                 if (Input.GetKey(KeyCode.DownArrow)) {
-                    if (rotateAroundCamera) UserCameraController.Instance.viewFinder.transform.RotateAround(Camera.main.transform.position, Camera.main.transform.right, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f);
-                    else UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -0.01f : -0.005f, 0f);
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) {
+                            if (Settings.rotateAroundUserCamera) CameraUtils.RotateAround(InstanceUtils.GetMainCamera().transform.position, InstanceUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f);
+                            else CameraUtils.worldCameraVector += new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -0.01f : -0.005f, 0f);
+                        }
+                    } else {
+                        if (Settings.rotateAroundUserCamera) UserCameraController.Instance.viewFinder.transform.RotateAround(InstanceUtils.GetMainCamera().transform.position, InstanceUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f);
+                        else UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -0.01f : -0.005f, 0f);
+                    }
                 }
-                if (Input.GetKey(KeyCode.PageUp)) UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 0.01f : 0.005f);
-                if (Input.GetKey(KeyCode.PageDown)) UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -0.01f : -0.005f);
+                if (Input.GetKey(KeyCode.PageUp)) {
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraVector += new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 0.01f : 0.005f, 0f, 0f);
+                    } else {
+                        UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 0.01f : 0.005f);
+                    }
+                }
+                if (Input.GetKey(KeyCode.PageDown)) {
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraVector += new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -0.01f : -0.005f, 0f, 0f);
+                    } else {
+                        UserCameraController.Instance.viewFinder.transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -0.01f : -0.005f);
+                    }
+                }
 
                 // Rotation
-                if (Input.GetKey(KeyCode.Keypad8)) UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f, 0f));
-                if (Input.GetKey(KeyCode.Keypad2)) UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f, 0f));
-                if (Input.GetKey(KeyCode.Keypad4)) UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f));
-                if (Input.GetKey(KeyCode.Keypad6)) UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f));
-                if (Input.GetKey(KeyCode.Keypad7)) UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f, 0f));
-                if (Input.GetKey(KeyCode.Keypad9)) UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f, 0f));
+                if (Input.GetKey(KeyCode.Keypad8)) {
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? 2f : 1f, 0f, 0f);
+                    } else {
+                        UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f, 0f));
+                    }
+                }
+                if (Input.GetKey(KeyCode.Keypad2)) {
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? -2f : -1f, 0f, 0f);
+                    } else {
+                        UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f, 0f));
+                    }
+                }
+                if (Input.GetKey(KeyCode.Keypad4)) {
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(0f, Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? 2f : 1f, 0f);
+                    } else {
+                        UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f));
+                    }
+                }
+                if (Input.GetKey(KeyCode.Keypad6)) {
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(0f, Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? -2f : -1f, 0f);
+                    } else {
+                        UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f));
+                    }
+                }
+                if (Input.GetKey(KeyCode.Keypad7)) {
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(0f, 0f, Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? 2f : 1f);
+                    } else {
+                        UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f, 0f));
+                    }
+                }
+                if (Input.GetKey(KeyCode.Keypad9)) {
+                    if (Settings.moveCamera) {
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(0f, 0f, Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? -2f : -1f);
+                    } else {
+                        UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(0f, (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f, 0f));
+                    }
+                }
 
                 // Reset
                 if (Input.GetKey(KeyCode.Keypad3)) {
-                    MethodInfo toggleCam = typeof(UserCameraController).GetMethod("set_mode");
-                    toggleCam.Invoke(UserCameraController.Instance, new object[] { 0 });
-                    toggleCam.Invoke(UserCameraController.Instance, new object[] { 1 });
+                    if (Settings.cameraEnabled) CameraUtils.ResetCamera();
                 }
+
+                // Need to rework on this
                 if (Input.GetKey(KeyCode.Keypad1)) {
-                    UserCameraController.Instance.viewFinder.transform.LookAt(VRCPlayer.Instance.transform);
-                    UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3(30f, 0f));
+                    if (Settings.cameraEnabled) {
+                        UserCameraController.Instance.viewFinder.transform.LookAt(InstanceUtils.GetMainCamera().transform);
+                        UserCameraController.Instance.viewFinder.transform.rotation *= Quaternion.Euler(90f, 0f, 0f);
+                    }
                 }
 
                 // Take pic
                 if (Input.GetKeyDown(KeyCode.KeypadPlus)) {
-                    ModManager.StartCoroutine((IEnumerator)typeof(UserCameraController).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Where(x => (x.GetParameters().Length == 1) && (x.GetParameters()[0].ParameterType == typeof(int)) && (x.ReturnType == typeof(IEnumerator))).ToArray()[0].Invoke(UserCameraController.Instance, new object[] { 0 }));
+                    if (Settings.cameraEnabled) CameraUtils.TakePicture(0);
+                }
+
+                // Toggle camera movement
+                if (Input.GetKeyDown(KeyCode.KeypadMinus)) {
+                    if (Settings.cameraEnabled) {
+                        if (cameraMovementButton != null) {
+                            Settings.moveCamera = !Settings.moveCamera;
+                            cameraMovementButton.setText("Camera\nMovement\n<color=yellow>" + (Settings.moveCamera ? "Camera" : "Viewer") + "</color>");
+                            VRCToolsUtils.GetUiManagerInstance().QueueHudMessage("Camera Movement set to " + (Settings.moveCamera ? "Camera" : "Viewer"));
+                        }
+                    }
                 }
             }
-        }
-
-        private bool cameraEnabled = false;
-        private CameraScale cameraScale = CameraScale.Normal;
-
-        private enum CameraScale {
-            Normal,
-            Medium,
-            Big
-        }
-        
-        private enum CameraBehaviour {
-            None,
-            Smooth,
-            LookAt
-        }
-
-        private enum CameraSpace {
-            Attached,
-            Local,
-            World
-        }
-
-        private enum Pin {
-            Pin1,
-            Pin2,
-            Pin3
         }
 
         private IEnumerator Setup() {
             yield return VRCTools.VRCUiManagerUtils.WaitForUiManagerInit();
             // Let VRCTools make their cool changes
             yield return new WaitForSeconds(3f);
+
             try {
                 if (!VRCTrackingManager.IsInVRMode()) {
-                    QuickMenu quickMenu = QuickMenuUtils.GetQuickMenuInstance();
-                    Transform cameraMenu = quickMenu.transform.Find("CameraMenu");
+                    InstanceUtils.Init();
 
-                    Transform panoramaButton = cameraMenu.Find("Panorama");
-                    panoramaButton.localPosition = SingleButton.getButtonPositionFor(-1, -1);
+                    var quickMenu = VRCToolsUtils.GetQuickMenuInstance();
+                    var cameraMenu = quickMenu.transform.Find("CameraMenu");
 
-                    Transform vrChiveButton = cameraMenu.Find("VRChive");
-                    vrChiveButton.localPosition = SingleButton.getButtonPositionFor(-1, 0);
+                    var panoramaButton = cameraMenu.Find("Panorama");
+                    panoramaButton.localPosition = SingleButton.getButtonPositionFor(-1, 0);
 
-                    Transform backButton = cameraMenu.Find("BackButton");
+                    var vrChiveButton = cameraMenu.Find("VRChive");
+                    vrChiveButton.localPosition = SingleButton.getButtonPositionFor(-1, 1);
+
+                    var backButton = cameraMenu.Find("BackButton");
                     backButton.localPosition = SingleButton.getButtonPositionFor(4, 2);
 
-                    SingleButton cameraButton = new SingleButton("Camera", "Camera\n<color=red>Off</color>", "Toggles the Camera", 0, 0, cameraMenu);
+                    var cameraButton = new SingleButton("Camera", "Camera\n<color=red>Off</color>", "Toggles the Camera", 0, 0, cameraMenu);
                     cameraButton.setAction(() => {
-                        cameraEnabled = !cameraEnabled;
-                        cameraButton.setText("Camera\n<color=" + (cameraEnabled ? "green>On" : "red>Off") + "</color>");
-                        int param = cameraEnabled ? 1 : 0;
-                        typeof(UserCameraController).GetMethod("set_mode").Invoke(UserCameraController.Instance, new object[] { param });
+                        Settings.cameraEnabled = !Settings.cameraEnabled;
+                        cameraButton.setText("Camera\n<color=" + (Settings.cameraEnabled ? "green>On" : "red>Off") + "</color>");
+                        CameraUtils.SetCameraMode(Settings.cameraEnabled ? 1 : 0);
                     });
 
-                    SingleButton movementBehaviourButton = new SingleButton("MovementBehaviour", "Movement\nBehaviour\n<color=yellow>None</color>", "Changes the Camera's movement behaviour", 1, 0, cameraMenu);
+                    var movementBehaviourButton = new SingleButton("MovementBehaviour", "Movement\nBehaviour\n<color=yellow>None</color>", "Changes the Camera's movement behaviour", 1, 0, cameraMenu);
                     movementBehaviourButton.setAction(() => {
-                        if (cameraEnabled) {
-                            CameraBehaviour cameraBehaviour = (CameraBehaviour)typeof(UserCameraController).GetMethod("get_movementBehaviour").Invoke(UserCameraController.Instance, new object[] { });
+                        if (Settings.cameraEnabled) {
+                            var cameraBehaviour = CameraUtils.GetCameraBehaviour();
                             string behaviour = "?";
                             switch (cameraBehaviour) {
-                                case CameraBehaviour.None:
+                                case CameraUtils.CameraBehaviour.None:
                                     behaviour = "Smooth";
                                     break;
-                                case CameraBehaviour.Smooth:
+                                case CameraUtils.CameraBehaviour.Smooth:
                                     behaviour = "Look At";
                                     break;
-                                case CameraBehaviour.LookAt:
+                                case CameraUtils.CameraBehaviour.LookAt:
                                     behaviour = "None";
                                     break;
                             }
                             movementBehaviourButton.setText("Movement\nBehaviour\n<color=yellow>" + behaviour + "</color>");
-                            UserCameraController.Instance.actionCycleMovementBehaviour(GetInstigatorId());
+                            UserCameraController.Instance.actionCycleMovementBehaviour(InstanceUtils.GetInstigatorId());
                         }
                     });
 
-                    SingleButton movementSpaceButton = new SingleButton("MovementSpace", "Movement\nSpace\n<color=yellow>Attached</color>", "Changes the Camera's movement space", 2, 0, cameraMenu);
+                    var movementSpaceButton = new SingleButton("MovementSpace", "Movement\nSpace\n<color=yellow>Attached</color>", "Changes the Camera's movement space", 2, 0, cameraMenu);
                     movementSpaceButton.setAction(() => {
-                        if (cameraEnabled) {
-                            CameraSpace cameraSpace = (CameraSpace)typeof(UserCameraController).GetMethod("get_space").Invoke(UserCameraController.Instance, new object[] { });
+                        if (Settings.cameraEnabled) {
+                            var cameraSpace = CameraUtils.GetCameraSpace();
                             string space = "?";
                             switch (cameraSpace) {
-                                case CameraSpace.Attached:
+                                case CameraUtils.CameraSpace.Attached:
                                     space = "Local";
                                     break;
-                                case CameraSpace.Local:
+                                case CameraUtils.CameraSpace.Local:
                                     space = "World";
                                     break;
-                                case CameraSpace.World:
+                                case CameraUtils.CameraSpace.World:
                                     space = "Attached";
                                     break;
                             }
                             movementSpaceButton.setText("Movement\nSpace\n<color=yellow>" + space + "</color>");
-                            UserCameraController.Instance.actionCycleMovementSpace(GetInstigatorId());
+                            UserCameraController.Instance.actionCycleMovementSpace(InstanceUtils.GetInstigatorId());
+                            if (CameraUtils.GetCameraSpace() == CameraUtils.CameraSpace.World) Settings.allowCameraMovement = true; else Settings.allowCameraMovement = false;
                         }
                     });
 
-                    SingleButton pinMenuButton = new SingleButton("PinMenu", "Pin Menu\n<color=red>Off</color>", "Toggles the Pin menu (which is pretty useless)", 0, 1, cameraMenu);
+                    var pinMenuButton = new SingleButton("PinMenu", "Pin Menu\n<color=red>Off</color>", "Toggles the Pin menu (which is pretty useless)", 0, 1, cameraMenu);
                     pinMenuButton.setAction(() => {
-                        if (cameraEnabled) {
-                            UserCameraController.Instance.actionTogglePinMenu(GetInstigatorId());
+                        if (Settings.cameraEnabled) {
+                            UserCameraController.Instance.actionTogglePinMenu(InstanceUtils.GetInstigatorId());
                             pinMenuButton.setText("Pin Menu\n<color=" + (UserCameraController.Instance.pinsHolder.activeSelf ? "green>On" : "red>Off") + "</color>");
                         }
                     });
 
-                    SingleButton switchPinButton = new SingleButton("SwitchPin", "Switch Pin\n<color=yellow>Pin 1</color>", "Switches between 3 pins (aka profiles)", 1, 1, cameraMenu);
+                    var switchPinButton = new SingleButton("SwitchPin", "Switch Pin\n<color=yellow>Pin 1</color>", "Switches between 3 pins (aka profiles)", 1, 1, cameraMenu);
                     switchPinButton.setAction(() => {
-                        if (cameraEnabled) {
-                            Pin currentPin = (Pin)typeof(UserCameraController).GetMethod("get_currentPin").Invoke(UserCameraController.Instance, new object[] { });
+                        if (Settings.cameraEnabled) {
+                            var currentPin = CameraUtils.GetCurrentPin();
                             string pin = "?";
                             int newPin = 0;
                             switch (currentPin) {
-                                case Pin.Pin1:
+                                case CameraUtils.Pin.Pin1:
                                     newPin = 1;
                                     pin = "Pin 2";
                                     break;
-                                case Pin.Pin2:
+                                case CameraUtils.Pin.Pin2:
                                     newPin = 2;
                                     pin = "Pin 3";
                                     break;
-                                case Pin.Pin3:
+                                case CameraUtils.Pin.Pin3:
                                     newPin = 0;
                                     pin = "Pin 1";
                                     break;
@@ -210,78 +269,78 @@ namespace VRCDesktopCamera {
                         }
                     });
 
-                    SingleButton timer1Button = new SingleButton("Timer1", "Timer\n<color=yellow>3 seconds</color>", "Takes a picture after 3 seconds", 3, 0, cameraMenu);
+                    var timer1Button = new SingleButton("Timer1", "Timer\n<color=yellow>3 seconds</color>", "Takes a picture after 3 seconds", 3, 0, cameraMenu);
                     timer1Button.setAction(() => {
-                        if (cameraEnabled) {
-                            ModManager.StartCoroutine((IEnumerator)typeof(UserCameraController).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Where(x => (x.GetParameters().Length == 1) && (x.GetParameters()[0].ParameterType == typeof(int)) && (x.ReturnType == typeof(IEnumerator))).ToArray()[0].Invoke(UserCameraController.Instance, new object[] { 3 }));
+                        if (Settings.cameraEnabled) {
+                            CameraUtils.TakePicture(3);
                         }
                     });
 
-                    SingleButton timer2Button = new SingleButton("Timer2", "Timer\n<color=yellow>5 seconds</color>", "Takes a picture after 5 seconds", 3, 1, cameraMenu);
+                    var timer2Button = new SingleButton("Timer2", "Timer\n<color=yellow>5 seconds</color>", "Takes a picture after 5 seconds", 3, 1, cameraMenu);
                     timer2Button.setAction(() => {
-                        if (cameraEnabled) {
-                            UserCameraController.Instance.actionTimer(GetInstigatorId());
+                        if (Settings.cameraEnabled) {
+                            CameraUtils.TakePicture(5);
                         }
                     });
 
-                    SingleButton timer3Button = new SingleButton("Timer3", "Timer\n<color=yellow>10 seconds</color>", "Takes a picture after 10 seconds", 3, 2, cameraMenu);
+                    var timer3Button = new SingleButton("Timer3", "Timer\n<color=yellow>10 seconds</color>", "Takes a picture after 10 seconds", 3, 2, cameraMenu);
                     timer3Button.setAction(() => {
-                        if (cameraEnabled) {
-                            ModManager.StartCoroutine((IEnumerator)typeof(UserCameraController).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Where(x => (x.GetParameters().Length == 1) && (x.GetParameters()[0].ParameterType == typeof(int)) && (x.ReturnType == typeof(IEnumerator))).ToArray()[0].Invoke(UserCameraController.Instance, new object[] { 10 }));
+                        if (Settings.cameraEnabled) {
+                            CameraUtils.TakePicture(10);
                         }
                     });
 
-                    SingleButton cameraScaleButton = new SingleButton("CameraScale", "Camera\nScale\n<color=yellow>Normal</color>", "Changes the Camera's scale", 2, 1, cameraMenu);
+                    var cameraScaleButton = new SingleButton("CameraScale", "Camera\nScale\n<color=yellow>Normal</color>", "Changes the Camera's scale", 2, 1, cameraMenu);
                     cameraScaleButton.setAction(() => {
-                        if (cameraEnabled) {
+                        if (Settings.cameraEnabled) {
                             string scale = "?";
-                            switch (cameraScale) {
-                                case CameraScale.Normal:
+                            switch (Settings.cameraScale) {
+                                case CameraUtils.CameraScale.Normal:
                                     scale = "Medium";
                                     UserCameraController.Instance.viewFinder.transform.localScale = new Vector3(1.5f, 1f, 1.5f);
-                                    cameraScale = CameraScale.Medium;
+                                    Settings.cameraScale = CameraUtils.CameraScale.Medium;
                                     break;
-                                case CameraScale.Medium:
+                                case CameraUtils.CameraScale.Medium:
                                     scale = "Big";
                                     UserCameraController.Instance.viewFinder.transform.localScale = new Vector3(2f, 1f, 2f);
-                                    cameraScale = CameraScale.Big;
+                                    Settings.cameraScale = CameraUtils.CameraScale.Big;
                                     break;
-                                case CameraScale.Big:
+                                case CameraUtils.CameraScale.Big:
                                     scale = "Normal";
                                     UserCameraController.Instance.viewFinder.transform.localScale = new Vector3(1f, 1f, 1f);
-                                    cameraScale = CameraScale.Normal;
+                                    Settings.cameraScale = CameraUtils.CameraScale.Normal;
                                     break;
                             }
                             cameraScaleButton.setText("Camera\nScale\n<color=yellow>" + scale + "</color>");
                         }
                     });
 
-                    SingleButton toggleArrowKeysButton = new SingleButton("ArrowKeys", "Arrow Keys\n<color=green>On</color>", "Allows you to change the camera position\nand rotation using arrow keys and numpad keys\n(for more info check the GitHub page)", 0, 2, cameraMenu);
+                    var toggleArrowKeysButton = new SingleButton("ArrowKeys", "Arrow Keys\n<color=green>On</color>", "Allows you to change the camera position\nand rotation using arrow keys and numpad keys\n<color=orange>(for more info check the GitHub page)</color>", 0, 2, cameraMenu);
                     toggleArrowKeysButton.setAction(() => {
-                        arrowKeysEnabled = !arrowKeysEnabled;
-                        toggleArrowKeysButton.setText("Arrow Keys\n<color=" + (arrowKeysEnabled ? "green>On" : "red>Off") + "</color>");
+                        Settings.arrowKeysEnabled = !Settings.arrowKeysEnabled;
+                        toggleArrowKeysButton.setText("Arrow Keys\n<color=" + (Settings.arrowKeysEnabled ? "green>On" : "red>Off") + "</color>");
                     });
 
-                    SingleButton rotateAroundCameraButton = new SingleButton("RotateAroundCamera", "Rotate\nAround\nCamera\n<color=red>Off</color>", "Makes the camera rotate around the user's camera\ninstead of just saying bye bye\n(for more info check the GitHub page)", 1, 2, cameraMenu);
-                    rotateAroundCameraButton.setAction(() => {
-                        rotateAroundCamera = !rotateAroundCamera;
-                        rotateAroundCameraButton.setText("Rotate\nAround\nCamera\n<color=" + (rotateAroundCamera ? "green>On" : "red>Off") + "</color>");
+                    var rotateAroundUserCameraButton = new SingleButton("RotateAroundUserCamera", "Rotate\nAround\nUser Camera\n<color=red>Off</color>", "Makes the camera rotate around the user's camera\ninstead of just saying bye bye\n<color=orange>(for more info check the GitHub page)</color>", 1, 2, cameraMenu);
+                    rotateAroundUserCameraButton.setAction(() => {
+                        Settings.rotateAroundUserCamera = !Settings.rotateAroundUserCamera;
+                        rotateAroundUserCameraButton.setText("Rotate\nAround\nUser Camera\n<color=" + (Settings.rotateAroundUserCamera ? "green>On" : "red>Off") + "</color>");
                     });
 
-                    SingleButton toggleExtenderButton = new SingleButton("ToggleExtender", "Extender\n<color=red>Off</color>", "Toggles the Extender (why)", 4, -1, cameraMenu);
+                    var toggleExtenderButton = new SingleButton("ToggleExtender", "Extender\n<color=red>Off</color>", "Toggles the Extender (useless)", 4, -1, cameraMenu);
                     toggleExtenderButton.setAction(() => {
-                        if (cameraEnabled) {
-                            UserCameraController.Instance.actionExtender(GetInstigatorId());
+                        if (Settings.cameraEnabled) {
+                            UserCameraController.Instance.actionExtender(InstanceUtils.GetInstigatorId());
                             toggleExtenderButton.setText("Extender\n<color=" + (UserCameraController.Instance.extender.activeSelf ? "green>On" : "red>Off") + "</color>");
                         }
                     });
 
-                    SingleButton gitHubButton = new SingleButton("GitHubPage", "GitHub\nPage", "Opens the GitHub page of the mod\nVersion: 1.0.0", 4, 0, cameraMenu);
+                    var gitHubButton = new SingleButton("GitHubPage", "<color=orange>GitHub\nPage</color>", "Opens the GitHub page of the mod\nVersion: " + Version, -1, -1, cameraMenu);
                     gitHubButton.setAction(() => {
                         Application.OpenURL("https://github.com/nitrog0d/VRCDesktopCamera");
                     });
 
-                    Transform filtersMenu = UnityEngine.Object.Instantiate(InstanceUtils.MenuTemplate(), quickMenu.transform);
+                    var filtersMenu = UnityEngine.Object.Instantiate(InstanceUtils.MenuTemplate(), quickMenu.transform);
                     filtersMenu.name = "FiltersMenu";
 
                     foreach (Transform child in filtersMenu) {
@@ -297,12 +356,12 @@ namespace VRCDesktopCamera {
                         }
                     }
 
-                    SingleButton filtersButton = new SingleButton("Filters", "Filters", "Opens the filter menu", 2, 2, cameraMenu);
+                    var filtersButton = new SingleButton("Filters", "Filters", "Opens the filter menu", 4, 0, cameraMenu);
                     filtersButton.setAction(() => {
-                        QuickMenuUtils.ShowQuickmenuPage("FiltersMenu", "CameraMenu");
+                        VRCToolsUtils.ShowQuickmenuPage("FiltersMenu", "CameraMenu");
                     });
 
-                    Dictionary<string, int> filters = new Dictionary<string, int>()
+                    var filters = new Dictionary<string, int>()
                     {
                         { "None", 0 },
                         { "Blueprint", 10 },
@@ -321,10 +380,10 @@ namespace VRCDesktopCamera {
                     int row = 0;
                     int position = 0;
 
-                    foreach (KeyValuePair<string, int> filter in filters) {
-                        SingleButton button = new SingleButton("Filter" + filter.Value, filter.Key, "Sets the filter to " + filter.Key, position, row, filtersMenu);
+                    foreach (var filter in filters) {
+                        var button = new SingleButton("Filter" + filter.Value, filter.Key, "Sets the filter to " + filter.Key.Replace("\n", " "), position, row, filtersMenu);
                         button.setAction(() => {
-                            if (cameraEnabled) {
+                            if (Settings.cameraEnabled) {
                                 UserCameraController.Instance.actionSetFilter(filter.Value);
                             }
                         });
@@ -334,6 +393,14 @@ namespace VRCDesktopCamera {
                             row++;
                         }
                     }
+
+                    cameraMovementButton = new SingleButton("ToggleCameraMovement", "Camera\nMovement\n<color=yellow>Viewer</color>", "Toggles the arrow/numpad keys movement between the actual Camera and the Viewer\nViewer requires Movement Space to be \"World\" <color=orange>(for more info check the GitHub page)</color>", 2, 2, cameraMenu);
+                    cameraMovementButton.setAction(() => {
+                        if (Settings.cameraEnabled) {
+                            Settings.moveCamera = !Settings.moveCamera;
+                            cameraMovementButton.setText("Camera\nMovement\n<color=yellow>" + (Settings.moveCamera ? "Camera" : "Viewer") + "</color>");
+                        }
+                    });
 
                 }   
 

@@ -9,7 +9,7 @@ namespace VRCDesktopCamera.Buttons {
 
         public SingleButton(string name, string text, string tooltip, int x, int y, Transform childOf = null, UnityAction action = null) {
             button = Object.Instantiate(InstanceUtils.SingleButtonTemplate(), childOf);
-            button.name = name;
+            button.name = "nitro" + name;
             setText(text);
             setTooltip(tooltip);
             setButtonPosition(x, y);
