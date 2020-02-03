@@ -22,7 +22,7 @@ Just another try to let Desktop users use the VRChat Camera feature, yay!
 
 > **Move Around Camera feature explanation:** The camera will rotate around the user's camera instead of just going to another dimension.
 
-> **Camera Movement feature explanation:** Remember the arrow keys feature above? So, this is a toggle, you can toggle between the actual Camera and the Viewer, if you have it on the Camera, the arrow/numpad keys will move the Camera, if you have it on the Viewer, then the Viewer will move instead.
+> **Camera Movement feature explanation:** Remember the arrow keys feature above? So, this is a toggle, you can toggle between the actual Camera and the Viewer, if you have it on the Camera, the arrow/numpad keys will move the Camera, if you have it on the Viewer, then the Viewer will move instead.  
 > The Viewer is the Camera view, if it's not obvious.
 
 ## Requirements
