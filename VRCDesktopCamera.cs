@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using VRCModLoader;
 using UnityEngine;
-using VRCDesktopCamera.Buttons;
 using UnityEngine.UI;
+using UnityEngine.Networking;
+using VRCDesktopCamera.Buttons;
 using VRCDesktopCamera.Utils;
+using Newtonsoft.Json;
 
 namespace VRCDesktopCamera {
-    [VRCModInfo("VRCDesktopCamera", "1.0.1", "nitro.", "https://github.com/nitrog0d/VRCDesktopCamera/releases/download/v1.0.1/VRCDesktopCamera.1.0.1.dll")]
+    [VRCModInfo("VRCDesktopCamera", "1.0.2", "nitro.", "https://github.com/nitrog0d/VRCDesktopCamera/releases/download/v1.0.2/VRCDesktopCamera.1.0.2.dll")]
     public class VRCDesktopCamera : VRCMod {
 
         private bool initialized = false;
@@ -93,14 +96,14 @@ namespace VRCDesktopCamera {
                 // Rotation
                 if (Input.GetKey(KeyCode.Keypad8)) {
                     if (Settings.moveCamera) {
-                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? 2f : 1f, 0f, 0f);
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? -2f : -1f, 0f, 0f);
                     } else {
                         UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -2f : -1f, 0f));
                     }
                 }
                 if (Input.GetKey(KeyCode.Keypad2)) {
                     if (Settings.moveCamera) {
-                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? -2f : -1f, 0f, 0f);
+                        if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? 2f : 1f, 0f, 0f);
                     } else {
                         UserCameraController.Instance.viewFinder.transform.Rotate(new Vector3((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 2f : 1f, 0f));
                     }
@@ -139,7 +142,7 @@ namespace VRCDesktopCamera {
                     if (Settings.cameraEnabled) CameraUtils.ResetCamera();
                 }
 
-                // Need to rework on this
+                // Look at player
                 if (Input.GetKey(KeyCode.Keypad1)) {
                     if (Settings.cameraEnabled) {
                         UserCameraController.Instance.viewFinder.transform.LookAt(InstanceUtils.GetMainCamera().transform);
@@ -165,10 +168,31 @@ namespace VRCDesktopCamera {
             }
         }
 
+        public class VersionCheckResponse {
+            public string result { get; set; }
+            public string latest { get; set; }
+        }
+
         private IEnumerator Setup() {
-            yield return VRCTools.VRCUiManagerUtils.WaitForUiManagerInit();
+            yield return VRCToolsUtils.WaitForUiManagerInit();
             // Let VRCTools make their cool changes
             yield return new WaitForSeconds(3f);
+
+            bool updated = true;
+            string latest = "";
+            using (var request = UnityWebRequest.Put("https://vrcmods.nitro.moe/mods/versioncheck", Encoding.UTF8.GetBytes("{\"name\":\"" + Name + "\",\"version\":\"" + Version + "\"}"))) {
+                request.method = UnityWebRequest.kHttpVerbPOST;
+                yield return request.SendWebRequest();
+                if (!request.isNetworkError && !request.isHttpError) {
+                    try {
+                        var response = JsonConvert.DeserializeObject<VersionCheckResponse>(request.downloadHandler.text);
+                        if (response.result == "OUTDATED") {
+                            updated = false;
+                            latest = response.latest;
+                        }
+                    } catch (Exception) { }
+                }
+            }
 
             try {
                 if (!VRCTrackingManager.IsInVRMode()) {
@@ -335,7 +359,7 @@ namespace VRCDesktopCamera {
                         }
                     });
 
-                    var gitHubButton = new SingleButton("GitHubPage", "<color=orange>GitHub\nPage</color>", "Opens the GitHub page of the mod\nVersion: " + Version, -1, -1, cameraMenu);
+                    var gitHubButton = new SingleButton("GitHubPage", "<color=orange>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\nVersion: " + Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update using VRChatModInstaller (VRCModManager).</color>"), -1, -1, cameraMenu);
                     gitHubButton.setAction(() => {
                         Application.OpenURL("https://github.com/nitrog0d/VRCDesktopCamera");
                     });
