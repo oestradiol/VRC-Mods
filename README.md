@@ -30,7 +30,7 @@ Just another try to let Desktop users use the VRChat Camera feature, yay!
 ### **Camera Movement feature explanation:**
 > Remember the arrow keys feature above? So, this is a toggle, you can toggle between the actual Camera and the Viewer, if you have it on the Camera, the arrow/numpad keys will move the Camera, if you have it on the Viewer, then the Viewer will move instead.  
 > The Viewer is the Camera view, if it's not obvious.  
-> **The Camera Space must be in "World" mode, or else it won't move**.
+> **Warning: The Camera Space must be in "World" mode, or else the camera won't move**.
 
 ## Requirements
 - [VRCModLoader](https://github.com/Slaynash/VRCModLoader)
