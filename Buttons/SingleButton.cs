@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using VRCDesktopCamera.Utils;
 
 namespace VRCDesktopCamera.Buttons {
     class SingleButton {
@@ -8,7 +9,7 @@ namespace VRCDesktopCamera.Buttons {
         public Transform button;
 
         public SingleButton(string name, string text, string tooltip, int x, int y, Transform childOf = null, UnityAction action = null) {
-            button = Object.Instantiate(InstanceUtils.SingleButtonTemplate(), childOf);
+            button = Object.Instantiate(VRCUtils.SingleButtonTemplate(), childOf);
             button.name = "nitro" + name;
             setText(text);
             setTooltip(tooltip);

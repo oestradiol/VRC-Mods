@@ -1,9 +1,13 @@
-﻿using System.Collections;
-using UnityEngine;
-using VRCModLoader;
+﻿using UnityEngine;
 
 namespace VRCDesktopCamera.Utils {
     public class CameraUtils {
+
+        public enum CameraMode {
+            Off,
+            Photo,
+            Video
+        }
 
         public enum CameraScale {
             Normal,
@@ -20,7 +24,8 @@ namespace VRCDesktopCamera.Utils {
         public enum CameraSpace {
             Attached,
             Local,
-            World
+            World,
+            COUNT
         }
 
         public enum Pin {
@@ -31,63 +36,67 @@ namespace VRCDesktopCamera.Utils {
 
         public static Vector3 worldCameraVector {
             get {
-                return (Vector3)InstanceUtils.worldCameraVectorField.GetValue(UserCameraController.Instance);
+                return VRCUtils.GetUserCameraController().field_Vector3_0;
             }
             set {
-                InstanceUtils.worldCameraVectorField.SetValue(UserCameraController.Instance, value);
+                VRCUtils.GetUserCameraController().field_Vector3_0 = value;
             }
         }
 
         public static Quaternion worldCameraQuaternion {
             get {
-                return (Quaternion)InstanceUtils.worldCameraQuaternionField.GetValue(UserCameraController.Instance);
+                return VRCUtils.GetUserCameraController().field_Quaternion_0;
             }
             set {
-                InstanceUtils.worldCameraQuaternionField.SetValue(UserCameraController.Instance, value);
+                VRCUtils.GetUserCameraController().field_Quaternion_0 = value;
             }
         }
 
         // https://answers.unity.com/questions/489350/rotatearound-without-transform.html
         public static void RotateAround(Vector3 center, Vector3 axis, float angle) {
-
-            Vector3 pos = worldCameraVector;
-            Quaternion rot = Quaternion.AngleAxis(angle, axis);
-            Vector3 dir = pos - center;
+            var pos = worldCameraVector;
+            var rot = Quaternion.AngleAxis(angle, axis);
+            var dir = pos - center;
             dir = rot * dir;
             worldCameraVector = center + dir;
 
-            Quaternion myRot = worldCameraQuaternion;
+            var myRot = worldCameraQuaternion;
             worldCameraQuaternion *= Quaternion.Inverse(myRot) * rot * myRot;
         }
 
-        public static void SetCameraMode(int mode) {
-            InstanceUtils.setModeMethod.Invoke(UserCameraController.Instance, new object[] { mode });
+        public static void SetCameraMode(CameraMode mode) {
+            // This needs to be updated every VRChat has an update that changes the code
+            VRCUtils.GetUserCameraController().prop_Type3571649751_0 = (Type3571649751)mode;
         }
 
         public static void ResetCamera() {
-            SetCameraMode(0);
-            SetCameraMode(1);
-            worldCameraVector = UserCameraController.Instance.viewFinder.transform.position;
-            worldCameraQuaternion = UserCameraController.Instance.viewFinder.transform.rotation;
+            SetCameraMode(CameraMode.Off);
+            SetCameraMode(CameraMode.Photo);
+            var camInstance = VRCUtils.GetUserCameraController();
+            worldCameraVector = camInstance.viewFinder.transform.position;
+            worldCameraQuaternion = camInstance.viewFinder.transform.rotation;
             worldCameraQuaternion *= Quaternion.Euler(90f, 0f, 180f);
-            UserCameraController.Instance.photoCamera.transform.position = UserCameraController.Instance.viewFinder.transform.position;
-            UserCameraController.Instance.photoCamera.transform.rotation = UserCameraController.Instance.viewFinder.transform.rotation;
+            camInstance.photoCamera.transform.position = camInstance.viewFinder.transform.position;
+            camInstance.photoCamera.transform.rotation = camInstance.viewFinder.transform.rotation;
         }
 
         public static void TakePicture(int timer) {
-            ModManager.StartCoroutine((IEnumerator)InstanceUtils.timerMethod.Invoke(UserCameraController.Instance, new object[] { timer }));
+            var camInstance = VRCUtils.GetUserCameraController();
+            camInstance.StartCoroutine(camInstance.Method_Private_Int32_0(timer));
         }
 
         public static CameraBehaviour GetCameraBehaviour() {
-            return (CameraBehaviour)InstanceUtils.getMovementBehaviourMethod.Invoke(UserCameraController.Instance, new object[] { });
+            // This needs to be updated every VRChat has an update that changes the code
+            return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_Type1241909174_0;
         }
 
         public static CameraSpace GetCameraSpace() {
-            return (CameraSpace)InstanceUtils.getSpaceMethod.Invoke(UserCameraController.Instance, new object[] { });
+            // This needs to be updated every VRChat has an update that changes the code
+            return (CameraSpace)VRCUtils.GetUserCameraController().prop_Type2937985213_0;
         }
 
         public static Pin GetCurrentPin() {
-            return (Pin)InstanceUtils.getCurrentPinMethod.Invoke(UserCameraController.Instance, new object[] { });
+            return (Pin)VRCUtils.GetUserCameraController().prop_Int32_0;
         }
 
     }
