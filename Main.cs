@@ -2,39 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using VRCDesktopCamera.Buttons;
-using VRCDesktopCamera.Utils;
+using DesktopCamera.Buttons;
+using DesktopCamera.Utils;
 using MelonLoader;
-using UnhollowerRuntimeLib;
-using UnityEngine.Events;
 using UnityEngine.Networking;
 using Il2CppSystem.Text;
 using System.Threading;
 using Newtonsoft.Json;
 
-namespace VRCDesktopCamera {
+namespace DesktopCamera {
 
     public static class BuildInfo {
-        public const string Name = "VRCDesktopCamera";
+        public const string Name = "DesktopCamera";
         public const string Author = "nitro.";
         public const string Company = null;
         public const string Version = "1.0.3";
-        public const string DownloadLink = "https://github.com/nitrog0d/VRCDesktopCamera/releases/download/v1.0.3/VRCDesktopCamera.1.0.3.dll";
+        public const string DownloadLink = "https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
     }
 
-    public class VRCDesktopCamera : MelonMod {
+    public class VersionCheckResponse {
+        public string result { get; set; }
+        public string latest { get; set; }
+    }
+
+    public class Main : MelonMod {
 
         public override void OnApplicationStart() {
             MelonModLogger.Log("Mod loaded.");
         }
 
-        private SingleButton cameraMovementButton;
-
         public override void VRChat_OnUiManagerInit() {
             Setup();
         }
+
+        private SingleButton cameraMovementButton;
 
         private void Setup() {
 
@@ -45,7 +48,7 @@ namespace VRCDesktopCamera {
 
             var asyncOperation = request.SendWebRequest();
 
-            // yield return doesn't work, so I had to change it to this.
+            // yield return doesn't work for now, so I had to change it to this.
             while (!asyncOperation.isDone) {
                 Thread.Sleep(100);
             }
@@ -82,14 +85,14 @@ namespace VRCDesktopCamera {
             screenshotButton.localPosition = SingleButton.getButtonPositionFor(4, 1);
 
             var cameraButton = new SingleButton("Camera", "Camera\n<color=red>Off</color>", "Toggles the Camera", 0, 0, cameraMenu);
-            cameraButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            cameraButton.setAction((Action)(() => {
                 Settings.cameraEnabled = !Settings.cameraEnabled;
                 cameraButton.setText("Camera\n<color=" + (Settings.cameraEnabled ? "#845bff>On" : "red>Off") + "</color>");
                 CameraUtils.SetCameraMode(Settings.cameraEnabled ? CameraUtils.CameraMode.Photo : CameraUtils.CameraMode.Off);
-            })));
+            }));
 
             var movementBehaviourButton = new SingleButton("MovementBehaviour", "Movement\nBehaviour\n<color=#845bff>None</color>", "Changes the Camera's movement behaviour", 1, 0, cameraMenu);
-            movementBehaviourButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            movementBehaviourButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     var cameraBehaviour = CameraUtils.GetCameraBehaviour();
                     string behaviour = "?";
@@ -107,10 +110,10 @@ namespace VRCDesktopCamera {
                     movementBehaviourButton.setText("Movement\nBehaviour\n<color=#845bff>" + behaviour + "</color>");
                     VRCUtils.GetUserCameraController().actionCycleMovementBehaviour(VRCUtils.GetPlayer());
                 }
-            })));
+            }));
 
             var movementSpaceButton = new SingleButton("MovementSpace", "Movement\nSpace\n<color=#845bff>Attached</color>", "Changes the Camera's movement space", 2, 0, cameraMenu);
-            movementSpaceButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            movementSpaceButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     var cameraSpace = CameraUtils.GetCameraSpace();
                     string space = "?";
@@ -129,18 +132,18 @@ namespace VRCDesktopCamera {
                     VRCUtils.GetUserCameraController().actionCycleMovementSpace(VRCUtils.GetPlayer());
                     if (CameraUtils.GetCameraSpace() == CameraUtils.CameraSpace.World) Settings.allowCameraMovement = true; else Settings.allowCameraMovement = false;
                 }
-            })));
+            }));
 
             var pinMenuButton = new SingleButton("PinMenu", "Pin Menu\n<color=red>Off</color>", "Toggles the Pin menu (which is pretty useless)", 0, 1, cameraMenu);
-            pinMenuButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            pinMenuButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     VRCUtils.GetUserCameraController().actionTogglePinMenu(VRCUtils.GetPlayer());
                     pinMenuButton.setText("Pin Menu\n<color=" + (VRCUtils.GetUserCameraController().pinsHolder.activeSelf ? "#845bff>On" : "red>Off") + "</color>");
                 }
-            })));
+            }));
 
             var switchPinButton = new SingleButton("SwitchPin", "Switch Pin\n<color=#845bff>Pin 1</color>", "Switches between 3 pins (aka profiles)", 1, 1, cameraMenu);
-            switchPinButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            switchPinButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     var currentPin = CameraUtils.GetCurrentPin();
                     string pin = "?";
@@ -162,31 +165,31 @@ namespace VRCDesktopCamera {
                     switchPinButton.setText("Switch Pin\n<color=#845bff>" + pin + "</color>");
                     VRCUtils.GetUserCameraController().actionChangePin(newPin);
                 }
-            })));
+            }));
 
             var timer1Button = new SingleButton("Timer1", "Timer\n<color=#845bff>3 seconds</color>", "Takes a picture after 3 seconds", 3, 0, cameraMenu);
-            timer1Button.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            timer1Button.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     CameraUtils.TakePicture(3);
                 }
-            })));
+            }));
 
             var timer2Button = new SingleButton("Timer2", "Timer\n<color=#845bff>5 seconds</color>", "Takes a picture after 5 seconds", 3, 1, cameraMenu);
-            timer2Button.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            timer2Button.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     CameraUtils.TakePicture(5);
                 }
-            })));
+            }));
 
             var timer3Button = new SingleButton("Timer3", "Timer\n<color=#845bff>10 seconds</color>", "Takes a picture after 10 seconds", 3, 2, cameraMenu);
-            timer3Button.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            timer3Button.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     CameraUtils.TakePicture(10);
                 }
-            })));
+            }));
 
             var cameraScaleButton = new SingleButton("CameraScale", "Camera\nScale\n<color=#845bff>Normal</color>", "Changes the Camera's scale", 2, 1, cameraMenu);
-            cameraScaleButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            cameraScaleButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     string scale = "?";
                     switch (Settings.cameraScale) {
@@ -208,32 +211,32 @@ namespace VRCDesktopCamera {
                     }
                     cameraScaleButton.setText("Camera\nScale\n<color=#845bff>" + scale + "</color>");
                 }
-            })));
+            }));
 
             var toggleArrowKeysButton = new SingleButton("ArrowKeys", "Arrow Keys\n<color=#845bff>On</color>", "Allows you to change the camera position\nand rotation using arrow keys and numpad keys\n<color=orange>(for more info check the GitHub page)</color>", 0, 2, cameraMenu);
-            toggleArrowKeysButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            toggleArrowKeysButton.setAction((Action)(() => {
                 Settings.arrowKeysEnabled = !Settings.arrowKeysEnabled;
                 toggleArrowKeysButton.setText("Arrow Keys\n<color=" + (Settings.arrowKeysEnabled ? "#845bff>On" : "red>Off") + "</color>");
-            })));
+            }));
 
             var rotateAroundUserCameraButton = new SingleButton("RotateAroundUserCamera", "Rotate\nAround\nUser Camera\n<color=red>Off</color>", "Makes the camera rotate around the user's camera\ninstead of just saying bye bye\n<color=orange>(for more info check the GitHub page)</color>", 1, 2, cameraMenu);
-            rotateAroundUserCameraButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            rotateAroundUserCameraButton.setAction((Action)(() => {
                 Settings.rotateAroundUserCamera = !Settings.rotateAroundUserCamera;
                 rotateAroundUserCameraButton.setText("Rotate\nAround\nUser Camera\n<color=" + (Settings.rotateAroundUserCamera ? "#845bff>On" : "red>Off") + "</color>");
-            })));
+            }));
 
             var toggleExtenderButton = new SingleButton("ToggleExtender", "Extender\n<color=red>Off</color>", "Toggles the Extender (useless)", 4, -1, cameraMenu);
-            toggleExtenderButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            toggleExtenderButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     VRCUtils.GetUserCameraController().actionExtender(VRCUtils.GetPlayer());
                     toggleExtenderButton.setText("Extender\n<color=" + (VRCUtils.GetUserCameraController().extender.activeSelf ? "#845bff>On" : "red>Off") + "</color>");
                 }
-            })));
+            }));
 
             var gitHubButton = new SingleButton("GitHubPage", "<color=orange>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\nVersion: " + BuildInfo.Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update in the GitHub page.</color>"), -1, -1, cameraMenu);
-            gitHubButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
-                Application.OpenURL("https://github.com/nitrog0d/VRCDesktopCamera");
-            })));
+            gitHubButton.setAction((Action)(() => {
+                Application.OpenURL("https://github.com/nitrog0d/DesktopCamera");
+            }));
 
             var childCount = filtersMenu.transform.childCount;
             for (var i = 0; i < childCount; i++) {
@@ -242,9 +245,9 @@ namespace VRCDesktopCamera {
                     child.localPosition = SingleButton.getButtonPositionFor(4, 2);
                     child.GetComponent<UiTooltip>().text = "Go Back to the Camera Menu";
                     child.GetComponent<Button>().onClick.RemoveAllListeners();
-                    child.GetComponent<Button>().onClick.AddListener(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+                    child.GetComponent<Button>().onClick.AddListener((Action)(() => {
                         VRCUtils.ShowQuickMenuPage(quickMenu, cameraMenu, "FiltersMenu");
-                    })));
+                    }));
                 } else {
                     UnityEngine.Object.Destroy(child.gameObject);
                 }
@@ -271,11 +274,11 @@ namespace VRCDesktopCamera {
 
             foreach (var filter in filters) {
                 var button = new SingleButton("Filter" + filter.Value, filter.Key, "Sets the filter to " + filter.Key.Replace("\n", " "), position, row, filtersMenu);
-                button.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+                button.setAction((Action)(() => {
                     if (Settings.cameraEnabled) {
                         VRCUtils.GetUserCameraController().actionSetFilter(filter.Value);
                     }
-                })));
+                }));
                 position++;
                 if (position == 4) {
                     position = 0;
@@ -284,17 +287,17 @@ namespace VRCDesktopCamera {
             }
 
             var filtersButton = new SingleButton("Filters", "Filters", "Opens the filter menu", 4, 0, cameraMenu);
-            filtersButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            filtersButton.setAction((Action)(() => {
                 VRCUtils.ShowQuickMenuPage(quickMenu, filtersMenu, cameraMenu.name);
-            })));
+            }));
 
             cameraMovementButton = new SingleButton("ToggleCameraMovement", "Camera\nMovement\n<color=#845bff>Viewer</color>", "Toggles the arrow/numpad keys movement between the actual Camera and the Viewer\nViewer requires Movement Space to be \"World\" <color=orange>(for more info check the GitHub page)</color>", 2, 2, cameraMenu);
-            cameraMovementButton.setAction(DelegateSupport.ConvertDelegate<UnityAction>((Action)(() => {
+            cameraMovementButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     Settings.moveCamera = !Settings.moveCamera;
                     cameraMovementButton.setText("Camera\nMovement\n<color=#845bff>" + (Settings.moveCamera ? "Camera" : "Viewer") + "</color>");
                 }
-            })));
+            }));
         }
 
         // This is a mess please don't look
@@ -433,11 +436,6 @@ namespace VRCDesktopCamera {
                     }
                 }
             }
-        }
-
-        public class VersionCheckResponse {
-            public string result { get; set; }
-            public string latest { get; set; }
         }
     }
 }

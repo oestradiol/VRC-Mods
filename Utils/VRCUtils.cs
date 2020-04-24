@@ -4,7 +4,7 @@ using UnityEngine;
 using VRC;
 using VRC.Core;
 
-namespace VRCDesktopCamera.Utils {
+namespace DesktopCamera.Utils {
 
     public static class VRCUtils {
 
@@ -62,7 +62,8 @@ namespace VRCDesktopCamera.Utils {
         }
 
         public static void QueueHudMessage(string message) {
-            GetVRCUiManager().Method_Private_String_0(message);
+            // Not working, probably another method
+            GetVRCUiManager().Method_Public_String_0(message);
         }
     }
 }
