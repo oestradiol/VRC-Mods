@@ -20,9 +20,9 @@ Just another try to let Desktop users use the VRChat Camera feature, yay!
 * You can change the camera's proximity using Page Up (moves away) and Page Down (moves close) buttons.
 
 #### If you have a numpad:  
-* You can rotate it pressing 2 and 8 (tilt up and down), 4 and 6 (tilt left and right), 7 and 9 (orientation);
-* You can make the viewer look at you by pressing 1;  
-* You can reset the camera and the viewer by pressing 3;  
+* You can rotate it pressing 2 and 8 (tilt up and down), 4 and 6 (tilt left and right), 7 and 9 (orientation).
+* You can make the viewer look at you by pressing 1.  
+* You can reset the camera and the viewer by pressing 3.  
 * You can take a picture using the Plus button (+), and you can toggle the Camera Movement using the Minus button (-).  
 
 ### **Move Around Camera feature explanation:**
