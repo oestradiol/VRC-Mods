@@ -1,5 +1,5 @@
-# VRCDesktopCamera
-Just another try to let Desktop users use the VRChat Camera feature, yay!
+# DesktopCamera
+A mod that allows Desktop users use the VRChat Camera feature, yay!
 
 > **Disclaimer:**
 > This mod uses [VRCModLoader](https://github.com/Slaynash/VRCModLoader) to work properly, so you will need to install that first.
