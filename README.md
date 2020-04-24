@@ -1,5 +1,5 @@
-# VRCDesktopCamera
-Just another try to let Desktop users use the VRChat Camera feature, yay!
+# DesktopCamera
+A mod that allows Desktop users use the VRChat Camera feature, yay!
 
 * **Warning:** The VRChat team is not very keen on modding or reverse engineering the game, while the mod does not include anything that would ruin the fun for others, using it may still be a bannable offence.
 
@@ -7,7 +7,7 @@ Just another try to let Desktop users use the VRChat Camera feature, yay!
 
 ## Installation
 * **Make sure you have run the [MelonLoader Auto Installer](https://github.com/Slaynash/MelonLoaderAutoInstaller) by [Slaynash](https://github.com/Slaynash) first.**
-* Download the [latest version](https://github.com/nitrog0d/VRCDesktopCamera/releases/latest/download/DesktopCamera.dll) of the mod.
+* Download the [latest version](https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll) of the mod.
 * Drag/copy the DLL file that you have downloaded into the Mods folder.
 * That's it! Now just run the game and the mod should be installed!
 
