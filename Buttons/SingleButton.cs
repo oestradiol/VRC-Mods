@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using VRCDesktopCamera.Utils;
+using DesktopCamera.Utils;
 
-namespace VRCDesktopCamera.Buttons {
+namespace DesktopCamera.Buttons {
     class SingleButton {
 
         public Transform button;

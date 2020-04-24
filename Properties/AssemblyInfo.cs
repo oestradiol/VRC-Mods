@@ -2,7 +2,7 @@
 using System.Resources;
 using System.Runtime.InteropServices;
 using MelonLoader;
-using VRCDesktopCamera;
+using DesktopCamera;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
@@ -37,5 +37,5 @@ using VRCDesktopCamera;
 [assembly: AssemblyVersion(BuildInfo.Version)]
 [assembly: AssemblyFileVersion(BuildInfo.Version)]
 [assembly: NeutralResourcesLanguage("en")]
-[assembly: MelonModInfo(typeof(VRCDesktopCamera.VRCDesktopCamera), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author, BuildInfo.DownloadLink)]
+[assembly: MelonModInfo(typeof(DesktopCamera.Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author, BuildInfo.DownloadLink)]
 [assembly: MelonModGame(BuildInfo.GameDeveloper, BuildInfo.Game)]

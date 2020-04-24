@@ -1,6 +1,6 @@
-﻿using VRCDesktopCamera.Utils;
+﻿using DesktopCamera.Utils;
 
-namespace VRCDesktopCamera {
+namespace DesktopCamera {
     public class Settings {
 
         public static bool arrowKeysEnabled = true;

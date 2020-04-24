@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VRCDesktopCamera.Utils {
+namespace DesktopCamera.Utils {
     public class CameraUtils {
 
         public enum CameraMode {
@@ -25,6 +25,7 @@ namespace VRCDesktopCamera.Utils {
             Attached,
             Local,
             World,
+            // I have to check COUNT later, I suppose it's nothing important
             COUNT
         }
 
