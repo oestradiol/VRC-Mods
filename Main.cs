@@ -7,16 +7,16 @@ using DesktopCamera.Utils;
 using MelonLoader;
 using UnityEngine.Networking;
 using Il2CppSystem.Text;
-using System.Threading;
 using Newtonsoft.Json;
+using System.Collections;
 
 namespace DesktopCamera {
 
-    public static class BuildInfo {
+    public static class ModBuildInfo {
         public const string Name = "DesktopCamera";
         public const string Author = "nitro.";
         public const string Company = null;
-        public const string Version = "1.0.3";
+        public const string Version = "1.0.4";
         public const string DownloadLink = "https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
@@ -34,15 +34,15 @@ namespace DesktopCamera {
         }
 
         public override void VRChat_OnUiManagerInit() {
-            Setup();
+            MelonCoroutines.Start(Setup());
         }
 
         private SingleButton cameraMovementButton;
 
-        private void Setup() {
+        private IEnumerator Setup() {
 
             var request = new UnityWebRequest("https://vrchat.nitro.moe/mods/versioncheck", "POST");
-            request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes("{\"name\":\"" + BuildInfo.Name + "\",\"version\":\"" + BuildInfo.Version + "\"}"));
+            request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes("{\"name\":\"" + ModBuildInfo.Name + "\",\"version\":\"" + ModBuildInfo.Version + "\"}"));
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
 
@@ -50,7 +50,7 @@ namespace DesktopCamera {
 
             // yield return doesn't work for now, so I had to change it to this.
             while (!asyncOperation.isDone) {
-                Thread.Sleep(100);
+                yield return new WaitForEndOfFrame();
             }
 
             bool updated = true;
@@ -233,7 +233,7 @@ namespace DesktopCamera {
                 }
             }));
 
-            var gitHubButton = new SingleButton("GitHubPage", "<color=orange>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\nVersion: " + BuildInfo.Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update in the GitHub page.</color>"), -1, -1, cameraMenu);
+            var gitHubButton = new SingleButton("GitHubPage", "<color=orange>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\nVersion: " + ModBuildInfo.Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update in the GitHub page.</color>"), -1, -1, cameraMenu);
             gitHubButton.setAction((Action)(() => {
                 Application.OpenURL("https://github.com/nitrog0d/DesktopCamera");
             }));

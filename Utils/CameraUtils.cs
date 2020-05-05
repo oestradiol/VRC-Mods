@@ -67,7 +67,7 @@ namespace DesktopCamera.Utils {
 
         public static void SetCameraMode(CameraMode mode) {
             // This needs to be updated every VRChat has an update that changes the code
-            VRCUtils.GetUserCameraController().prop_Type3571649751_0 = (Type3571649751)mode;
+            VRCUtils.GetUserCameraController().prop_Type2319088563_0 = (Type2319088563)mode;
         }
 
         public static void ResetCamera() {
@@ -88,12 +88,12 @@ namespace DesktopCamera.Utils {
 
         public static CameraBehaviour GetCameraBehaviour() {
             // This needs to be updated every VRChat has an update that changes the code
-            return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_Type1241909174_0;
+            return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_Type2844340681_0;
         }
 
         public static CameraSpace GetCameraSpace() {
             // This needs to be updated every VRChat has an update that changes the code
-            return (CameraSpace)VRCUtils.GetUserCameraController().prop_Type2937985213_0;
+            return (CameraSpace)VRCUtils.GetUserCameraController().prop_Type2574322661_0;
         }
 
         public static Pin GetCurrentPin() {
