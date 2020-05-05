@@ -7,13 +7,13 @@ using DesktopCamera;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle(BuildInfo.Name)]
+[assembly: AssemblyTitle(ModBuildInfo.Name)]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany(BuildInfo.Company)]
-[assembly: AssemblyProduct(BuildInfo.Name)]
-[assembly: AssemblyCopyright("Created by " + BuildInfo.Author)]
-[assembly: AssemblyTrademark(BuildInfo.Company)]
+[assembly: AssemblyCompany(ModBuildInfo.Company)]
+[assembly: AssemblyProduct(ModBuildInfo.Name)]
+[assembly: AssemblyCopyright("Created by " + ModBuildInfo.Author)]
+[assembly: AssemblyTrademark(ModBuildInfo.Company)]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -34,8 +34,8 @@ using DesktopCamera;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(BuildInfo.Version)]
-[assembly: AssemblyFileVersion(BuildInfo.Version)]
+[assembly: AssemblyVersion(ModBuildInfo.Version)]
+[assembly: AssemblyFileVersion(ModBuildInfo.Version)]
 [assembly: NeutralResourcesLanguage("en")]
-[assembly: MelonModInfo(typeof(DesktopCamera.Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author, BuildInfo.DownloadLink)]
-[assembly: MelonModGame(BuildInfo.GameDeveloper, BuildInfo.Game)]
+[assembly: MelonModInfo(typeof(DesktopCamera.Main), ModBuildInfo.Name, ModBuildInfo.Version, ModBuildInfo.Author, ModBuildInfo.DownloadLink)]
+[assembly: MelonModGame(ModBuildInfo.GameDeveloper, ModBuildInfo.Game)]
