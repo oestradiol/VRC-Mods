@@ -37,19 +37,19 @@ namespace DesktopCamera.Utils {
 
         public static Vector3 worldCameraVector {
             get {
-                return VRCUtils.GetUserCameraController().field_Vector3_0;
+                return VRCUtils.GetUserCameraController().field_Private_Vector3_0;
             }
             set {
-                VRCUtils.GetUserCameraController().field_Vector3_0 = value;
+                VRCUtils.GetUserCameraController().field_Private_Vector3_0 = value;
             }
         }
 
         public static Quaternion worldCameraQuaternion {
             get {
-                return VRCUtils.GetUserCameraController().field_Quaternion_0;
+                return VRCUtils.GetUserCameraController().field_Private_Quaternion_0;
             }
             set {
-                VRCUtils.GetUserCameraController().field_Quaternion_0 = value;
+                VRCUtils.GetUserCameraController().field_Private_Quaternion_0 = value;
             }
         }
 
@@ -67,7 +67,7 @@ namespace DesktopCamera.Utils {
 
         public static void SetCameraMode(CameraMode mode) {
             // This needs to be updated every VRChat has an update that changes the code
-            VRCUtils.GetUserCameraController().prop_Type2319088563_0 = (Type2319088563)mode;
+            VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaOfPhVi4vUnique_0 = (EnumPublicSealedvaOfPhVi4vUnique)mode;
         }
 
         public static void ResetCamera() {
@@ -83,17 +83,17 @@ namespace DesktopCamera.Utils {
 
         public static void TakePicture(int timer) {
             var camInstance = VRCUtils.GetUserCameraController();
-            camInstance.StartCoroutine(camInstance.Method_Private_Int32_0(timer));
+            camInstance.StartCoroutine(camInstance.Method_Private_IEnumerator_Int32_0(timer));
         }
 
         public static CameraBehaviour GetCameraBehaviour() {
             // This needs to be updated every VRChat has an update that changes the code
-            return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_Type2844340681_0;
+            return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaNoSmLo4vUnique_0;
         }
 
         public static CameraSpace GetCameraSpace() {
             // This needs to be updated every VRChat has an update that changes the code
-            return (CameraSpace)VRCUtils.GetUserCameraController().prop_Type2574322661_0;
+            return (CameraSpace)VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaAtLoWoCO5vUnique_0;
         }
 
         public static Pin GetCurrentPin() {
