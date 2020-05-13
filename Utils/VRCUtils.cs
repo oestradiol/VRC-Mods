@@ -4,6 +4,7 @@ using UnityEngine;
 using VRC;
 using VRC.Core;
 using UnhollowerRuntimeLib;
+using VRC.UserCamera;
 
 namespace DesktopCamera.Utils {
 
@@ -63,8 +64,7 @@ namespace DesktopCamera.Utils {
         }
 
         public static void QueueHudMessage(string message) {
-            // Not working, probably another method
-            GetVRCUiManager().Method_Private_Void_String_0(message);
+            GetVRCUiManager().Method_Public_Void_String_3(message);
         }
     }
 }

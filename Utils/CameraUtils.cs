@@ -1,7 +1,57 @@
 ﻿using UnityEngine;
+using VRC.UserCamera;
 
 namespace DesktopCamera.Utils {
     public class CameraUtils {
+
+        public static void SetCameraMode(CameraMode mode) {
+            VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaOfPhVi4vUnique_0 = (EnumPublicSealedvaOfPhVi4vUnique)mode;
+        }
+
+        public static void ResetCamera() {
+            SetCameraMode(CameraMode.Off);
+            SetCameraMode(CameraMode.Photo);
+            var camInstance = VRCUtils.GetUserCameraController();
+            worldCameraVector = camInstance.viewFinder.transform.position;
+            worldCameraQuaternion = camInstance.viewFinder.transform.rotation;
+            worldCameraQuaternion *= Quaternion.Euler(90f, 0f, 180f);
+            camInstance.photoCamera.transform.position = camInstance.viewFinder.transform.position;
+            camInstance.photoCamera.transform.rotation = camInstance.viewFinder.transform.rotation;
+        }
+
+        public static void TakePicture(int timer) {
+            var camInstance = VRCUtils.GetUserCameraController();
+            camInstance.StartCoroutine(camInstance.Method_Private_IEnumerator_Int32_0(timer));
+        }
+
+        public static CameraBehaviour GetCameraBehaviour() {
+            return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaNoSmLo4vUnique_0;
+        }
+
+        public static CameraSpace GetCameraSpace() {
+            return (CameraSpace)VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaAtLoWoCO5vUnique_0;
+        }
+
+        public static Pin GetCurrentPin() {
+            return (Pin)VRCUtils.GetUserCameraController().prop_Int32_0;
+        }
+
+        public static void CycleCameraBehaviour() {
+            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Left_CameraMode").GetComponent<CameraInteractable>().Interact();
+        }
+
+        public static void CycleCameraSpace() {
+            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Left_Space").GetComponent<CameraInteractable>().Interact();
+        }
+
+        public static void TogglePinMenu() {
+            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Left_Pins").GetComponent<CameraInteractable>().Interact();
+        }
+
+        public static void ToggleLock() {
+            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Right_Lock").GetComponent<CameraInteractable>().Interact();
+        }
+
 
         public enum CameraMode {
             Off,
@@ -64,41 +114,5 @@ namespace DesktopCamera.Utils {
             var myRot = worldCameraQuaternion;
             worldCameraQuaternion *= Quaternion.Inverse(myRot) * rot * myRot;
         }
-
-        public static void SetCameraMode(CameraMode mode) {
-            // This needs to be updated every VRChat has an update that changes the code
-            VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaOfPhVi4vUnique_0 = (EnumPublicSealedvaOfPhVi4vUnique)mode;
-        }
-
-        public static void ResetCamera() {
-            SetCameraMode(CameraMode.Off);
-            SetCameraMode(CameraMode.Photo);
-            var camInstance = VRCUtils.GetUserCameraController();
-            worldCameraVector = camInstance.viewFinder.transform.position;
-            worldCameraQuaternion = camInstance.viewFinder.transform.rotation;
-            worldCameraQuaternion *= Quaternion.Euler(90f, 0f, 180f);
-            camInstance.photoCamera.transform.position = camInstance.viewFinder.transform.position;
-            camInstance.photoCamera.transform.rotation = camInstance.viewFinder.transform.rotation;
-        }
-
-        public static void TakePicture(int timer) {
-            var camInstance = VRCUtils.GetUserCameraController();
-            camInstance.StartCoroutine(camInstance.Method_Private_IEnumerator_Int32_0(timer));
-        }
-
-        public static CameraBehaviour GetCameraBehaviour() {
-            // This needs to be updated every VRChat has an update that changes the code
-            return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaNoSmLo4vUnique_0;
-        }
-
-        public static CameraSpace GetCameraSpace() {
-            // This needs to be updated every VRChat has an update that changes the code
-            return (CameraSpace)VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaAtLoWoCO5vUnique_0;
-        }
-
-        public static Pin GetCurrentPin() {
-            return (Pin)VRCUtils.GetUserCameraController().prop_Int32_0;
-        }
-
     }
 }
