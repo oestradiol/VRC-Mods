@@ -9,6 +9,7 @@ using UnityEngine.Networking;
 using Il2CppSystem.Text;
 using Newtonsoft.Json;
 using System.Collections;
+using VRC.SDKBase;
 
 namespace DesktopCamera {
 
@@ -16,7 +17,7 @@ namespace DesktopCamera {
         public const string Name = "DesktopCamera";
         public const string Author = "nitro.";
         public const string Company = null;
-        public const string Version = "1.0.5";
+        public const string Version = "1.0.6";
         public const string DownloadLink = "https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
@@ -37,10 +38,9 @@ namespace DesktopCamera {
             MelonCoroutines.Start(Setup());
         }
 
-        private SingleButton cameraMovementButton;
+        private SingleButton cameraMovementButton = null;
 
         private IEnumerator Setup() {
-
             var request = new UnityWebRequest("https://vrchat.nitro.moe/mods/versioncheck", "POST");
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes("{\"name\":\"" + ModBuildInfo.Name + "\",\"version\":\"" + ModBuildInfo.Version + "\"}"));
             request.downloadHandler = new DownloadHandlerBuffer();
@@ -67,6 +67,7 @@ namespace DesktopCamera {
             }
 
             var quickMenu = VRCUtils.GetQuickMenu();
+            if (!updated) quickMenu.transform.Find("ShortcutMenu/CameraButton").GetComponentInChildren<Text>().text = "Camera\n<color=lime>Update\navailable!</color>";
             var cameraMenu = quickMenu.transform.Find("CameraMenu");
 
             var filtersMenu = UnityEngine.Object.Instantiate(cameraMenu, quickMenu.transform);
@@ -91,7 +92,7 @@ namespace DesktopCamera {
                 CameraUtils.SetCameraMode(Settings.cameraEnabled ? CameraUtils.CameraMode.Photo : CameraUtils.CameraMode.Off);
             }));
 
-            var movementBehaviourButton = new SingleButton("MovementBehaviour", "Movement\nBehaviour\n<color=#845bff>None</color>", "Changes the Camera's movement behaviour", 1, 0, cameraMenu);
+            var movementBehaviourButton = new SingleButton("MovementBehaviour", "Movement\nBehaviour\n<color=#845bff>None</color>", "Cycles the Camera's movement behaviour", 1, 0, cameraMenu);
             movementBehaviourButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     var cameraBehaviour = CameraUtils.GetCameraBehaviour();
@@ -108,11 +109,11 @@ namespace DesktopCamera {
                             break;
                     }
                     movementBehaviourButton.setText("Movement\nBehaviour\n<color=#845bff>" + behaviour + "</color>");
-                    VRCUtils.GetUserCameraController().actionCycleMovementBehaviour(VRCUtils.GetPlayer());
+                    CameraUtils.CycleCameraBehaviour();
                 }
             }));
 
-            var movementSpaceButton = new SingleButton("MovementSpace", "Movement\nSpace\n<color=#845bff>Attached</color>", "Changes the Camera's movement space", 2, 0, cameraMenu);
+            var movementSpaceButton = new SingleButton("MovementSpace", "Movement\nSpace\n<color=#845bff>Attached</color>", "Cycles the Camera's movement space", 2, 0, cameraMenu);
             movementSpaceButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     var cameraSpace = CameraUtils.GetCameraSpace();
@@ -129,20 +130,20 @@ namespace DesktopCamera {
                             break;
                     }
                     movementSpaceButton.setText("Movement\nSpace\n<color=#845bff>" + space + "</color>");
-                    VRCUtils.GetUserCameraController().actionCycleMovementSpace(VRCUtils.GetPlayer());
+                    CameraUtils.CycleCameraSpace();
                     if (CameraUtils.GetCameraSpace() == CameraUtils.CameraSpace.World) Settings.allowCameraMovement = true; else Settings.allowCameraMovement = false;
                 }
             }));
 
-            var pinMenuButton = new SingleButton("PinMenu", "Pin Menu\n<color=red>Off</color>", "Toggles the Pin menu (which is pretty useless)", 0, 1, cameraMenu);
+            var pinMenuButton = new SingleButton("PinMenu", "Pin Menu\n<color=red>Off</color>", "Toggles the Pin menu", 0, 1, cameraMenu);
             pinMenuButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
-                    VRCUtils.GetUserCameraController().actionTogglePinMenu(VRCUtils.GetPlayer());
+                    CameraUtils.TogglePinMenu();
                     pinMenuButton.setText("Pin Menu\n<color=" + (VRCUtils.GetUserCameraController().pinsHolder.activeSelf ? "#845bff>On" : "red>Off") + "</color>");
                 }
             }));
 
-            var switchPinButton = new SingleButton("SwitchPin", "Switch Pin\n<color=#845bff>Pin 1</color>", "Switches between 3 pins (aka profiles)", 1, 1, cameraMenu);
+            var switchPinButton = new SingleButton("CyclePin", "Cycle Pin\n<color=#845bff>Pin 1</color>", "Cycles between 3 pins (aka profiles)", 1, 1, cameraMenu);
             switchPinButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
                     var currentPin = CameraUtils.GetCurrentPin();
@@ -162,8 +163,9 @@ namespace DesktopCamera {
                             pin = "Pin 1";
                             break;
                     }
-                    switchPinButton.setText("Switch Pin\n<color=#845bff>" + pin + "</color>");
-                    VRCUtils.GetUserCameraController().actionChangePin(newPin);
+                    switchPinButton.setText("Cycle Pin\n<color=#845bff>" + pin + "</color>");
+                    // Eventually change this to the same way I do the other buttons
+                    VRCUtils.GetUserCameraController().Method_Public_Void_Int32_0(newPin);
                 }
             }));
 
@@ -225,15 +227,15 @@ namespace DesktopCamera {
                 rotateAroundUserCameraButton.setText("Rotate\nAround\nUser Camera\n<color=" + (Settings.rotateAroundUserCamera ? "#845bff>On" : "red>Off") + "</color>");
             }));
 
-            var toggleExtenderButton = new SingleButton("ToggleExtender", "Extender\n<color=red>Off</color>", "Toggles the Extender (useless)", 4, -1, cameraMenu);
-            toggleExtenderButton.setAction((Action)(() => {
+            var toggleLockButton = new SingleButton("ToggleLock", "Lock\n<color=red>Off</color>", "Toggles the Lock (Camera pickup)", 4, -1, cameraMenu);
+            toggleLockButton.setAction((Action)(() => {
                 if (Settings.cameraEnabled) {
-                    VRCUtils.GetUserCameraController().actionExtender(VRCUtils.GetPlayer());
-                    toggleExtenderButton.setText("Extender\n<color=" + (VRCUtils.GetUserCameraController().extender.activeSelf ? "#845bff>On" : "red>Off") + "</color>");
+                    toggleLockButton.setText("Lock\n<color=" + (VRCUtils.GetUserCameraController().viewFinder.GetComponent<VRC_Pickup>().pickupable ? "#845bff>On" : "red>Off") + "</color>");
+                    CameraUtils.ToggleLock();
                 }
             }));
 
-            var gitHubButton = new SingleButton("GitHubPage", "<color=orange>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\nVersion: " + ModBuildInfo.Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update in the GitHub page.</color>"), -1, -1, cameraMenu);
+            var gitHubButton = new SingleButton("GitHubPage", "<color=orange>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\nMod created by nitro.#0007\nVersion: " + ModBuildInfo.Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update in the GitHub page.</color>"), -1, -1, cameraMenu);
             gitHubButton.setAction((Action)(() => {
                 Application.OpenURL("https://github.com/nitrog0d/DesktopCamera");
             }));
@@ -276,7 +278,8 @@ namespace DesktopCamera {
                 var button = new SingleButton("Filter" + filter.Value, filter.Key, "Sets the filter to " + filter.Key.Replace("\n", " "), position, row, filtersMenu);
                 button.setAction((Action)(() => {
                     if (Settings.cameraEnabled) {
-                        VRCUtils.GetUserCameraController().actionSetFilter(filter.Value);
+                        // Eventually change this to the same way I do the other buttons
+                        VRCUtils.GetUserCameraController().Method_Public_Void_Int32_1(filter.Value);
                     }
                 }));
                 position++;
