@@ -17,7 +17,7 @@ namespace DesktopCamera {
         public const string Name = "DesktopCamera";
         public const string Author = "nitro.";
         public const string Company = null;
-        public const string Version = "1.0.6";
+        public const string Version = "1.0.7";
         public const string DownloadLink = "https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
@@ -45,6 +45,8 @@ namespace DesktopCamera {
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes("{\"name\":\"" + ModBuildInfo.Name + "\",\"version\":\"" + ModBuildInfo.Version + "\"}"));
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
+
+            //yield return request.SendWebRequest();
 
             var asyncOperation = request.SendWebRequest();
 
@@ -84,6 +86,19 @@ namespace DesktopCamera {
 
             var screenshotButton = cameraMenu.Find("Screenshot");
             screenshotButton.localPosition = SingleButton.getButtonPositionFor(4, 1);
+
+            // Thank you Janni9009#1751 <3
+            quickMenu.GetComponent<BoxCollider>().size += new Vector3(0f, 840f, 0f);
+
+            var photoModeButton = cameraMenu.Find("PhotoMode");
+            photoModeButton.localPosition = SingleButton.getButtonPositionFor(0, 3);
+
+            var videoModeButton = cameraMenu.Find("VideoMode");
+            videoModeButton.localPosition = SingleButton.getButtonPositionFor(1, 3);
+
+            var disableCameraButton = cameraMenu.Find("DisableCamera");
+            disableCameraButton.localPosition = SingleButton.getButtonPositionFor(2, 3);
+
 
             var cameraButton = new SingleButton("Camera", "Camera\n<color=red>Off</color>", "Toggles the Camera", 0, 0, cameraMenu);
             cameraButton.setAction((Action)(() => {
@@ -164,8 +179,8 @@ namespace DesktopCamera {
                             break;
                     }
                     switchPinButton.setText("Cycle Pin\n<color=#845bff>" + pin + "</color>");
-                    // Eventually change this to the same way I do the other buttons
-                    VRCUtils.GetUserCameraController().Method_Public_Void_Int32_0(newPin);
+                    // Eventually change this to the same way I do the other buttons, I suppose it changes every VRChat update so yeah as soon as possible please Lucas...
+                    VRCUtils.GetUserCameraController().Method_Public_Void_Int32_3(newPin);
                 }
             }));
 
@@ -278,8 +293,8 @@ namespace DesktopCamera {
                 var button = new SingleButton("Filter" + filter.Value, filter.Key, "Sets the filter to " + filter.Key.Replace("\n", " "), position, row, filtersMenu);
                 button.setAction((Action)(() => {
                     if (Settings.cameraEnabled) {
-                        // Eventually change this to the same way I do the other buttons
-                        VRCUtils.GetUserCameraController().Method_Public_Void_Int32_1(filter.Value);
+                        // Eventually change this to the same way I do the other buttons, I suppose it changes every VRChat update so yeah as soon as possible please Lucas...
+                        VRCUtils.GetUserCameraController().Method_Public_Void_Int32_0(filter.Value);
                     }
                 }));
                 position++;
@@ -306,6 +321,11 @@ namespace DesktopCamera {
         // This is a mess please don't look
         // and also pull request to improve it thx
         public override void OnUpdate() {
+            //if (Input.GetKeyDown(KeyCode.F1)) {
+            //    var quickMenu = VRCUtils.GetQuickMenu();
+            //    var cameraMenu = quickMenu.transform.Find("CameraMenu");
+            //    VRCUtils.ShowQuickMenuPage(quickMenu, cameraMenu);
+            //}
             if (Settings.cameraEnabled && Settings.arrowKeysEnabled) {
                 if (Input.GetKey(KeyCode.LeftArrow)) {
                     if (Settings.moveCamera) {

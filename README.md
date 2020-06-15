@@ -6,7 +6,7 @@ A mod that allows Desktop users use the VRChat Camera feature, yay!
 * **USE IT AT YOUR OWN RISK**, I am not responsible for any bans or any punishments you may get by using this mod!
 
 ## Installation
-* **Make sure you have run the [MelonLoader Auto Installer](https://github.com/Slaynash/MelonLoaderAutoInstaller) by [Slaynash](https://github.com/Slaynash) first.**
+* **Make sure you have run the [MelonLoader Installer](https://github.com/HerpDerpinstine/MelonLoader/releases/latest/download/MelonLoader.Installer.exe) by [HerpDerpinstine](https://github.com/HerpDerpinstine) first (please check [MelonLoader Wiki](https://melonwiki.xyz) for more help!).**
 * Download the [latest version](https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll) of the mod.
 * Drag/copy the DLL file that you have downloaded into the Mods folder.
 * That's it! Now just run the game and the mod should be installed!
@@ -33,5 +33,9 @@ A mod that allows Desktop users use the VRChat Camera feature, yay!
 * The Viewer is the Camera view, if it's not obvious.  
 * **Warning: The Camera Space must be in "World" mode, or else the camera won't move**.
 
-*Brought to you by the VRChat Modding Group.*  
-*Thanks to [Emilia](https://github.com/thetrueyoshifan) (for letting me use the README from [VRCDiscordRichPresence-ML](https://github.com/thetrueyoshifan/VRCDiscordRichPresence-ML)), who helped me and who contributed to MelonLoader!*
+*Thanks to everyone in the VRChat Modding community!*  
+
+*Special thanks to:*  
+*[Emilia](https://github.com/thetrueyoshifan) for letting me use the README from [VRCDiscordRichPresence-ML](https://github.com/thetrueyoshifan/VRCDiscordRichPresence-ML) and helping me with opening new pages in the QuickMenu.*  
+*[DubyaDude](https://github.com/DubyaDude) and [Emilia](https://github.com/thetrueyoshifan) for [RubyButtonAPI](https://github.com/DubyaDude/RubyButtonAPI).*  
+*[Janni9009](https://github.com/Janni9009) for helping me with resizing the QuickMenu Collider.*
