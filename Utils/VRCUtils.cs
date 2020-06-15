@@ -11,10 +11,11 @@ namespace DesktopCamera.Utils {
     public static class VRCUtils {
 
         private static FieldInfo currentPageGetter;
+        // Thanks Emilia (yoshifan#9550) <3
         public static void ShowQuickMenuPage(QuickMenu quickMenu, Transform pageTransform, string currentMenu = "ShortcutMenu") {
             if (currentPageGetter == null) {
                 var menu = quickMenu.transform.Find(currentMenu).gameObject;
-                var fis = Il2CppTypeOf<QuickMenu>.Type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(f => f.FieldType == Il2CppTypeOf<GameObject>.Type).ToArray();
+                var fis = Il2CppType.Of<QuickMenu>().GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(f => f.FieldType == Il2CppType.Of<GameObject>()).ToArray();
                 int count = 0;
                 foreach (FieldInfo fi in fis) {
                     var value = fi.GetValue(quickMenu)?.TryCast<GameObject>();
@@ -55,7 +56,6 @@ namespace DesktopCamera.Utils {
         }
 
         public static Player GetPlayer() {
-            // This *probably* needs to be updated every VRChat has an update that changes the code
             return PlayerManager.Method_Public_Static_Player_String_1(APIUser.CurrentUser.id);
         }
 
@@ -64,7 +64,7 @@ namespace DesktopCamera.Utils {
         }
 
         public static void QueueHudMessage(string message) {
-            GetVRCUiManager().Method_Public_Void_String_3(message);
+            GetVRCUiManager().Method_Public_Void_String_2(message);
         }
     }
 }
