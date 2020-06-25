@@ -17,7 +17,7 @@ namespace DesktopCamera {
         public const string Name = "DesktopCamera";
         public const string Author = "nitro.";
         public const string Company = null;
-        public const string Version = "1.0.7";
+        public const string Version = "1.0.8";
         public const string DownloadLink = "https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
@@ -180,7 +180,7 @@ namespace DesktopCamera {
                     }
                     switchPinButton.setText("Cycle Pin\n<color=#845bff>" + pin + "</color>");
                     // Eventually change this to the same way I do the other buttons, I suppose it changes every VRChat update so yeah as soon as possible please Lucas...
-                    VRCUtils.GetUserCameraController().Method_Public_Void_Int32_3(newPin);
+                    VRCUtils.GetUserCameraController().Method_Public_Void_Int32_0(newPin);
                 }
             }));
 
