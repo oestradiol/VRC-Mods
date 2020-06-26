@@ -180,7 +180,6 @@ namespace DesktopCamera {
                     }
                     switchPinButton.setText("Cycle Pin\n<color=#845bff>" + pin + "</color>");
                     // Eventually change this to the same way I do the other buttons, I suppose it changes every VRChat update so yeah as soon as possible please Lucas...
-                    // It seemed that setting method to '3' made clicking on pins button crash the game
                     VRCUtils.GetUserCameraController().Method_Public_Void_Int32_0(newPin);
                 }
             }));
@@ -251,9 +250,9 @@ namespace DesktopCamera {
                 }
             }));
 
-            var gitHubButton = new SingleButton("GitHubPage", "<color=orange>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\nMod created by nitro.#0007\nVersion: " + ModBuildInfo.Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update in the GitHub page.</color>"), -1, -1, cameraMenu);
+            var gitHubButton = new SingleButton("GitHubPage", "<color=orange>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\nMod created by nitro.#0007\nVersion: " + ModBuildInfo.Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update it in the GitHub page.</color>"), -1, -1, cameraMenu);
             gitHubButton.setAction((Action)(() => {
-                Application.OpenURL("https://github.com/nitrog0d/DesktopCamera");
+                Application.OpenURL(updated ? "https://github.com/nitrog0d/DesktopCamera" : "https://github.com/nitrog0d/DesktopCamera/releases");
             }));
 
             var childCount = filtersMenu.transform.childCount;
@@ -295,7 +294,6 @@ namespace DesktopCamera {
                 button.setAction((Action)(() => {
                     if (Settings.cameraEnabled) {
                         // Eventually change this to the same way I do the other buttons, I suppose it changes every VRChat update so yeah as soon as possible please Lucas...
-                        // Setting method to '0' makes the filter not work for some reason [thanks to my friend for helping me with this]
                         VRCUtils.GetUserCameraController().Method_Public_Void_Int32_4(filter.Value);
                     }
                 }));
