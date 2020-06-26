@@ -38,4 +38,4 @@ A mod that allows Desktop users use the VRChat Camera feature, yay!
 *Special thanks to:*  
 *[Emilia](https://github.com/thetrueyoshifan) for letting me use the README from [VRCDiscordRichPresence-ML](https://github.com/thetrueyoshifan/VRCDiscordRichPresence-ML) and helping me with opening new pages in the QuickMenu.*  
 *[DubyaDude](https://github.com/DubyaDude) and [Emilia](https://github.com/thetrueyoshifan) for [RubyButtonAPI](https://github.com/DubyaDude/RubyButtonAPI).*  
-*[Janni9009](https://github.com/Janni9009) for helping me with resizing the QuickMenu Collider.*
+*[Janni9009](https://github.com/Janni9009) for helping me resize the QuickMenu Collider.*
