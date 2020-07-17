@@ -17,7 +17,7 @@ namespace DesktopCamera {
         public const string Name = "DesktopCamera";
         public const string Author = "nitro.";
         public const string Company = null;
-        public const string Version = "1.0.8";
+        public const string Version = "1.0.9";
         public const string DownloadLink = "https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
@@ -163,24 +163,26 @@ namespace DesktopCamera {
                 if (Settings.cameraEnabled) {
                     var currentPin = CameraUtils.GetCurrentPin();
                     string pin = "?";
-                    int newPin = 0;
+                    int newPin = 1;
                     switch (currentPin) {
                         case CameraUtils.Pin.Pin1:
-                            newPin = 1;
+                            newPin = 2;
                             pin = "Pin 2";
                             break;
                         case CameraUtils.Pin.Pin2:
-                            newPin = 2;
+                            newPin = 3;
                             pin = "Pin 3";
                             break;
                         case CameraUtils.Pin.Pin3:
-                            newPin = 0;
+                            newPin = 1;
                             pin = "Pin 1";
                             break;
                     }
                     switchPinButton.setText("Cycle Pin\n<color=#845bff>" + pin + "</color>");
-                    // Eventually change this to the same way I do the other buttons, I suppose it changes every VRChat update so yeah as soon as possible please Lucas...
-                    VRCUtils.GetUserCameraController().Method_Public_Void_Int32_0(newPin);
+                    // Needed to initialize the buttons apparently
+                    CameraUtils.TogglePinMenu();
+                    CameraUtils.TogglePinMenu();
+                    CameraUtils.SetPin(newPin);
                 }
             }));
 
@@ -270,20 +272,20 @@ namespace DesktopCamera {
                 }
             }
 
-            var filters = new Dictionary<string, int>()
+            var filters = new Dictionary<string, string>()
             {
-                { "None", 0 },
-                { "Blueprint", 10 },
-                { "Code", 4 },
-                { "Sparkles", 5 },
-                { "Green\nScreen", 7 },
-                { "Hypno", 6 },
-                { "Alpha\nTransparent", 8 },
-                { "Drawing", 9 },
-                { "Glitch", 3 },
-                { "Pixelate", 2 },
-                { "Old Timey", 1 },
-                { "Trippy", 11 }
+                { "None", "button-NONE" },
+                { "Blueprint", "Button-Blueprint" },
+                { "Code", "Button-Code" },
+                { "Sparkles", "Button-Sparkles" },
+                { "Green\nScreen", "Button-GreenScreen" },
+                { "Hypno", "Button-Hypno" },
+                { "Alpha\nTransparent", "Button-ALPHA" },
+                { "Drawing", "Button-Drawing" },
+                { "Glitch", "Button-Glitch" },
+                { "Pixelate", "Button-PIXELS" },
+                { "Old Timey", "Button-OLD-TIMEY" },
+                { "Trippy", "Button-Trippy" }
             };
 
             int row = 0;
@@ -293,8 +295,10 @@ namespace DesktopCamera {
                 var button = new SingleButton("Filter" + filter.Value, filter.Key, "Sets the filter to " + filter.Key.Replace("\n", " "), position, row, filtersMenu);
                 button.setAction((Action)(() => {
                     if (Settings.cameraEnabled) {
-                        // Eventually change this to the same way I do the other buttons, I suppose it changes every VRChat update so yeah as soon as possible please Lucas...
-                        VRCUtils.GetUserCameraController().Method_Public_Void_Int32_4(filter.Value);
+                        // Needed to initialize the buttons apparently
+                        CameraUtils.ToggleFilterMenu();
+                        CameraUtils.ToggleFilterMenu();
+                        CameraUtils.SetFilter(filter.Value);
                     }
                 }));
                 position++;
@@ -321,6 +325,7 @@ namespace DesktopCamera {
         // This is a mess please don't look
         // and also pull request to improve it thx
         public override void OnUpdate() {
+            // Testing
             //if (Input.GetKeyDown(KeyCode.F1)) {
             //    var quickMenu = VRCUtils.GetQuickMenu();
             //    var cameraMenu = quickMenu.transform.Find("CameraMenu");

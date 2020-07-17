@@ -44,12 +44,24 @@ namespace DesktopCamera.Utils {
             VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Left_Space").GetComponent<CameraInteractable>().Interact();
         }
 
+        public static void SetPin(int pin) {
+            VRCUtils.GetUserCameraController().pinsHolder.transform.Find("button-Pin-" + pin).GetComponent<CameraInteractable>().Interact();
+        }
+
+        public static void SetFilter(string filter) {
+            VRCUtils.GetUserCameraController().filtersHolder.transform.Find(filter).GetComponentInChildren<CameraInteractable>().Interact();
+        }
+
         public static void TogglePinMenu() {
             VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Left_Pins").GetComponent<CameraInteractable>().Interact();
         }
 
         public static void ToggleLock() {
             VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Right_Lock").GetComponent<CameraInteractable>().Interact();
+        }
+
+        public static void ToggleFilterMenu() {
+            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Right_Filters").GetComponent<CameraInteractable>().Interact();
         }
 
 
