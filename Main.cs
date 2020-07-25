@@ -368,10 +368,8 @@ namespace DesktopCamera {
                                     (float) Math.Sin(cameraRotation.y) * actualCameraSpeed, 0f,
                                     (float) Math.Cos(cameraRotation.y) * actualCameraSpeed);
                         }
-
-                        
                     } else {
-                        VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -CameraSpeedAlt : -CameraSpeed);
+                        VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -0.01f : -0.005f);
                     }
                 }
                 if (Input.GetKey(KeyCode.UpArrow)) {
@@ -383,7 +381,7 @@ namespace DesktopCamera {
                                 (float) Math.Cos(cameraRotation.y) * actualCameraSpeed);
                         }
                     } else {
-                        VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? CameraSpeedAlt : CameraSpeed);
+                        VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 0.01f : 0.005f);
                     }
                 }
                 if (Input.GetKey(KeyCode.PageUp)) {
@@ -394,7 +392,7 @@ namespace DesktopCamera {
                         }
                     } else {
                         if (Settings.rotateAroundUserCamera) VRCUtils.GetUserCameraController().viewFinder.transform.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -2f : -1f);
-                        else VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? CameraSpeedAlt : CameraSpeed, 0f);
+                        else VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 0.01f : 0.005f, 0f);
                     }
                 }
                 if (Input.GetKey(KeyCode.PageDown)) {
@@ -405,7 +403,7 @@ namespace DesktopCamera {
                         }
                     } else {
                         if (Settings.rotateAroundUserCamera) VRCUtils.GetUserCameraController().viewFinder.transform.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 2f : 1f);
-                        else VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -CameraSpeedAlt : -CameraSpeed, 0f);
+                        else VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -0.01f : -0.005f, 0f);
                     }
                 }
                 if (Input.GetKey(KeyCode.LeftArrow)) {
@@ -415,7 +413,7 @@ namespace DesktopCamera {
                             (float) -Math.Sin(cameraRotation.y) * actualCameraSpeed);
                     } else {
                         if (Settings.rotateAroundUserCamera) VRCUtils.GetUserCameraController().viewFinder.transform.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.up, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -2f : -1f);
-                        else VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -CameraSpeedAlt : -CameraSpeed, 0f, 0f);
+                        else VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -0.01f : -0.005f, 0f, 0f);
                     }
                 }
                 if (Input.GetKey(KeyCode.RightArrow)) {
@@ -425,7 +423,7 @@ namespace DesktopCamera {
                             (float) -Math.Sin(cameraRotation.y) * actualCameraSpeed);
                     } else {
                         if (Settings.rotateAroundUserCamera) VRCUtils.GetUserCameraController().viewFinder.transform.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.up, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 2f : 1f);
-                        else VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? CameraSpeedAlt : CameraSpeed, 0f, 0f);
+                        else VRCUtils.GetUserCameraController().viewFinder.transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 0.01f : 0.005f, 0f, 0f);
                     }
                 }
 
