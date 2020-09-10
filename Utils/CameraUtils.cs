@@ -21,7 +21,7 @@ namespace DesktopCamera.Utils {
 
         public static void TakePicture(int timer) {
             var camInstance = VRCUtils.GetUserCameraController();
-            camInstance.StartCoroutine(camInstance.Method_Private_IEnumerator_Int32_0(timer));
+            camInstance.StartCoroutine(camInstance.Method_Private_IEnumerator_Int32_PDM_0(timer));
         }
 
         public static CameraBehaviour GetCameraBehaviour() {
