@@ -17,7 +17,7 @@ namespace DesktopCamera {
         public const string Name = "DesktopCamera";
         public const string Author = "nitro.";
         public const string Company = null;
-        public const string Version = "1.0.9";
+        public const string Version = "1.1.0";
         public const string DownloadLink = "https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
@@ -31,7 +31,7 @@ namespace DesktopCamera {
     public class Main : MelonMod {
 
         public override void OnApplicationStart() {
-            MelonModLogger.Log("Mod loaded.");
+            MelonLogger.Log("Mod loaded.");
         }
 
         public override void VRChat_OnUiManagerInit() {
@@ -87,8 +87,11 @@ namespace DesktopCamera {
             var screenshotButton = cameraMenu.Find("Screenshot");
             screenshotButton.localPosition = SingleButton.getButtonPositionFor(4, 1);
 
+            var qmBoxCollider = quickMenu.GetComponent<BoxCollider>();
+
             // Thank you Janni9009#1751 <3
-            quickMenu.GetComponent<BoxCollider>().size += new Vector3(0f, 840f, 0f);
+            if (qmBoxCollider.size.y < 3769) qmBoxCollider.size += new Vector3(0f, 840f, 0f);
+            quickMenu.transform.Find("QuickMenu_NewElements/_CONTEXT/QM_Context_ToolTip/_ToolTipPanel/Text").GetComponent<Text>().supportRichText = true;
 
             var photoModeButton = cameraMenu.Find("PhotoMode");
             photoModeButton.localPosition = SingleButton.getButtonPositionFor(0, 3);
