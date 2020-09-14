@@ -9,5 +9,6 @@ namespace DesktopCamera {
         public static bool allowCameraMovement = false;
         public static bool cameraEnabled = false;
         public static CameraUtils.CameraScale cameraScale = CameraUtils.CameraScale.Normal;
+        
     }
 }

@@ -39,3 +39,4 @@ using DesktopCamera;
 [assembly: NeutralResourcesLanguage("en")]
 [assembly: MelonInfo(typeof(DesktopCamera.Main), ModBuildInfo.Name, ModBuildInfo.Version, ModBuildInfo.Author, ModBuildInfo.DownloadLink)]
 [assembly: MelonGame(ModBuildInfo.GameDeveloper, ModBuildInfo.Game)]
+[assembly: MelonOptionalDependencies("UIExpansionKit")]
