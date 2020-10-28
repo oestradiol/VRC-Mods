@@ -6,18 +6,19 @@ A mod that allows Desktop users use the VRChat Camera feature, yay!
 * **USE IT AT YOUR OWN RISK**, I am not responsible for any bans or any punishments you may get by using this mod!
 
 ## Installation
-* **Make sure you have run the [MelonLoader Installer](https://github.com/HerpDerpinstine/MelonLoader/releases/latest/download/MelonLoader.Installer.exe) by [HerpDerpinstine](https://github.com/HerpDerpinstine) first (please check [MelonLoader Wiki](https://melonwiki.xyz) for more help!).**
+* **Make sure you have run the [MelonLoader Installer](https://github.com/HerpDerpinstine/MelonLoader/releases/latest/download/MelonLoader.Installer.exe) by [HerpDerpinstine](https://github.com/HerpDerpinstine) first (feel free to join the [VRChat Modding Group Discord](https://discord.gg/jgvc9Fd) for help!).**
 * Download the [latest version](https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll) of the mod.
 * Drag/copy the DLL file that you have downloaded into the Mods folder.
 * That's it! Now just run the game and the mod should be installed!
+* Optional: You can install the mod `UIExpansionKit` to edit Camera Movement speed in-game. Manually changing without `UIExpansionKit` is possible through `UserData/modprefs.ini`.
 
 ## How to use
 * Click the Camera button in the ESC menu, you will have new options.  
 * The explanation below can be confusing, I recommend you to just try it in-game after reading. If you can improve it, please send a pull request.
 
 ### **Arrow Keys feature explanation:**
-* You can move the camera/viewer position using the arrow keys **(TIP: if you hold alt it moves 2x faster)**.  
-* You can change the camera's proximity using Page Up (moves away) and Page Down (moves close) buttons.
+* You can move the camera/viewer position using the arrow keys **(TIP: if you hold alt it moves 2x faster (configurable))**.  
+* You can also move the camera/viewer up and down using Page Up and Page Down buttons.
 
 #### If you have a numpad:  
 * You can rotate it pressing 2 and 8 (tilt up and down), 4 and 6 (tilt left and right), 7 and 9 (orientation).
@@ -30,7 +31,7 @@ A mod that allows Desktop users use the VRChat Camera feature, yay!
 
 ### **Camera Movement feature explanation:**
 * Remember the arrow keys feature above? So, this is a toggle, you can toggle between the actual Camera and the Viewer, if you have it on the Camera, the arrow/numpad keys will move the Camera, if you have it on the Viewer, then the Viewer will move instead.  
-* The Viewer is the Camera view, if it's not obvious.  
+* Observation: The Viewer is the Camera view.  
 * **Warning: The Camera Space must be in "World" mode, or else the camera won't move**.
 
 *Thanks to everyone in the VRChat Modding community!*  
