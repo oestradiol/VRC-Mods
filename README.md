@@ -1,4 +1,6 @@
-# DesktopCamera
+# DesktopCamera 
+[![GitHub All Releases](https://img.shields.io/github/downloads/nitrog0d/DesktopCamera/total?style=for-the-badge)](https://github.com/nitrog0d/DesktopCamera/releases)  
+
 A mod that allows Desktop users use the VRChat Camera feature, yay!
 
 > **Disclaimer:**
