@@ -16,7 +16,7 @@ namespace DesktopCamera {
         public const string Name = "DesktopCamera";
         public const string Author = "nitro.";
         public const string Company = null;
-        public const string Version = "1.1.1";
+        public const string Version = "1.1.2";
         public const string DownloadLink = "https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
@@ -86,7 +86,9 @@ namespace DesktopCamera {
             }
 
             var quickMenu = VRCUtils.GetQuickMenu();
+
             if (!updated) quickMenu.transform.Find("ShortcutMenu/CameraButton").GetComponentInChildren<Text>().text = "Camera\n<color=lime>Update\navailable!</color>";
+
             var cameraMenu = quickMenu.transform.Find("CameraMenu");
 
             var filtersMenu = UnityEngine.Object.Instantiate(cameraMenu, quickMenu.transform);
@@ -110,14 +112,21 @@ namespace DesktopCamera {
             if (qmBoxCollider.size.y < 3768) qmBoxCollider.size += new Vector3(0f, 840f, 0f);
             quickMenu.transform.Find("QuickMenu_NewElements/_CONTEXT/QM_Context_ToolTip/_ToolTipPanel/Text").GetComponent<Text>().supportRichText = true;
 
+            var smoothCameraButton = cameraMenu.Find("SmoothFPVCamera");
+            smoothCameraButton.localPosition = SingleButton.getButtonPositionFor(0, 3);
+
             var photoModeButton = cameraMenu.Find("PhotoMode");
-            photoModeButton.localPosition = SingleButton.getButtonPositionFor(0, 3);
+            photoModeButton.localPosition = SingleButton.getButtonPositionFor(1, 3);
 
             var videoModeButton = cameraMenu.Find("VideoMode");
-            videoModeButton.localPosition = SingleButton.getButtonPositionFor(1, 3);
+            videoModeButton.localPosition = SingleButton.getButtonPositionFor(2, 3);
 
             var disableCameraButton = cameraMenu.Find("DisableCamera");
-            disableCameraButton.localPosition = SingleButton.getButtonPositionFor(2, 3);
+            disableCameraButton.localPosition = SingleButton.getButtonPositionFor(3, 3);
+
+            // "Create A Developer Light" the fuck even is this
+            var lightButton = cameraMenu.Find("Light");
+            lightButton.localPosition = SingleButton.getButtonPositionFor(4, 3);
 
 
             var cameraButton = new SingleButton("Camera", "Camera\n<color=red>Off</color>", "Toggles the Camera", 0, 0, cameraMenu);
@@ -299,7 +308,7 @@ namespace DesktopCamera {
                 { "Code", "Button-Code" },
                 { "Sparkles", "Button-Sparkles" },
                 { "Green\nScreen", "Button-GreenScreen" },
-                { "Hypno", "Button-Hypno" },
+                { "Local\nAlpha", "Button-LocalAlpha" },
                 { "Alpha\nTransparent", "Button-ALPHA" },
                 { "Drawing", "Button-Drawing" },
                 { "Glitch", "Button-Glitch" },
@@ -346,11 +355,23 @@ namespace DesktopCamera {
         // and also pull request to improve it thx
         public override void OnUpdate() {
             // Testing
-            //if (Input.GetKeyDown(KeyCode.F1)) {
-            //    var quickMenu = VRCUtils.GetQuickMenu();
-            //    var cameraMenu = quickMenu.transform.Find("CameraMenu");
-            //    VRCUtils.ShowQuickMenuPage(quickMenu, cameraMenu);
-            //}
+            /* if (Input.GetKeyDown(KeyCode.F1)) {
+                var quickMenu = VRCUtils.GetQuickMenu();
+                var cameraMenu = quickMenu.transform.Find("CameraMenu");
+                VRCUtils.ShowQuickMenuPage(quickMenu, cameraMenu);
+
+                var smoothCameraButton = cameraMenu.Find("SmoothFPVCamera");
+                smoothCameraButton.gameObject.SetActive(true);
+
+                var photoModeButton = cameraMenu.Find("PhotoMode");
+                photoModeButton.gameObject.SetActive(true);
+
+                var videoModeButton = cameraMenu.Find("VideoMode");
+                videoModeButton.gameObject.SetActive(true);
+
+                var disableCameraButton = cameraMenu.Find("DisableCamera");
+                disableCameraButton.gameObject.SetActive(true);
+            } */
             if (Settings.cameraEnabled && Settings.arrowKeysEnabled) {
                 var cameraRotation = CameraUtils.worldCameraQuaternion.ToEuler();
                 var actualCameraSpeed = (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))

@@ -1,7 +1,9 @@
-# DesktopCamera 
-[![GitHub All Releases](https://img.shields.io/github/downloads/nitrog0d/DesktopCamera/total?style=for-the-badge)](https://github.com/nitrog0d/DesktopCamera/releases)  
+# DesktopCamera
+[![GitHub All Releases](https://img.shields.io/github/downloads/nitrog0d/DesktopCamera/total?style=for-the-badge)](https://github.com/nitrog0d/DesktopCamera/releases) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nitrog0d/DesktopCamera?style=for-the-badge)](https://github.com/nitrog0d/DesktopCamera/releases/latest)  
 
-A mod that allows Desktop users use the VRChat Camera feature, yay!
+![Preview](https://raw.githubusercontent.com/nitrog0d/DesktopCamera/master/Assets/preview.png)  
+
+A mod that allows Desktop users to use the VRChat Camera feature and makes it easier to use for VR users, yay!
 
 > **Disclaimer:**
 > This mod uses [VRCModLoader](https://github.com/Slaynash/VRCModLoader) to work properly, so you will need to install that first.
