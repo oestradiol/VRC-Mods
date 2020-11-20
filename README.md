@@ -1,5 +1,7 @@
 # DesktopCamera
-[![GitHub All Releases](https://img.shields.io/github/downloads/nitrog0d/DesktopCamera/total?style=for-the-badge)](https://github.com/nitrog0d/DesktopCamera/releases) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nitrog0d/DesktopCamera?style=for-the-badge)](https://github.com/nitrog0d/DesktopCamera/releases/latest)  
+[![GitHub All Releases](https://img.shields.io/github/downloads/nitrog0d/DesktopCamera/total?style=for-the-badge)](https://github.com/nitrog0d/DesktopCamera/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/nitrog0d/DesktopCamera?style=for-the-badge)](https://github.com/nitrog0d/DesktopCamera/releases/latest)
+[![Support me on Patreon](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F1177520&query=data.attributes.patron_count&suffix=%20Patrons&color=FF5441&label=Patreon&logo=Patreon&logoColor=FF5441&style=for-the-badge)](https://patreon.com/nitrog0d)  
 
 ![Preview](https://raw.githubusercontent.com/nitrog0d/DesktopCamera/master/Assets/preview.png)  
 
