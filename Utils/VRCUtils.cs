@@ -48,15 +48,11 @@ namespace DesktopCamera.Utils {
         }
 
         public static Camera GetMainCamera() {
-            return VRCVrCamera.field_Private_Static_VRCVrCamera_0.screenCamera;
+            return VRCVrCamera.field_Private_Static_VRCVrCamera_0.field_Public_Camera_0;
         }
 
         public static UserCameraController GetUserCameraController() {
             return UserCameraController.field_Internal_Static_UserCameraController_0;
-        }
-
-        public static Player GetPlayer() {
-            return PlayerManager.Method_Public_Static_Player_String_0(APIUser.CurrentUser.id);
         }
 
         public static VRCUiManager GetVRCUiManager() {
