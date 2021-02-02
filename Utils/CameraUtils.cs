@@ -4,19 +4,39 @@ using VRC.UserCamera;
 namespace DesktopCamera.Utils {
     public class CameraUtils {
 
+        private static GameObject viewFinder = null;
+        private static GameObject photoCamera = null;
+        private static GameObject pinsHolder = null;
+
+        public static GameObject GetViewFinder() {
+            if (!viewFinder) viewFinder = VRCUtils.GetUserCameraController().transform.Find("ViewFinder").gameObject;
+            return viewFinder;
+        }
+
+        public static GameObject GetPhotoCamera() {
+            if (!photoCamera) photoCamera = VRCUtils.GetUserCameraController().transform.Find("PhotoCamera").gameObject;
+            return photoCamera;
+        }
+
+        public static GameObject GetPinsHolder() {
+            if (!pinsHolder) pinsHolder = GetViewFinder().transform.Find("UI_Pin-TRAY").gameObject;
+            return pinsHolder;
+        }
+
         public static void SetCameraMode(CameraMode mode) {
-            VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaOfPhVi4vUnique_0 = (EnumPublicSealedvaOfPhVi4vUnique)mode;
+            VRCUtils.GetUserCameraController().prop_UserCameraMode_0 = (UserCameraMode)mode;
         }
 
         public static void ResetCamera() {
             SetCameraMode(CameraMode.Off);
             SetCameraMode(CameraMode.Photo);
-            var camInstance = VRCUtils.GetUserCameraController();
-            worldCameraVector = camInstance.viewFinder.transform.position;
-            worldCameraQuaternion = camInstance.viewFinder.transform.rotation;
+            var viewFinder = GetViewFinder();
+            var photoCamera = GetPhotoCamera();
+            worldCameraVector = viewFinder.transform.position;
+            worldCameraQuaternion = viewFinder.transform.rotation;
             worldCameraQuaternion *= Quaternion.Euler(90f, 0f, 180f);
-            camInstance.photoCamera.transform.position = camInstance.viewFinder.transform.position;
-            camInstance.photoCamera.transform.rotation = camInstance.viewFinder.transform.rotation;
+            photoCamera.transform.position = viewFinder.transform.position;
+            photoCamera.transform.rotation = viewFinder.transform.rotation;
         }
 
         public static void TakePicture(int timer) {
@@ -24,12 +44,14 @@ namespace DesktopCamera.Utils {
             camInstance.StartCoroutine(camInstance.Method_Private_IEnumerator_Int32_PDM_0(timer));
         }
 
+        // This used to be an obfuscated enum but I'll leave it like this anyway
         public static CameraBehaviour GetCameraBehaviour() {
-            return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaNoSmLo4vUnique_0;
+            return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_UserCameraMovementBehaviour_0;
         }
 
+        // This used to be an obfuscated enum but I'll leave it like this anyway
         public static CameraSpace GetCameraSpace() {
-            return (CameraSpace)VRCUtils.GetUserCameraController().prop_EnumPublicSealedvaAtLoWoCO5vUnique_0;
+            return (CameraSpace)VRCUtils.GetUserCameraController().prop_UserCameraSpace_0;
         }
 
         public static Pin GetCurrentPin() {
@@ -37,31 +59,31 @@ namespace DesktopCamera.Utils {
         }
 
         public static void CycleCameraBehaviour() {
-            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Left_CameraMode").GetComponent<CameraInteractable>().Interact();
+            GetViewFinder().transform.Find("PhotoControls/Left_CameraMode").GetComponent<CameraInteractable>().Interact();
         }
 
         public static void CycleCameraSpace() {
-            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Left_Space").GetComponent<CameraInteractable>().Interact();
+            GetViewFinder().transform.Find("PhotoControls/Left_Space").GetComponent<CameraInteractable>().Interact();
         }
 
         public static void SetPin(int pin) {
-            VRCUtils.GetUserCameraController().pinsHolder.transform.Find("button-Pin-" + pin).GetComponent<CameraInteractable>().Interact();
+            GetPinsHolder().transform.Find("button-Pin-" + pin).GetComponent<CameraInteractable>().Interact();
         }
 
         public static void SetFilter(string filter) {
-            VRCUtils.GetUserCameraController().filtersHolder.transform.Find(filter).GetComponentInChildren<CameraInteractable>().Interact();
+            GetViewFinder().transform.Find("Filters/" + filter).GetComponent<CameraInteractable>().Interact();
         }
 
         public static void TogglePinMenu() {
-            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Left_Pins").GetComponent<CameraInteractable>().Interact();
+            GetViewFinder().transform.Find("PhotoControls/Left_Pins").GetComponent<CameraInteractable>().Interact();
         }
 
         public static void ToggleLock() {
-            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Right_Lock").GetComponent<CameraInteractable>().Interact();
+            GetViewFinder().transform.Find("PhotoControls/Right_Lock").GetComponent<CameraInteractable>().Interact();
         }
 
         public static void ToggleFilterMenu() {
-            VRCUtils.GetUserCameraController().viewFinder.transform.Find("PhotoControls/Right_Filters").GetComponent<CameraInteractable>().Interact();
+            GetViewFinder().transform.Find("PhotoControls/Right_Filters").GetComponent<CameraInteractable>().Interact();
         }
 
 

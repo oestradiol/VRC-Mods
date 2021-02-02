@@ -12,11 +12,11 @@ A mod that allows Desktop users to use the VRChat Camera feature and makes it ea
 * **USE IT AT YOUR OWN RISK**, I am not responsible for any bans or any punishments you may get by using this mod!
 
 ## Installation
-* **Make sure you have run the [MelonLoader Installer](https://github.com/HerpDerpinstine/MelonLoader/releases/latest/download/MelonLoader.Installer.exe) by [HerpDerpinstine](https://github.com/HerpDerpinstine) first (feel free to join the [VRChat Modding Group Discord](https://discord.gg/jgvc9Fd) for help!).**
+* **Make sure you have run the [MelonLoader Installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) by [LavaGang](https://github.com/LavaGang) first (feel free to join the [VRChat Modding Group Discord](https://discord.gg/jgvc9Fd) for help!).**
 * Download the [latest version](https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll) of the mod.
 * Drag/copy the DLL file that you have downloaded into the Mods folder.
 * That's it! Now just run the game and the mod should be installed!
-* Optional: You can install the mod `UIExpansionKit` to edit Camera Movement speed in-game. Manually changing without `UIExpansionKit` is possible through `UserData/modprefs.ini`.
+* Optional: You can install the mod [UIExpansionKit](https://github.com/knah/VRCMods) by [knah](https://github.com/knah) to edit Camera Movement speed in-game. Manually changing without [UIExpansionKit](https://github.com/knah/VRCMods) is possible through the file `UserData/MelonPreferences.cfg`.
 
 ## How to use
 * Click the Camera button in the ESC menu, you will have new options.  
@@ -43,6 +43,7 @@ A mod that allows Desktop users to use the VRChat Camera feature and makes it ea
 *Thanks to everyone in the VRChat Modding community!*  
 
 *Special thanks to:*  
+*All the contributors.*  
 *[Emilia](https://github.com/thetrueyoshifan) for letting me use the README from [VRCDiscordRichPresence-ML](https://github.com/thetrueyoshifan/VRCDiscordRichPresence-ML) and helping me with opening new pages in the QuickMenu.*  
 *[DubyaDude](https://github.com/DubyaDude) and [Emilia](https://github.com/thetrueyoshifan) for [RubyButtonAPI](https://github.com/DubyaDude/RubyButtonAPI).*  
 *[Janni9009](https://github.com/Janni9009) for helping me resize the QuickMenu Collider.*

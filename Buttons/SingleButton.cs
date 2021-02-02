@@ -31,8 +31,7 @@ namespace DesktopCamera.Buttons {
         }
 
         public void setTooltip(string tooltip) {
-            button.GetComponent<UiTooltip>().text = tooltip;
-            button.GetComponent<UiTooltip>().alternateText = tooltip;
+            button.GetComponent<UiTooltip>().field_Public_String_0 = tooltip;
         }
 
         public void setInteractable(bool interactable) {
