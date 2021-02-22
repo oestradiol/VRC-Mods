@@ -37,3 +37,4 @@ using BetterSteadycam;
 [assembly: AssemblyFileVersion(ModBuildInfo.Version)]
 [assembly: MelonInfo(typeof(BetterSteadycamMod), ModBuildInfo.Name, ModBuildInfo.Version, ModBuildInfo.Author, ModBuildInfo.DownloadLink)]
 [assembly: MelonGame(ModBuildInfo.GameDeveloper, ModBuildInfo.Game)]
+[assembly: MelonOptionalDependencies("UIExpansionKit")]

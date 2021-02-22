@@ -16,6 +16,7 @@ A mod that lets you tweak the VRChat Steadycam (or smooth camera) feature, it al
 * Download the [latest version](https://github.com/nitrog0d/BetterSteadycam/releases/latest/download/BetterSteadycam.dll) of the mod.
 * Drag/copy the DLL files that you have downloaded into the Mods folder.
 * That's it! Now just run the game and the mod should be installed!
+* Optional: You can install the mod [UIExpansionKit](https://github.com/knah/VRCMods) by [knah](https://github.com/knah) to edit the Settings in-game. Manually changing without [UIExpansionKit](https://github.com/knah/VRCMods) is possible through the file `UserData/MelonPreferences.cfg`.
 
 ## How to use
 * Open the Quick menu and click the "Camera" button.
