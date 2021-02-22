@@ -33,7 +33,7 @@ using BetterSteadycam;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion(ModBuildInfo.Version)]
+[assembly: AssemblyFileVersion(ModBuildInfo.Version)]
 [assembly: MelonInfo(typeof(BetterSteadycamMod), ModBuildInfo.Name, ModBuildInfo.Version, ModBuildInfo.Author, ModBuildInfo.DownloadLink)]
 [assembly: MelonGame(ModBuildInfo.GameDeveloper, ModBuildInfo.Game)]
