@@ -1,7 +1,7 @@
 # TrackingRotator
 [![GitHub All Releases](https://img.shields.io/github/downloads/nitrog0d/TrackingRotator/total?style=for-the-badge)](https://github.com/nitrog0d/TrackingRotator/releases)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nitrog0d/TrackingRotator?style=for-the-badge)](https://github.com/nitrog0d/TrackingRotator/releases/latest)
-[![Support me on Patreon](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F1177520&query=data.attributes.patron_count&suffix=%20Patrons&color=FF5441&label=Patreon&logo=Patreon&logoColor=FF5441&style=for-the-badge)](https://patreon.com/nitrog0d)  
+[![Support me on Patreon](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F1177520&query=data.attributes.patron_count&suffix=%20Patrons&color=FF5441&label=Patreon&logo=Patreon&logoColor=FF5441&style=for-the-badge)](https://patreon.com/nitrog0d)
 
 Video preview soon.
 
@@ -20,4 +20,4 @@ A mod that lets you rotate your tracking, it was made with "play while laying do
 
 ## How to use
 * Open the Quick menu and click the "Tracking rotation" button.
-* You can change rotation value, high precision value and "Reset rotation when a new world loads" in Mod settings (Quick menu -> Settings -> Mod settings).
+* You can change the rotation value, high precision value and "Reset rotation when a new world loads" in Mod settings (Quick menu -> Settings -> Mod settings).

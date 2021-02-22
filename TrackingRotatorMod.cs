@@ -38,11 +38,7 @@ namespace TrackingRotator {
         }
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName) {
-            if (resetRotationOnSceneChange) {
-                if (cameraTransform) {
-                    cameraTransform.localRotation = originalRotation;
-                }
-            }
+            if (resetRotationOnSceneChange && cameraTransform) cameraTransform.localRotation = originalRotation;
         }
 
         public override void OnPreferencesSaved() {
