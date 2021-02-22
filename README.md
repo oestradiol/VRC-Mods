@@ -19,5 +19,5 @@ A mod that lets you tweak the VRChat Steadycam (or smooth camera) feature, it al
 
 ## How to use
 * Open the Quick menu and click the "Camera" button.
-* Settings you can change at Mod settings **(Quick menu -> Settings -> Mod settings)**: Field of view (FOV), Smoothing, Smoothing value, Render UI, Enable button on desktop
+* Settings you can change at Mod settings **(Quick menu -> Settings -> Mod settings)**: Field of view (FOV), Smoothing, Smoothing value, Render UI, Enable button on desktop.
 * Pressing **F10** toggles the UI rendering (Mic icon).
