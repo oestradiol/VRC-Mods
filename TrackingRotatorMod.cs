@@ -1,13 +1,16 @@
 ﻿using MelonLoader;
 using UIExpansionKit.API;
 using UnityEngine;
+using System.Linq;
+using UnhollowerRuntimeLib;
+using Il2CppSystem.Reflection;
 
 namespace TrackingRotator {
 
     public static class ModBuildInfo {
         public const string Name = "TrackingRotator";
         public const string Author = "nitro.";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
         public const string DownloadLink = "https://github.com/nitrog0d/TrackingRotator/releases/latest/download/TrackingRotator.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
@@ -48,7 +51,9 @@ namespace TrackingRotator {
         }
 
         public override void VRChat_OnUiManagerInit() {
-            cameraTransform = Object.FindObjectOfType<VRCVrCameraSteam>().field_Public_Transform_0;
+            var camera = Object.FindObjectOfType<VRCVrCamera>();
+            var transform = camera.GetIl2CppType().GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => f.FieldType == Il2CppType.Of<Transform>()).ToArray()[0];
+            cameraTransform = transform.GetValue(camera).Cast<Transform>();
             originalRotation = cameraTransform.localRotation;
         }
 
