@@ -1,8 +1,13 @@
-This repository contains a VRChat Mod that allows you to Toggle Full-Screen mode in-game with the correct resolution. 
+This repository contains my VRChat mods and fixes. 
 Join the [VRChat Modding Group discord](https://discord.gg/rCqKSvR) for official mods and support!
 
 ## Special Thanks
-To nitro. that gave the idea x)
+Ty nitro. for the idea on the ToggleFullScreen;
+Ty gompo for helping me with literally everything lol.
+
+## ProneUiFix
+Current features:
+- Simple fix to the Desktop Ui glitch that happens on some avatars that opening the menu while you're proning will cause it be mispositioned.
 
 ## ToggleFullScreen
 Current features:
@@ -13,4 +18,4 @@ Before installing:
 **Modding itself is against VRChat's ToS, so, according to the staff, it can lead to punishment, this mod included. Be careful while using this! I'm not responsible for any punishments.**
 
 You will need [MelonLoader](https://discord.gg/2Wn3N2P) (discord link, see \#how-to-install).
-After that, drop the mod .dll file in the `Mods` folder in your game's directory.
+After that, drop the mods .dll files in the `Mods` folder in your game's directory.
