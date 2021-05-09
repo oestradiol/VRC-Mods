@@ -4,6 +4,12 @@ using System.Collections;
 using UnhollowerRuntimeLib;
 using UnityEngine;
 using UnityEngine.XR;
+using System.Reflection;
+
+[assembly: AssemblyCopyright("Created by " + ProneUiFix.BuildInfo.Author)]
+[assembly: MelonInfo(typeof(ProneUiFix.Main), ProneUiFix.BuildInfo.Name, ProneUiFix.BuildInfo.Version, ProneUiFix.BuildInfo.Author)]
+[assembly: MelonGame("VRChat", "VRChat")]
+[assembly: MelonColor(System.ConsoleColor.DarkMagenta)]
 
 namespace ProneUiFix
 {
