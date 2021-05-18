@@ -27,7 +27,7 @@ namespace BetterPortalPlacement.Utils
         private void OnEnable()
         {
             if (XRDevice.isPresent) VRUtils.active = true;
-            Utilities.CloseMenuMethod.Invoke(VRCUiManager.prop_VRCUiManager_0, new object[] { true, false });
+            Utilities.CloseMenu(true, false);
             previewObj.SetActive(true);
         }
 

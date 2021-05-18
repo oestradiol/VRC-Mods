@@ -31,7 +31,6 @@ namespace BetterPortalPlacement
         public static HarmonyInstance HarmonyInstance => Instance.Harmony;
         public static MelonPreferences_Entry<bool> IsModOn;
         public static MelonPreferences_Entry<bool> IsOnlyOnError;
-        public static EnableDisableListener listener;
 
         public override void OnApplicationStart()
         {
@@ -93,14 +92,14 @@ namespace BetterPortalPlacement
 
         public static void RecreatePortal()
         {
-            Utilities.PortalMethod.Invoke(null, new object[]
-                {
-                    portalInfo.ApiWorld,
-                    portalInfo.ApiWorldInstance,
-                    portalPtr.position + Vector3.up/2,
-                    XRDevice.isPresent ? VRUtils.GetControllerTransform().forward : Utilities.GetPtrObj().transform.forward,
-                    portalInfo.WithUIErrors
-                });
+            var forward = VRCPlayer.field_Internal_Static_VRCPlayer_0.transform.forward;
+            Utilities.CreatePortal(
+                portalInfo.ApiWorld,
+                portalInfo.ApiWorldInstance,
+                portalPtr.position + (XRDevice.isPresent ? Vector3.up/2 : - forward*2),
+                XRDevice.isPresent ? VRUtils.GetControllerTransform().forward : forward,
+                portalInfo.WithUIErrors
+            );
             DisablePointer();
         }
     }
