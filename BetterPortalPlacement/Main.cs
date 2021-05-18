@@ -84,7 +84,7 @@ namespace BetterPortalPlacement
             if (IsModOn.Value && __0.Contains("Cannot Create Portal"))
             {
                 VRCUiPopupManager.prop_VRCUiPopupManager_0.Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_1(
-                    "Failed to create portal", "Error:" + __1 + "\nPress continue to place portal.", "Continue", new Action(delegate { EnablePointer(); }));
+                    "Failed to create portal", "Error: " + __1 + "\nPress continue to place portal.", "Continue", new Action(delegate { EnablePointer(); }));
                 return false;
             }
             return true;
