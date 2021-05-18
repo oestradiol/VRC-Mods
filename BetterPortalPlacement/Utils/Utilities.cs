@@ -28,20 +28,60 @@ namespace BetterPortalPlacement.Utils
         public bool WithUIErrors { get; }
     }
 
-    //Almost this entire class came from Gompog :)
+    //Almost this entire class came from Gompog :) //I'm going to bonk you one day - Gompo
     internal static class Utilities 
     {
         public static bool IsQMRightHanded => QuickMenu.prop_QuickMenu_0.prop_Boolean_1;
-        public static MethodInfo PortalMethod { get; private set; }
-        public static MethodInfo CloseMenuMethod { get; private set; }
+        
+        private static CloseMenuDelegate GetCloseMenuDelegate
+        {
+            get
+            {
+                
+                if (closeMenuDelegate != null) return closeMenuDelegate;
+                MethodInfo closeMenuMethod = typeof(VRCUiManager).GetMethods()
+                    .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_") && !method.Name.Contains("_PDM_"))
+                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
+                closeMenuDelegate = (CloseMenuDelegate)Delegate.CreateDelegate(
+                    typeof(CloseMenuDelegate),
+                    VRCUiManager.prop_VRCUiManager_0,
+                    closeMenuMethod);
+                return closeMenuDelegate;
+            }
+        }
+        public static void CloseMenu(bool __0, bool __1) => GetCloseMenuDelegate(__0, __1);
+        private static CloseMenuDelegate closeMenuDelegate;
+        private delegate void CloseMenuDelegate(bool __0, bool __1);
+        
+        
+        private static CreatePortalDelegate GetCreatePortalDelegate
+        {
+            get
+            {
+                if (ceatePortalDelegate != null) return ceatePortalDelegate;
+                ceatePortalDelegate = (CreatePortalDelegate)Delegate.CreateDelegate(
+                    typeof(CreatePortalDelegate),
+                    null,
+                    CreatePortalMethod);
+                return ceatePortalDelegate;
+            }
+        }
+        public static bool CreatePortal(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool) => GetCreatePortalDelegate(apiWorld, apiWorldInstance, pos, foward, someBool);
+        private static CreatePortalDelegate ceatePortalDelegate;
+        private delegate bool CreatePortalDelegate(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool);
 
+
+        private static MethodInfo CreatePortalMethod
+        {
+            get
+            {
+                return typeof(PortalInternal).GetMethod(nameof(PortalInternal.Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_0));
+            }
+        }
+        
         public static void ApplyPatches()
         {
-            CloseMenuMethod = typeof(VRCUiManager).GetMethods()
-                .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_") && !method.Name.Contains("_PDM_"))
-                .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
-            PortalMethod = typeof(PortalInternal).GetMethod(nameof(PortalInternal.Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_0));
-            Main.HarmonyInstance.Patch(PortalMethod, new HarmonyMethod(typeof(Main).GetMethod(nameof(Main.OnPortalCreated))));
+            Main.HarmonyInstance.Patch(CreatePortalMethod, new HarmonyMethod(typeof(Main).GetMethod(nameof(Main.OnPortalCreated))));
             Main.HarmonyInstance.Patch(typeof(VRCUiPopupManager).GetMethod(nameof(VRCUiPopupManager.Method_Public_Void_String_String_Single_0)), 
                 new HarmonyMethod(typeof(Main).GetMethod(nameof(Main.ShowAlert))));
         }
