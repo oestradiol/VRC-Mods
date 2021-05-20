@@ -22,6 +22,7 @@ namespace BetterPortalPlacement.Utils
             previewObj.GetComponent<Collider>().enabled = false;
             previewObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             previewObj.transform.position = position;
+            previewObj.layer = LayerMask.NameToLayer("UiMenu");
         }
 
         private void OnEnable()
