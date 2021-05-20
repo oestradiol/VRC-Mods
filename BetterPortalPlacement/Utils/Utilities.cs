@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Harmony;
 using MelonLoader;
-using UnhollowerRuntimeLib.XrefScans;
 using UnityEngine;
 using UnityEngine.XR;
 using VRC.Core;
@@ -76,7 +74,7 @@ namespace BetterPortalPlacement.Utils
             get
             {
                 return typeof(PortalInternal).GetMethods()
-                    .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_") && !method.Name.Contains("_PDM_"))
+                    .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
                     .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
             }
         }
@@ -85,7 +83,8 @@ namespace BetterPortalPlacement.Utils
         {
             Main.HarmonyInstance.Patch(CreatePortalMethod, new HarmonyMethod(typeof(Main).GetMethod(nameof(Main.OnPortalCreated))));
             Main.HarmonyInstance.Patch(typeof(VRCUiPopupManager).GetMethods()
-                    .Where(method => method.Name.StartsWith("Method_Public_Void_String_String_Single_") && !method.Name.Contains("_PDM_")).Last(),
+                    .Where(method => method.Name.StartsWith("Method_Public_Void_String_String_Single_"))
+                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last(),
                 new HarmonyMethod(typeof(Main).GetMethod(nameof(Main.ShowAlert))));
         }
 
@@ -95,7 +94,7 @@ namespace BetterPortalPlacement.Utils
             if (!XRDevice.isPresent)
             {
                     return TrackingManager.GetComponentInChildren<NeckMouseRotator>()
-                        .transform.Find("Camera (head)/Camera (eye)").gameObject;
+                        .transform.Find(Environment.CurrentDirectory.Contains("vrchat-vrchat") ? "CenterEyeAnchor" : "Camera (head)/Camera (eye)").gameObject;
             }
             return TrackingManager.gameObject;
         }

@@ -7,6 +7,8 @@ using UnityEngine;
 using VRC.Core;
 using BetterPortalPlacement.Utils;
 using UnityEngine.XR;
+using VRC;
+using System.Linq;
 
 [assembly: AssemblyCopyright("Created by " + BetterPortalPlacement.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(BetterPortalPlacement.Main), BetterPortalPlacement.BuildInfo.Name, BetterPortalPlacement.BuildInfo.Version, BetterPortalPlacement.BuildInfo.Author)]
@@ -28,9 +30,9 @@ namespace BetterPortalPlacement
         private static PortalPtr portalPtr;
         private static PortalInfo portalInfo;
         private static MelonMod Instance;
+        private static MelonPreferences_Entry<bool> IsModOn;
+        private static MelonPreferences_Entry<bool> IsOnlyOnError;
         public static HarmonyInstance HarmonyInstance => Instance.Harmony;
-        public static MelonPreferences_Entry<bool> IsModOn;
-        public static MelonPreferences_Entry<bool> IsOnlyOnError;
 
         public override void OnApplicationStart()
         {
@@ -72,7 +74,7 @@ namespace BetterPortalPlacement
                 if (!IsOnlyOnError.Value)
                 {
                     VRCUiPopupManager.prop_VRCUiPopupManager_0.Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_1(
-                        "Portal Placement", "\nManual placement activated. Press ok to place portal.", "Ok", new Action(delegate { EnablePointer(); }));
+                        "Portal Placement", "Manual placement activated.\nPress ok to place portal.", "Ok", new Action(delegate { EnablePointer(); }));
                     return false;
                 }
             }
@@ -84,19 +86,29 @@ namespace BetterPortalPlacement
             if (IsModOn.Value && __0.Contains("Cannot Create Portal"))
             {
                 VRCUiPopupManager.prop_VRCUiPopupManager_0.Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_1(
-                    "Failed to create portal", "Error: " + __1 + "\nPress continue to place portal.", "Continue", new Action(delegate { EnablePointer(); }));
+                    "Failed to create portal", "Error: " + __1 + "\nPress continue to try again.", "Continue", new Action(delegate { EnablePointer(); }));
                 return false;
             }
             return true;
         }
 
+        public static bool CanPlace() => 
+            !((from p in PlayerManager.field_Private_Static_PlayerManager_0.field_Private_List_1_Player_0.ToArray()
+                where p != Player.prop_Player_0 && Vector3.Distance(p.transform.position, portalPtr.position) <= 1.75f
+                select p).Count() != 0 ||
+              (from s in SpawnManager.field_Private_Static_SpawnManager_0.field_Private_List_1_Spawn_0.ToArray()
+                where (portalPtr.position - s.transform.position).sqrMagnitude < 9
+                select s).Count() != 0);
+
         public static void RecreatePortal()
         {
+            if (!CanPlace()) //PlaySound();
+                return;
             var forward = VRCPlayer.field_Internal_Static_VRCPlayer_0.transform.forward;
-            var isSuccess = Utilities.CreatePortal(
+            Utilities.CreatePortal(
                 portalInfo.ApiWorld,
                 portalInfo.ApiWorldInstance,
-                portalPtr.position + (XRDevice.isPresent ? Vector3.up/2 : - forward*2),
+                portalPtr.position + Vector3.up / 2 - forward * 2,
                 XRDevice.isPresent ? VRUtils.GetControllerTransform().forward : forward,
                 portalInfo.WithUIErrors
             );
