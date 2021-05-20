@@ -107,7 +107,7 @@ namespace BetterPortalPlacement.Utils
         private const string LeftTrigger = "Oculus_CrossPlatform_PrimaryIndexTrigger";
         private static GameObject ControllerLeft, ControllerRight;
         private static bool a, b;
-        private static Controller controller;
+        public static Controller controller;
         private static bool? TriggerIsDown
         {
             get
@@ -145,44 +145,19 @@ namespace BetterPortalPlacement.Utils
             {
                 a = false;
                 if (controller == Controller.Right) Main.RecreatePortal();
-                else
-                {
-                    controller = Controller.Right;
-                    SetCursonOnOff(true);
-                }
+                else controller = Controller.Right;
             }
             else if (b && TriggerIsDown == false)
             {
                 b = false;
                 if (controller == Controller.Left) Main.RecreatePortal();
-                else
-                {
-                    controller = Controller.Left;
-                    SetCursonOnOff(true);
-                }
+                else controller = Controller.Left;
             }
             else if (!a || !b && TriggerIsDown == null)
             {
                 a = true;
                 b = true;
             }
-        }
-
-        public static void SetCursonOnOff(bool On)
-        {
-            var Manager = VRCUiCursorManager.field_Private_Static_VRCUiCursorManager_0;
-            if (controller == Controller.Right)
-            {
-                Manager.field_Private_Boolean_2 = true;
-                Manager.field_Private_Boolean_3 = false;
-            }
-            else
-            {
-                Manager.field_Private_Boolean_2 = false;
-                Manager.field_Private_Boolean_3 = true;
-            }
-            if (On) Manager.field_Private_Boolean_0 = true;
-            else Manager.field_Private_Boolean_0 = false;
         }
 
         public static void OnQMDisable()
