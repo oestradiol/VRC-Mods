@@ -102,13 +102,16 @@ namespace BetterPortalPlacement
 
         public static void RecreatePortal()
         {
-            if (!CanPlace()) //PlaySound();
+            if (!CanPlace())
+            {
+                portalPtr.audio.Play();
                 return;
+            }
             var forward = VRCPlayer.field_Internal_Static_VRCPlayer_0.transform.forward;
             Utilities.CreatePortal(
                 portalInfo.ApiWorld,
                 portalInfo.ApiWorldInstance,
-                portalPtr.position + Vector3.up / 2 - forward * 2,
+                portalPtr.position + (XRDevice.isPresent ? Vector3.one / 2 : - forward * 2),
                 XRDevice.isPresent ? VRUtils.GetControllerTransform().forward : forward,
                 portalInfo.WithUIErrors
             );

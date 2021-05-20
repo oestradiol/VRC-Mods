@@ -44,6 +44,10 @@
 				<HintPath>$(MelonManaged)\UnityEngine.VRModule.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
+			<Reference Include="UnityEngine.AudioModule">
+				<HintPath>$(MelonManaged)\UnityEngine.AudioModule.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
 			<Reference Include="UnityEngine.UI">
 				<HintPath>$(MelonManaged)\UnityEngine.UI.dll</HintPath>
 				<Private>False</Private>

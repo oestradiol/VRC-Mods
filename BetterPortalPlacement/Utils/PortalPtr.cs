@@ -11,6 +11,7 @@ namespace BetterPortalPlacement.Utils
         public PortalPtr(IntPtr obj0) : base(obj0) { }
         public static readonly float defaultLength = 3.0f;
         public Vector3 position = Vector3.zero;
+        public AudioSource audio;
         private LineRenderer lineRenderer;
         private LineRenderer RightHandLR;
         private GameObject previewObj;
@@ -18,6 +19,13 @@ namespace BetterPortalPlacement.Utils
         private void Awake()
         {
             previewObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            DontDestroyOnLoad(previewObj);
+            previewObj.GetComponent<Collider>().enabled = false;
+            //previewObj.GetComponent<Renderer>().material = RightHandLR.GetMaterial();
+            previewObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            previewObj.transform.position = position;
+            previewObj.name = "PortalPreview";
+
             if (XRDevice.isPresent)
             {
                 RightHandLR = Resources.FindObjectsOfTypeAll<LineRenderer>()
@@ -26,13 +34,9 @@ namespace BetterPortalPlacement.Utils
                 lineRenderer.material = RightHandLR.GetMaterial();
                 lineRenderer.enabled = false;
             }
-            DontDestroyOnLoad(previewObj);
-            previewObj.GetComponent<Collider>().enabled = false;
-            //previewObj.GetComponent<Renderer>().material = RightHandLR.GetMaterial();
-            previewObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            previewObj.transform.position = position;
-            previewObj.name = "PortalPreview";
+
             SetupColors();
+            SetupAudioSource();
         }
 
         private void OnEnable()
@@ -69,6 +73,25 @@ namespace BetterPortalPlacement.Utils
                 lineRenderer.enabled = false;
             }
             previewObj.SetActive(false);
+        }
+
+        [HideFromIl2Cpp]
+        private void SetupAudioSource()
+        {
+            var audioManager = VRCAudioManager.field_Private_Static_VRCAudioManager_0;
+            var audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.clip = VRCUiPopupManager.field_Private_Static_VRCUiPopupManager_0.field_Public_VRCUiPopupAlert_0.field_Public_AudioClip_0;
+            audioSource.volume = 0.3f;
+            audioSource.playOnAwake = false;
+            audioSource.spatialize = false;
+            audioSource.loop = false;
+            audioSource.outputAudioMixerGroup = new[]
+            {
+                audioManager.field_Public_AudioMixerGroup_0,
+                audioManager.field_Public_AudioMixerGroup_1,
+                audioManager.field_Public_AudioMixerGroup_2
+            }.Single(g => g.name == "UI");
+            audio = audioSource;
         }
 
         [HideFromIl2Cpp]
