@@ -71,7 +71,7 @@ namespace BetterPortalPlacement
                 where p != null && p.field_Private_APIUser_0.id != Player.prop_Player_0.field_Private_APIUser_0.id 
                 && Vector3.Distance(p.transform.position, portalPtr.position) <= 1.75f
                 select p).Count() != 0 ||
-                Vector3.Distance(Player.prop_Player_0.transform.position, portalPtr.position) <= 1.75f || // Change this to 1 once I figure that patching out
+                Vector3.Distance(Player.prop_Player_0.transform.position, portalPtr.position) <= 1.1f || // Change this to 1 once I figure that patching out
               (from s in SpawnManager.field_Private_Static_SpawnManager_0.field_Private_List_1_Spawn_0.ToArray()
                 where (portalPtr.position - s.transform.position).sqrMagnitude < 9
                 select s).Count() != 0);
@@ -84,6 +84,7 @@ namespace BetterPortalPlacement
                 return;
             }
             var forward = VRCPlayer.field_Internal_Static_VRCPlayer_0.transform.forward;
+            PlayerIEnumerableSetup.IsUp = true;
             Utils.Patches.CreatePortal(
                 Utils.Patches.CurrentInfo.ApiWorld,
                 Utils.Patches.CurrentInfo.ApiWorldInstance,
@@ -91,6 +92,7 @@ namespace BetterPortalPlacement
                 XRDevice.isPresent ? VRUtils.GetControllerTransform().forward : forward,
                 Utils.Patches.CurrentInfo.WithUIErrors
             );
+            PlayerIEnumerableSetup.IsUp = false;
             DisablePointer();
         }
     }

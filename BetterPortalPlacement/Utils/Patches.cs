@@ -1,11 +1,11 @@
 ﻿using Harmony;
-using Il2CppSystem.Collections.Generic;
 using MelonLoader;
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using UnhollowerBaseLib;
+using UnhollowerRuntimeLib;
 using UnityEngine;
 using VRC;
 using VRC.Core;
@@ -24,7 +24,7 @@ namespace BetterPortalPlacement.Utils
                     .Where(method => method.Name.StartsWith("Method_Public_Void_String_String_Single_"))
                     .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last(),
                 new HarmonyMethod(typeof(Patches).GetMethod(nameof(ShowAlert))));
-            // PlayerIEnumerableSetup.Patch(); // Still have to make this work
+            PlayerIEnumerableSetup.Patch();
         }
 
         public static void CloseMenu(bool __0, bool __1) => GetCloseMenuDelegate(__0, __1);
@@ -89,79 +89,49 @@ namespace BetterPortalPlacement.Utils
         }
     }
 
-    //// Apparently Knah is a god :o
-    //class PlayerIEnumerableSetup
-    //{
-    //    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    //    private delegate IEnumerable<Player> PlayerIEnumerableSetupDelegate(IntPtr position, IntPtr radius, IntPtr something1, IntPtr something2, IntPtr nativeMethodInfo);
+    //Apparently Knah is a god :o, ty for the help! <3
+    public static class PlayerIEnumerableSetup
+    {
+        public static bool IsUp;
 
-    //    private static PlayerIEnumerableSetupDelegate playerIEnumerableSetupDelegate;
-    //    public static void Patch()
-    //    {
-    //        unsafe
-    //        {
-    //            var setupMethod = typeof(PlayerManager).GetMethods()
-    //                .Where(method => method.Name.StartsWith("Method_Public_Static_IEnumerable_1_Player_Vector3_Single_Nullable_1_Int32_Func_2_Player_Boolean_"))
-    //                .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate IntPtr PlayerIEnumerableSetupDelegate(Vector3 position, float radius, IntPtr something1, IntPtr something2, IntPtr nativeMethodInfo);
 
-    //            var originalMethod = *(IntPtr*)(IntPtr)UnhollowerUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(setupMethod).GetValue(null);
+        private static PlayerIEnumerableSetupDelegate playerIEnumerableSetupDelegate;
+        public static void Patch()
+        {
+            unsafe
+            {
+                var setupMethod = typeof(PlayerManager).GetMethods()
+                    .Where(method => method.Name.StartsWith("Method_Public_Static_IEnumerable_1_Player_Vector3_Single_Nullable_1_Int32_Func_2_Player_Boolean_"))
+                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
 
-    //            MelonUtils.NativeHookAttach((IntPtr)(&originalMethod), typeof(PlayerIEnumerableSetup).GetMethod(nameof(Prefix), 
-    //                BindingFlags.Static | BindingFlags.Public)!.MethodHandle.GetFunctionPointer());
+                var originalMethod = *(IntPtr*)(IntPtr)UnhollowerUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(setupMethod).GetValue(null);
 
-    //            playerIEnumerableSetupDelegate = Marshal.GetDelegateForFunctionPointer<PlayerIEnumerableSetupDelegate>(originalMethod);
-    //        }
-    //    }
+                MelonUtils.NativeHookAttach((IntPtr)(&originalMethod), typeof(PlayerIEnumerableSetup).GetMethod(nameof(IEnumerableSetup),
+                    BindingFlags.Static | BindingFlags.Public)!.MethodHandle.GetFunctionPointer());
 
-    //    public static IEnumerable<Player> Prefix(IntPtr position, IntPtr radius, IntPtr something1, IntPtr something2, IntPtr nativeMethodInfo)
-    //    {
-    //        try
-    //        {
-    //            // While I can't loop over this IEnum, I guess I'm just gonna make my own list
-    //            // IEnumerable<Player> OriginalIEnumerable = playerIEnumerableSetupDelegate(position, radius, something1, something2, nativeMethodInfo);
-    //            return (IEnumerable<Player>)(from p in PlayerManager.field_Private_Static_PlayerManager_0.field_Private_List_1_Player_0.ToArray()
-    //                                             where p != null && p.field_Private_APIUser_0.id != Player.prop_Player_0.field_Private_APIUser_0.id
-    //                                             && Vector3.Distance(p.transform.position, Main.PtrCurrentPos()) <= 1.75f
-    //                                             select p);
-    //        }
-    //        catch (Exception e)
-    //        {
-    //            MelonLogger.Msg(ConsoleColor.Yellow, "Something went wrong in PlayerIEnumerableSetup Patch, please tell Davi:");
-    //            MelonLogger.Error($"{e}");
-    //            return null;
-    //        }
-    //    }
-    //}
+                playerIEnumerableSetupDelegate = Marshal.GetDelegateForFunctionPointer<PlayerIEnumerableSetupDelegate>(originalMethod);
+            }
+        }
 
-    // The reason I'm using Native Patching is the following:
-    // // The one on the bottom works, but is less reliable (not very future-proof against versions, this could be dangerous according to gompo). The one above it, just simply breaks Unhollower *for some reason* ¯\_(ツ)_/¯
-
-    //[HarmonyPatch(typeof(PlayerManager), "Method_Public_Static_IEnumerable_1_Player_Vector3_Single_Nullable_1_Int32_Func_2_Player_Boolean_0")]
-    //class Patch0
-    //{
-    //    private static List<Player> Players() => PlayerManager.field_Private_Static_PlayerManager_0.field_Private_List_1_Player_0;
-
-    //    static bool Prefix(ref IEnumerable<Player> __result)
-    //    {
-    //        __result = (IEnumerable<Player>)(from p in Players().ToArray() // Invalid cast. I STILL HAVE TO FIGURE THAT OUT SOME DAY!!
-    //                                         where p != null && p.field_Private_APIUser_0.id != Player.prop_Player_0.field_Private_APIUser_0.id
-    //                                         && Vector3.Distance(p.transform.position, Main.PtrCurrentPos()) <= 1.75f
-    //                                         select p);
-    //        return false;
-    //    }
-    //}
-
-    //[HarmonyPatch(typeof(PortalInternal), "Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_0")]
-    //class Patch1
-    //{
-    //    private static List<Player> Players() => PlayerManager.field_Private_Static_PlayerManager_0.field_Private_List_1_Player_0;
-
-    //    static void Prefix(out int __state)
-    //    {
-    //        __state = Players().IndexOf(Player.prop_Player_0);
-    //        Players().RemoveAt(__state);
-    //    }
-
-    //    static void Postfix(int __state) => Players().Insert(__state, Player.prop_Player_0);
-    //}
+        public static IntPtr IEnumerableSetup(Vector3 position, float radius, IntPtr something1, IntPtr something2, IntPtr nativeMethodInfo)
+        {
+            if (IsUp)
+            { 
+                try
+                {
+                    var myFunc = DelegateSupport.ConvertDelegate<Il2CppSystem.Func<Player, bool>>
+                        (new Func<Player, bool>((player) => player.field_Private_APIUser_0.id == Player.prop_Player_0.field_Private_APIUser_0.id));
+                    return playerIEnumerableSetupDelegate(position, radius, something1, myFunc.Pointer, nativeMethodInfo);
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Msg(ConsoleColor.Yellow, "Something went wrong in PlayerIEnumerableSetup Patch, please tell Davi:");
+                    MelonLogger.Error($"{e}");
+                }
+            }
+            return playerIEnumerableSetupDelegate(position, radius, something1, something2, nativeMethodInfo);
+        }
+    }
 }
