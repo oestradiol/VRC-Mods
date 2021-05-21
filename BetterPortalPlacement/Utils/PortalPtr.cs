@@ -46,7 +46,7 @@ namespace BetterPortalPlacement.Utils
                 VRUtils.active = true;
                 lineRenderer.enabled = true;
             }
-            Utilities.CloseMenu(true, false);
+            Patches.CloseMenu(true, false);
             previewObj.SetActive(true);
         }
 
