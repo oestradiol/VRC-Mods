@@ -61,7 +61,6 @@ namespace BetterPortalPlacement.Utils
                     .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
                     .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
 
-
         public static bool OnPortalCreated(ApiWorld __0, ApiWorldInstance __1, Vector3 __2, Vector3 __3, bool __4, MethodInfo __originalMethod)
         {
             if (Main.IsModOn.Value && !Main.PtrIsOn())
@@ -90,13 +89,10 @@ namespace BetterPortalPlacement.Utils
     }
 
     //Apparently Knah is a god :o, ty for the help! <3
-    public static class PlayerIEnumerableSetup
+    internal static class PlayerIEnumerableSetup
     {
-        public static bool IsUp;
-
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate IntPtr PlayerIEnumerableSetupDelegate(Vector3 position, float radius, IntPtr something1, IntPtr something2, IntPtr nativeMethodInfo);
-
         private static PlayerIEnumerableSetupDelegate playerIEnumerableSetupDelegate;
         public static void Patch()
         {
@@ -115,6 +111,7 @@ namespace BetterPortalPlacement.Utils
             }
         }
 
+        public static bool IsUp;
         public static IntPtr IEnumerableSetup(Vector3 position, float radius, IntPtr something1, IntPtr something2, IntPtr nativeMethodInfo)
         {
             if (IsUp)
