@@ -2,13 +2,16 @@
 		<PropertyGroup>
 			<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 			<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+			<DebugType>none</DebugType>
+			<DebugSymbols>false</DebugSymbols>
+			<ClearOutputDirectory>False</ClearOutputDirectory>
 			<VRChatFolder>..\..\..\..\..\Jogos\SteamLibrary\steamapps\common\VRChat</VRChatFolder>
 			<MelonManaged>$(VRChatFolder)\MelonLoader\Managed</MelonManaged>
-			<OutputPath>$(VRChatFolder)\Mods</OutputPath>
-		</PropertyGroup>
-		<!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-			<Exec Command="xcopy /c /f /y $(OutputPath)\$(AssemblyName).dll $(OutputPath)\PreviousMods\" />
-		</Target>-->
+			<OutputPath>$(MsBuildThisFileDirectory)\Output</OutputPath>
+		</PropertyGroup>  
+		<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)' == 'true'">
+			<Exec Command="xcopy /c /f /y $(OutputPath)\$(AssemblyName).dll $(VRChatFolder)\Mods" />
+		</Target>
 		<ItemGroup Condition="'$(VrcReferences)' == 'true'">
 			<Reference Include="System" />
 			<Reference Include="Microsoft.CSharp" />
@@ -46,6 +49,10 @@
 			</Reference>
 			<Reference Include="UnityEngine.AudioModule">
 				<HintPath>$(MelonManaged)\UnityEngine.AudioModule.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+			<Reference Include="UnityEngine.AssetBundleModule">
+				<HintPath>$(MelonManaged)\UnityEngine.AssetBundleModule.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="UnityEngine.UI">

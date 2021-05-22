@@ -88,7 +88,7 @@ namespace BetterPortalPlacement.Utils
         }
     }
 
-    //Apparently Knah is a god :o, ty for the help! <3
+    // Ty for the help here Knah! <3
     internal static class PlayerIEnumerableSetup
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

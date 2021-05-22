@@ -1,54 +1,32 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnhollowerBaseLib.Attributes;
 using UnityEngine;
 using UnityEngine.XR;
 
 namespace BetterPortalPlacement.Utils
 {
+    // AssetBundle stuff I got from Knah https://github.com/knah/VRCMods/blob/master/SparkleBeGone/SparkleBeGoneMod.cs
     internal class PortalPtr : MonoBehaviour
     {
         public PortalPtr(IntPtr obj0) : base(obj0) { }
         public static readonly float defaultLength = Single.PositiveInfinity;
         public Vector3 position = Vector3.zero;
         public AudioSource audio;
+        private GameObject previewObj;
         private LineRenderer lineRenderer;
         private LineRenderer RightHandLR;
-        private GameObject previewObj;
+        private Texture2D myWhiteLaserTexture;
 
         private void Awake()
         {
-            previewObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            DontDestroyOnLoad(previewObj);
-            previewObj.GetComponent<Collider>().enabled = false;
-            //previewObj.GetComponent<Renderer>().material = RightHandLR.GetMaterial();
-            previewObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            previewObj.transform.position = position;
-            previewObj.name = "PortalPreview";
-
-            if (XRDevice.isPresent)
-            {
-                RightHandLR = Resources.FindObjectsOfTypeAll<LineRenderer>()
-                    .Where(lr => lr.gameObject.name.Contains("RightHandBeam")).First();
-                lineRenderer = previewObj.AddComponent<LineRenderer>();
-                lineRenderer.material = RightHandLR.GetMaterial();
-                lineRenderer.enabled = false;
-            }
-
-            SetupColors();
+            SetupPreviewObj();
             SetupAudioSource();
         }
 
-        private void OnEnable()
-        {
-            if (XRDevice.isPresent)
-            {
-                VRUtils.active = true;
-                lineRenderer.enabled = true;
-            }
-            Patches.CloseMenu(true, false);
-            previewObj.SetActive(true);
-        }
+        private void OnEnable() => ToggleOnOff(true);
 
         private void Update()
         {
@@ -65,14 +43,58 @@ namespace BetterPortalPlacement.Utils
             if (Input.GetKeyUp(KeyCode.Mouse0)) Main.RecreatePortal();
         }
 
-        private void OnDisable()
+        private void OnDisable() => ToggleOnOff(false);
+
+        [HideFromIl2Cpp]
+        private void ToggleOnOff(bool IsOn)
         {
             if (XRDevice.isPresent)
             {
-                VRUtils.active = false;
+                VRUtils.active = IsOn;
+                lineRenderer.enabled = IsOn;
+            }
+            previewObj.SetActive(IsOn);
+            if (IsOn) Patches.CloseMenu(true, false);
+        }
+
+        [HideFromIl2Cpp]
+        private void SetupPreviewObj()
+        {
+            previewObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            previewObj.GetComponent<Collider>().enabled = false;
+            previewObj.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
+            previewObj.transform.position = position;
+            previewObj.name = "PortalPreview";
+            DontDestroyOnLoad(previewObj);
+
+            RightHandLR = Resources.FindObjectsOfTypeAll<LineRenderer>()
+                .Where(lr => lr.gameObject.name.Contains("RightHandBeam")).First();
+
+            previewObj.GetComponent<Renderer>().material = RightHandLR.GetMaterial();
+            if (XRDevice.isPresent)
+            {
+                lineRenderer = previewObj.AddComponent<LineRenderer>();
+                lineRenderer.material = RightHandLR.GetMaterial();
                 lineRenderer.enabled = false;
             }
-            previewObj.SetActive(false);
+
+            LoadBundle();
+
+            if (lineRenderer != null) lineRenderer.material.mainTexture = myWhiteLaserTexture;
+            previewObj.GetComponent<Renderer>().material.mainTexture = myWhiteLaserTexture;
+        }
+
+        [HideFromIl2Cpp]
+        public void LoadBundle()
+        {
+            {
+                using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BetterPortalPlacement.betterportalplacement");
+                using var memStream = new MemoryStream((int)stream.Length);
+                stream.CopyTo(memStream);
+                var bundle = AssetBundle.LoadFromMemory_Internal(memStream.ToArray(), 0);
+                myWhiteLaserTexture = bundle.LoadAsset_Internal("Assets/BetterPortalPlacement/sniper_beam_white.png", UnhollowerRuntimeLib.Il2CppType.Of<Texture2D>()).Cast<Texture2D>();
+                myWhiteLaserTexture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+            }
         }
 
         [HideFromIl2Cpp]
@@ -100,7 +122,7 @@ namespace BetterPortalPlacement.Utils
             Color color;
             if (CanPlace) color = Color.cyan;
             else color = Color.red;
-            //previewObj.GetComponent<Renderer>().material.color = color; // This failed sadly
+            previewObj.GetComponent<Renderer>().material.SetColor("_TintColor", color);
             if (lineRenderer != null) lineRenderer.SetColors(color, color);
         }
 
