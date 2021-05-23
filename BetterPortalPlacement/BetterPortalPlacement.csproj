@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
 		<VrcReferences>true</VrcReferences>
-		<CopyToMods>false</CopyToMods>
+		<CopyToMods>true</CopyToMods>
 		<LangVersion>latest</LangVersion>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -10,15 +10,4 @@
 	<ItemGroup>
 		<EmbeddedResource Include="betterportalplacement" />
 	</ItemGroup>
-	<Import Project="$(MsBuildThisFileDirectory)/../ILRepack/ILRepack.Lib.MSBuild.Task.targets" />
-	<Target Name="ILRepack" AfterTargets="Build">
-		<ItemGroup>
-			<InputAssemblies Include="$(OutputPath)/$(AssemblyName).dll" />
-			<IlRepackLibs Include="$(OutputPath)" />
-			<IlRepackLibs Include="$(MelonManaged)" />
-			<IlRepackLibs Include="$(MelonManaged)/../" />
-		</ItemGroup>
-		<ILRepack Internalize="true" LibraryPath="@(IlRepackLibs)" OutputFile="$(OutputPath)/$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" />
-		<Exec Command="xcopy /c /f /y $(OutputPath)\$(AssemblyName).dll $(VRChatFolder)\Mods" />
-	</Target>
 </Project>	
