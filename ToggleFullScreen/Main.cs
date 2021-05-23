@@ -22,15 +22,24 @@ namespace ToggleFullScreen
     public class Main : MelonMod
     {
         private static readonly bool useHeadLook = false;
-
-        private static Resolution Previous = new Resolution()
-        {
-            width = Screen.width,
-            height = Screen.height
-        };
+        private static Resolution Previous;
+        private static Resolution MaxRes;
+        private static bool PreviousState;
+        private static Toggle toggle;
 
         public override void OnApplicationStart()
         {
+            Previous = new()
+            {
+                width = Screen.width,
+                height = Screen.height
+            };
+
+            bool Initial = Screen.fullScreen;
+            Screen.fullScreen = false;
+            MaxRes = Screen.currentResolution;
+            Screen.fullScreen = Initial;
+
             MelonLogger.Msg("Successfully loaded!");
         }
 
@@ -73,26 +82,31 @@ namespace ToggleFullScreen
             ToggleButton.name = "FullScreenToggle";
             ToggleButton.GetComponentInChildren<Text>().text = "TOGGLE FULLSCREEN";
 
-            Toggle toggle = ToggleButton.GetComponent<Toggle>();
-            toggle.onValueChanged = new Toggle.ToggleEvent();
-            toggle.onValueChanged.AddListener((UnityEngine.Events.UnityAction<bool>)((isOn) => { OnToggle(isOn); }));
+            toggle = ToggleButton.GetComponent<Toggle>();
             toggle.isOn = Screen.fullScreen;
+            toggle.onValueChanged = new Toggle.ToggleEvent();
+            toggle.onValueChanged.AddListener((UnityEngine.Events.UnityAction<bool>)((isOn) => { Screen.fullScreen = isOn; }));
         }
 
-        private static void OnToggle(bool isOn)
+        public override void OnUpdate()
         {
-            if (isOn)
+            if (PreviousState != Screen.fullScreen)
             {
-                Previous = new Resolution()
+                if (Screen.fullScreen)
                 {
-                    width = Screen.width,
-                    height = Screen.height
-                };
-                Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, true);
-            }
-            else
-            {
-                Screen.SetResolution(Previous.width, Previous.height, false);
+                    Previous = new()
+                    {
+                        width = Screen.width,
+                        height = Screen.height
+                    };
+                    Screen.SetResolution(MaxRes.width, MaxRes.height, true);
+                }
+                else
+                {
+                    Screen.SetResolution(Previous.width, Previous.height, false);
+                }
+                if ((toggle != null) && (toggle.isOn != Screen.fullScreen)) toggle.isOn = Screen.fullScreen;
+                PreviousState = Screen.fullScreen;
             }
         }
     }
