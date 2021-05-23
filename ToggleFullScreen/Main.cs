@@ -16,7 +16,7 @@ namespace ToggleFullScreen
     {
         public const string Name = "ToggleFullScreen";
         public const string Author = "Davi";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
     }
 
     public class Main : MelonMod
