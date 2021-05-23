@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using UnhollowerBaseLib;
 using UnhollowerRuntimeLib;
 using UnityEngine;
+using UnityEngine.UI;
 using VRC;
 using VRC.Core;
 
@@ -78,7 +79,8 @@ namespace BetterPortalPlacement.Utils
 
         public static bool ShowAlert(ref string __0, ref string __1)
         {
-            if (Main.IsModOn.Value && __0.Contains("Cannot Create Portal") && !__1.Contains("You cannot create a portal to a private world created by another user."))
+            var PortalButton = GameObject.Find("UserInterface/MenuContent/Screens/WorldInfo/WorldButtons/PortalButton").GetComponent<Button>();
+            if (Main.IsModOn.Value && __0.Contains("Cannot Create Portal") && PortalButton.interactable)
             {
                 VRCUiPopupManager.prop_VRCUiPopupManager_0.Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_1(
                     "Failed to create portal", "Error: " + __1 + "\nPress continue to try again.", "Continue", new Action(delegate { Main.EnablePointer(); }));
