@@ -48,13 +48,16 @@ namespace ProneUiFix
 
         public override void OnApplicationStart()
         {
+            MelonCoroutines.Start(WaitForUIInit());
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
             MelonLogger.Msg("Successfully loaded!");
             SetPlaceUiMethod();
         }
-        
-        public override void VRChat_OnUiManagerInit()
+
+        public static IEnumerator WaitForUIInit()
         {
+            while (GameObject.Find("UserInterface/MenuContent/Backdrop/Backdrop") == null)
+                yield return null;
             if (!XRDevice.isPresent)
             {
                 Listener = GameObject.Find("UserInterface/MenuContent/Backdrop/Backdrop").AddComponent<EnableDisableListener>();
