@@ -75,7 +75,7 @@ namespace BetterPortalPlacement
                            where p != null && p.field_Private_APIUser_0.id != Player.prop_Player_0.field_Private_APIUser_0.id
                            && Vector3.Distance(p.transform.position, portalPtr.position) <= 1.75f
                            select p).Count() != 0 ||
-                          (distance <= 1.1f || distance >= 3.5f) ||
+                          (distance <= 1.1f || distance >= 5.1) ||
                          (from s in SpawnManager.field_Private_Static_SpawnManager_0.field_Private_List_1_Spawn_0.ToArray()
                            where (portalPtr.position - s.transform.position).sqrMagnitude < 9
                            select s).Count() != 0);
