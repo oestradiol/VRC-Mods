@@ -11,7 +11,8 @@ Current features:
 
 ## ToggleFullScreen
 Current features:
-* Adds a simple toggle on "Settings -> Other Options Panel" that allows you to toggle Full-Screen Mode without getting a scuffed resolution and actually using your entire screen lol.
+* Fixes Alt+Enter resolution;
+* Adds a simple toggle on "Settings -> Other Options Panel" that allows you to toggle Full-Screen Mode without getting a scuffed resolution and actually using your entire screen.
 
 ## BetterPortalPlacement
 I guess [Gompo](https://github.com/gompocp) needs a special thanks on this one because he gave me a pre-version of it that wasn't really very functional, but it guided me on the entire thing so it helped a lot. He also helped a bit with organization and the code itself. <3 <br>
