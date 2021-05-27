@@ -58,6 +58,7 @@ namespace ProneUiFix
         {
             while (GameObject.Find("UserInterface/MenuContent/Backdrop/Backdrop") == null)
                 yield return null;
+
             if (!XRDevice.isPresent)
             {
                 Listener = GameObject.Find("UserInterface/MenuContent/Backdrop/Backdrop").AddComponent<EnableDisableListener>();

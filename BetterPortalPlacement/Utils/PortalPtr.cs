@@ -85,7 +85,7 @@ namespace BetterPortalPlacement.Utils
         }
 
         [HideFromIl2Cpp]
-        public void LoadBundle()
+        private void LoadBundle()
         {
             {
                 using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BetterPortalPlacement.betterportalplacement");

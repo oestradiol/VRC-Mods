@@ -87,7 +87,8 @@ namespace BetterPortalPlacement.Utils
                 CurrentInfo = new PortalInfo(__0, __1, __2, __3, __4);
                 if (!Main.IsOnlyOnError.Value)
                 {
-                    PopupV2("Portal Placement", "Manual placement activated.\nPress ok to place portal.", "Ok", new Action(delegate { Main.EnablePointer(); }));
+                    if (Main.UseConfirmationPopup.Value) PopupV2("Portal Placement", "Manual placement activated.\nPress ok to place portal.", "Ok", new Action(delegate { Main.EnablePointer(); }));
+                    else Main.EnablePointer();
                     return false;
                 }
             }

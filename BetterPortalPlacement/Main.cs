@@ -30,10 +30,10 @@ namespace BetterPortalPlacement
         private static MelonMod Instance;
         private static PortalPtr portalPtr;
         public static MelonPreferences_Entry<bool> IsModOn;
+        public static MelonPreferences_Entry<bool> UseConfirmationPopup;
         public static MelonPreferences_Entry<bool> IsOnlyOnError;
         public static HarmonyInstance HarmonyInstance => Instance.Harmony;
         public static bool PtrIsOn() => portalPtr.enabled;
-        public static Vector3 PtrCurrentPos() => portalPtr.position;
 
         public override void OnApplicationStart()
         {
@@ -43,6 +43,7 @@ namespace BetterPortalPlacement
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
             MelonPreferences.CreateCategory("BetterPortalPlacement", "BetterPortalPlacement Settings");
             IsModOn = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsModOn), true, "Enable BetterPortalPlacement");
+            UseConfirmationPopup = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(UseConfirmationPopup), true, "Use confirmation popup when dropping portal?");
             IsOnlyOnError = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsOnlyOnError), false, "Use only on error?");
             Utils.Patches.ApplyPatches();
             MelonLogger.Msg("Successfully loaded!");
@@ -54,6 +55,7 @@ namespace BetterPortalPlacement
         {
             while (GameObject.Find("UserInterface/QuickMenu/QuickMenu_NewElements") == null)
                 yield return null;
+
             portalPtr = Utilities.GetPtrObj().AddComponent<PortalPtr>();
             if (XRDevice.isPresent) VRUtils.VRChat_OnUiManagerInit();
             EnableDisableListener QMListener = GameObject.Find("UserInterface/QuickMenu/QuickMenu_NewElements").gameObject.AddComponent<EnableDisableListener>();
@@ -76,8 +78,8 @@ namespace BetterPortalPlacement
             {
                 var distance = Vector3.Distance(Player.prop_Player_0.transform.position, portalPtr.position);
                 return !((from p in PlayerManager.field_Private_Static_PlayerManager_0.field_Private_List_1_Player_0.ToArray()
-                           where p != null && p.field_Private_APIUser_0.id != Player.prop_Player_0.field_Private_APIUser_0.id
-                           && Vector3.Distance(p.transform.position, portalPtr.position) <= 1.75f
+                           where p != null && p.field_Private_APIUser_0.id != Player.prop_Player_0.field_Private_APIUser_0.id && 
+                           Vector3.Distance(p.transform.position, portalPtr.position) <= 1.75f
                            select p).Count() != 0 ||
                           (distance <= 1.1f || distance >= 5.1) ||
                          (from s in SpawnManager.field_Private_Static_SpawnManager_0.field_Private_List_1_Spawn_0.ToArray()
