@@ -47,38 +47,7 @@ namespace TrackingRotator
             MelonPreferences.CreateEntry(ModCategory, ResetRotationOnSceneChangePref, false, "Reset rotation when a new world loads");
             OnPreferencesSaved();
 
-            if (AMAPIintegration)
-            {
-                if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("ActionMenuApi")))
-                {
-                    Assets.OnApplicationStart();
-                    IsUsingAMAPI = true;
-                }
-                else MelonLogger.Warning("For a better experience, please consider using ActionMenuApi.");
-            }
-            else MelonLogger.Warning("Integration with ActionMenuApi has been deactivated on Settings.");
-
-            if (UIXintegration)
-            {
-                if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
-                {
-                    typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
-                    IsUsingUIX = true;
-                } 
-                else MelonLogger.Warning("For a better experience, please consider using UIExpansionKit.");
-            }
-            else MelonLogger.Warning("Integration with UIExpansionKit has been deactivated on Settings.");
-
-            if (!AMAPIintegration && !UIXintegration) 
-                MelonLogger.Warning("Both integrations (Action Menu and UiExpansionKit) have been deactivated. " +
-                    "The mod cannot run without those, therefore, expect it to fail. If this was not intended, " +
-                    "please consider activating at least one of the integrations on Settings.");
-
-            if (!IsUsingAMAPI && !IsUsingUIX) 
-            {
-                MelonLogger.Error("Failed to load both integrations with UIExpansionKit and ActionMenuApi! The mod will not be loaded.");
-            } 
-            else MelonCoroutines.Start(WaitForUiInit());
+            Integrations();
 
             MelonLogger.Msg("Mod loaded.");
         }
@@ -91,6 +60,7 @@ namespace TrackingRotator
             highPrecisionRotationValue = MelonPreferences.GetEntryValue<float>(ModCategory, HighPrecisionRotationValuePref);
             resetRotationOnSceneChange = MelonPreferences.GetEntryValue<bool>(ModCategory, ResetRotationOnSceneChangePref);
         }
+
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName) 
         {
@@ -114,6 +84,42 @@ namespace TrackingRotator
         public static void Move(Vector3 direction)
         {
             cameraTransform.Rotate(direction, highPrecision ? highPrecisionRotationValue : rotationValue, Space.World);
+        }
+
+        private static void Integrations()
+        {
+            if (AMAPIintegration)
+            {
+                if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("ActionMenuApi")))
+                {
+                    Assets.OnApplicationStart();
+                    IsUsingAMAPI = true;
+                }
+                else MelonLogger.Warning("For a better experience, please consider using ActionMenuApi.");
+            }
+            else MelonLogger.Warning("Integration with ActionMenuApi has been deactivated on Settings.");
+
+            if (UIXintegration)
+            {
+                if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
+                {
+                    typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+                    IsUsingUIX = true;
+                }
+                else MelonLogger.Warning("For a better experience, please consider using UIExpansionKit.");
+            }
+            else MelonLogger.Warning("Integration with UIExpansionKit has been deactivated on Settings.");
+
+            if (!AMAPIintegration && !UIXintegration)
+                MelonLogger.Warning("Both integrations (Action Menu and UiExpansionKit) have been deactivated. " +
+                    "The mod cannot run without those, therefore, expect it to fail. If this was not intended, " +
+                    "please consider activating at least one of the integrations on Settings.");
+
+            if (!IsUsingAMAPI && !IsUsingUIX)
+            {
+                MelonLogger.Error("Failed to load both integrations with UIExpansionKit and ActionMenuApi! The mod will not be loaded.");
+            }
+            else MelonCoroutines.Start(WaitForUiInit());
         }
     }
 }
