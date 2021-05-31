@@ -35,11 +35,12 @@ namespace BetterPortalPlacement.Utils
         {
             get
             {
-                if (closeMenuDelegate != null) return closeMenuDelegate;
-                MethodInfo closeMenuMethod = typeof(VRCUiManager).GetMethods()
-                    .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_"))
-                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
-                closeMenuDelegate = (CloseMenuDelegate)Delegate.CreateDelegate(typeof(CloseMenuDelegate), VRCUiManager.prop_VRCUiManager_0, closeMenuMethod);
+                if (closeMenuDelegate == null) 
+                    closeMenuDelegate = (CloseMenuDelegate)Delegate.CreateDelegate(typeof(CloseMenuDelegate), 
+                        VRCUiManager.prop_VRCUiManager_0, 
+                        typeof(VRCUiManager).GetMethods()
+                        .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_"))
+                        .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last());
                 return closeMenuDelegate;
             }
         }
@@ -52,8 +53,8 @@ namespace BetterPortalPlacement.Utils
         {
             get
             {
-                if (createPortalDelegate != null) return createPortalDelegate;
-                createPortalDelegate = (CreatePortalDelegate)Delegate.CreateDelegate(typeof(CreatePortalDelegate), null, CreatePortalMethod);
+                if (createPortalDelegate == null) 
+                    createPortalDelegate = (CreatePortalDelegate)Delegate.CreateDelegate(typeof(CreatePortalDelegate), null, CreatePortalMethod);
                 return createPortalDelegate;
             }
         }
@@ -69,13 +70,14 @@ namespace BetterPortalPlacement.Utils
         {
             get
             {
-                if (popupV2Delegate != null) return popupV2Delegate;
-                MethodInfo PopupV2Method = typeof(VRCUiPopupManager).GetMethods()
-                    .First(methodBase => methodBase.Name.StartsWith("Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_") &&
-                    !methodBase.Name.Contains("PDM") &&
-                    Utilities.ContainsStr(methodBase, "UserInterface/MenuContent/Popups/StandardPopupV2") &&
-                    Utilities.WasUsedBy(methodBase, "OpenSaveSearchPopup"));
-                popupV2Delegate = (PopupV2Delegate)Delegate.CreateDelegate(typeof(PopupV2Delegate), VRCUiPopupManager.prop_VRCUiPopupManager_0, PopupV2Method);
+                if (popupV2Delegate == null) 
+                    popupV2Delegate = (PopupV2Delegate)Delegate.CreateDelegate(typeof(PopupV2Delegate), 
+                        VRCUiPopupManager.prop_VRCUiPopupManager_0, 
+                        typeof(VRCUiPopupManager).GetMethods()
+                            .First(methodBase => methodBase.Name.StartsWith("Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_") &&
+                            !methodBase.Name.Contains("PDM") &&
+                            Utilities.ContainsStr(methodBase, "UserInterface/MenuContent/Popups/StandardPopupV2") &&
+                            Utilities.WasUsedBy(methodBase, "OpenSaveSearchPopup")));
                 return popupV2Delegate;
             }
         }
@@ -87,7 +89,8 @@ namespace BetterPortalPlacement.Utils
                 CurrentInfo = new PortalInfo(__0, __1, __2, __3, __4);
                 if (!Main.IsOnlyOnError.Value)
                 {
-                    if (Main.UseConfirmationPopup.Value) PopupV2("Portal Placement", "Manual placement activated.\nPress ok to place portal.", "Ok", new Action(delegate { Main.EnablePointer(); }));
+                    if (Main.UseConfirmationPopup.Value) PopupV2("Portal Placement", "Manual placement activated.\nPress ok to place portal.", "Ok", 
+                        new Action(delegate { Main.EnablePointer(); }));
                     else Main.EnablePointer();
                     return false;
                 }
