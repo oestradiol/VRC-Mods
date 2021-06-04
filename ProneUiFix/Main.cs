@@ -1,11 +1,11 @@
-﻿using MelonLoader;
-using ProneUiFix.Utils;
+﻿using ProneUiFix.Utils;
 using System.Collections;
+using System.Reflection;
+using System.Linq;
 using UnhollowerRuntimeLib;
+using MelonLoader;
 using UnityEngine;
 using UnityEngine.XR;
-using System.Reflection;
-using UnhollowerRuntimeLib.XrefScans;
 
 [assembly: AssemblyCopyright("Created by " + ProneUiFix.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(ProneUiFix.Main), ProneUiFix.BuildInfo.Name, ProneUiFix.BuildInfo.Version, ProneUiFix.BuildInfo.Author)]
@@ -18,32 +18,24 @@ namespace ProneUiFix
     {
         public const string Name = "ProneUiFix";
         public const string Author = "Davi";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
     }
 
     public class Main : MelonMod
     {
         private static EnableDisableListener Listener;
-        private static MethodInfo PlaceUiMethod;
-        private static void SetPlaceUiMethod() //Got from https://github.com/M-oons/VRChat-Mods/blob/master/ComfyVRMenu/Main.cs, thank you M-oons!
+        private static MethodInfo placeUi;
+        private static MethodInfo PlaceUiMethod
         {
-            MethodInfo _placeUi = null;
-            try
+            get
             {
-                var xrefs = XrefScanner.XrefScan(typeof(VRCUiManager).GetMethod(nameof(VRCUiManager.LateUpdate)));
-                foreach (var x in xrefs)
-                {
-                    if (x.Type == XrefType.Method && x.TryResolve() != null &&
-                        x.TryResolve().GetParameters().Length == 1 &&
-                        x.TryResolve().GetParameters()[0].ParameterType == typeof(bool))
-                    {
-                        _placeUi = (MethodInfo)x.TryResolve();
-                        break;
-                    }
-                };
+                if (placeUi == null) placeUi = typeof(VRCUiManager).GetMethods()
+                     .Where(m => 
+                         m.Name.StartsWith("Method_Public_Void_Boolean_Boolean_") && !m.Name.Contains("PDM") &&
+                         m.GetParameters().Where(p => p.RawDefaultValue.ToString().Contains("False")).Count() == 2)
+                     .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).First();
+                return placeUi;
             }
-            catch { }
-            PlaceUiMethod = _placeUi;
         }
 
         public override void OnApplicationStart()
@@ -51,7 +43,6 @@ namespace ProneUiFix
             MelonCoroutines.Start(WaitForUIInit());
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
             MelonLogger.Msg("Successfully loaded!");
-            SetPlaceUiMethod();
         }
 
         public static IEnumerator WaitForUIInit()
@@ -69,7 +60,7 @@ namespace ProneUiFix
         private static IEnumerator PlaceMenuAgain()
         {
             yield return new WaitForSeconds(1);
-            PlaceUiMethod.Invoke(VRCUiManager.prop_VRCUiManager_0, new object[] { true });
+            PlaceUiMethod.Invoke(VRCUiManager.prop_VRCUiManager_0, new object[] { false, false });
         }
     }
 }
