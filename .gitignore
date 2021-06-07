@@ -2,10 +2,11 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+/.vs
 /Output
 /ILRepack
+/BetterAVPreview
+/BetterDirections/obj
 /BetterPortalPlacement/obj
 /ProneUiFix/obj
 /ToggleFullScreen/obj
-/BetterAVPreview
-/.vs

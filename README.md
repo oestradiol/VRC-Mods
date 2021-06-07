@@ -3,7 +3,8 @@ Join the [VRChat Modding Group discord](https://discord.gg/rCqKSvR) for official
 
 ## Special Thanks
 Thank you [Nitro. <3](https://github.com/nitrog0d) for the idea on the ToggleFullScreen; <br>
-Also thank you cutie ([Gompo <3](https://github.com/gompocp)) for helping me with literally everything lol.
+Thank you [AxisAngle#0001](https://discord.com/users/80798961836752896), that made the request for BetterDirections and helped with the logics; <br>
+Also thank you cutie ([Gompo <3](https://github.com/gompocp)) for helping me a lot every time I needed you <3.
 
 ## ProneUiFix
 Current features:
@@ -30,6 +31,13 @@ Current features:
 	* Allow the default VRC placement, and only use the mod in case of error;
 	* Use the confirmation popup or not;
 	* There is an extra one to deactivate the mod completely.
+
+## BetterDirections
+Current features:
+* TLDR; 
+	* Fixes the inconvenience that happens because of Euler angles during movementation while looking up, that happens usually while laying down or cuddling, for example.
+* Full explanation:
+	* If while laying down you look straight up and spin your view direction around the global Y axis (which naturally occurs because it’s impossible to perfectly align to it), the movement behavior will keep alternating the directions, which can be a little confusing or uncomfortable. This mod will make it unified so it gets really easy to move no matter where you’re looking, while still maintaining the direction you’re looking at as the “forward” one when walking without looking up.
 
 ## Installation
 Before installing:  
