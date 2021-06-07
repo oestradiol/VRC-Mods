@@ -35,7 +35,7 @@ Current features:
 ## BetterDirections
 Current features:
 * TLDR; 
-	* Fixes the inconvenience that happens because of Euler angles during movementation while looking up, that happens usually while laying down or cuddling, for example.
+	* Fixes the inconvenience that happens because of Euler angles when moving while looking up, that happens usually while laying down or cuddling, for example.
 * Full explanation:
 	* If while laying down you look straight up and spin your view direction around the global Y axis (which naturally occurs because it’s impossible to perfectly align to it), the movement behavior will keep alternating the directions, which can be a little confusing or uncomfortable. This mod will make it unified so it gets really easy to move no matter where you’re looking, while still maintaining the direction you’re looking at as the “forward” one when walking without looking up.
 
