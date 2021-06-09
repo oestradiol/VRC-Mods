@@ -1,14 +1,13 @@
-﻿using MelonLoader;
+﻿using BetterPortalPlacement.Utils;
 using System;
+using System.Linq;
 using System.Reflection;
-using Harmony;
+using System.Collections;
 using UnhollowerRuntimeLib;
+using MelonLoader;
 using UnityEngine;
-using BetterPortalPlacement.Utils;
 using UnityEngine.XR;
 using VRC;
-using System.Linq;
-using System.Collections;
 
 [assembly: AssemblyCopyright("Created by " + BetterPortalPlacement.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(BetterPortalPlacement.Main), BetterPortalPlacement.BuildInfo.Name, BetterPortalPlacement.BuildInfo.Version, BetterPortalPlacement.BuildInfo.Author)]
@@ -22,7 +21,7 @@ namespace BetterPortalPlacement
     {
         public const string Name = "BetterPortalPlacement";
         public const string Author = "Davi";
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
     }
 
     public class Main : MelonMod
@@ -32,7 +31,7 @@ namespace BetterPortalPlacement
         public static MelonPreferences_Entry<bool> IsModOn;
         public static MelonPreferences_Entry<bool> UseConfirmationPopup;
         public static MelonPreferences_Entry<bool> IsOnlyOnError;
-        public static HarmonyInstance HarmonyInstance => Instance.Harmony;
+        public static HarmonyLib.Harmony HInstance => Instance.HarmonyInstance;
         public static bool PtrIsOn() => portalPtr.enabled;
 
         public override void OnApplicationStart()
@@ -42,10 +41,10 @@ namespace BetterPortalPlacement
             ClassInjector.RegisterTypeInIl2Cpp<PortalPtr>();
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
             MelonPreferences.CreateCategory("BetterPortalPlacement", "BetterPortalPlacement Settings");
-            IsModOn = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsModOn), true, "Enable BetterPortalPlacement");
-            UseConfirmationPopup = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(UseConfirmationPopup), false, "Use confirmation popup when dropping portal?");
-            IsOnlyOnError = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsOnlyOnError), false, "Use only on error?");
-            Utils.Patches.ApplyPatches();
+            IsModOn = MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsModOn), true, "Enable BetterPortalPlacement");
+            UseConfirmationPopup = MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(UseConfirmationPopup), false, "Use confirmation popup when dropping portal?");
+            IsOnlyOnError = MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsOnlyOnError), false, "Use only on error?");
+            Patches.ApplyPatches();
             MelonLogger.Msg("Successfully loaded!");
         }
 
@@ -53,7 +52,7 @@ namespace BetterPortalPlacement
 
         public static IEnumerator WaitForUIInit()
         {
-            while (GameObject.Find("UserInterface/QuickMenu/QuickMenu_NewElements") == null)
+            while (GameObject.Find("UserInterface") == null)
                 yield return null;
 
             portalPtr = Utilities.GetPtrObj().AddComponent<PortalPtr>();
@@ -103,12 +102,12 @@ namespace BetterPortalPlacement
             }
             var forward = XRDevice.isPresent ? VRUtils.GetControllerTransform().forward : VRCPlayer.field_Internal_Static_VRCPlayer_0.transform.forward;
             PlayerIEnumerableSetup.IsUp = true;
-            Utils.Patches.CreatePortal(
-                Utils.Patches.CurrentInfo.ApiWorld,
-                Utils.Patches.CurrentInfo.ApiWorldInstance,
+            Patches.CreatePortal(
+                Patches.CurrentInfo.ApiWorld,
+                Patches.CurrentInfo.ApiWorldInstance,
                 portalPtr.position - forward * 2,
                 forward,
-                Utils.Patches.CurrentInfo.WithUIErrors
+                Patches.CurrentInfo.WithUIErrors
             );
             PlayerIEnumerableSetup.IsUp = false;
             DisablePointer();

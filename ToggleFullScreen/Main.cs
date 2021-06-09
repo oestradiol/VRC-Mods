@@ -1,10 +1,10 @@
-﻿using MelonLoader;
+﻿using System.Reflection;
+using System.Collections;
+using System.Collections.Generic;
+using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using Object = UnityEngine.Object;
-using System.Reflection;
-using System.Collections;
 
 [assembly: AssemblyCopyright("Created by " + ToggleFullScreen.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(ToggleFullScreen.Main), ToggleFullScreen.BuildInfo.Name, ToggleFullScreen.BuildInfo.Version, ToggleFullScreen.BuildInfo.Author)]
@@ -58,7 +58,7 @@ namespace ToggleFullScreen
 
             // Repositions Ui Toggles
             Vector3 proportion = (OtherOptions.Find("TooltipsToggle").transform.position - OtherOptions.Find("3PRotationToggle").transform.position) / 7;
-            List<Transform> Children = new List<Transform>();
+            List<Transform> Children = new();
             for (int i = 0; i < OtherOptions.GetChildCount(); i++)
             {
                 var child = OtherOptions.GetChild(i);

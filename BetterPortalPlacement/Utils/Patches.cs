@@ -1,11 +1,11 @@
-﻿using Harmony;
-using MelonLoader;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using HarmonyLib;
 using UnhollowerBaseLib;
 using UnhollowerRuntimeLib;
+using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using VRC;
@@ -20,8 +20,8 @@ namespace BetterPortalPlacement.Utils
 
         public static void ApplyPatches()
         {
-            Main.HarmonyInstance.Patch(CreatePortalMethod, new HarmonyMethod(typeof(Patches).GetMethod(nameof(OnPortalCreated))));
-            Main.HarmonyInstance.Patch(typeof(VRCUiPopupManager).GetMethods()
+            Main.HInstance.Patch(CreatePortalMethod, new HarmonyMethod(typeof(Patches).GetMethod(nameof(OnPortalCreated))));
+            Main.HInstance.Patch(typeof(VRCUiPopupManager).GetMethods()
                     .Where(method => method.Name.StartsWith("Method_Public_Void_String_String_Single_"))
                     .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last(),
                 new HarmonyMethod(typeof(Patches).GetMethod(nameof(ShowAlert))));
@@ -49,6 +49,7 @@ namespace BetterPortalPlacement.Utils
             GetCreatePortalDelegate(apiWorld, apiWorldInstance, pos, foward, someBool);
         private delegate bool CreatePortalDelegate(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool);
         private static CreatePortalDelegate createPortalDelegate;
+        private static MethodInfo createPortalMethod;
         private static CreatePortalDelegate GetCreatePortalDelegate
         {
             get
@@ -58,9 +59,17 @@ namespace BetterPortalPlacement.Utils
                 return createPortalDelegate;
             }
         }
-        private static MethodInfo CreatePortalMethod => typeof(PortalInternal).GetMethods()
-                    .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
-                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).First();
+        private static MethodInfo CreatePortalMethod
+        { 
+            get
+            {
+                if (createPortalMethod == null)
+                    createPortalMethod = typeof(PortalInternal).GetMethods()
+                        .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
+                        .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
+                return createPortalMethod;
+            }
+        }
 
         public static void PopupV2(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null) => 
             GetPopupV2Delegate(title, innertxt, buttontxt, buttonOk, action);
@@ -100,8 +109,8 @@ namespace BetterPortalPlacement.Utils
 
         public static bool ShowAlert(ref string __0, ref string __1)
         {
-            var PortalButton = GameObject.Find("UserInterface/MenuContent/Screens/WorldInfo/WorldButtons/PortalButton").GetComponent<Button>();
-            if (Main.IsModOn.Value && __0.Contains("Cannot Create Portal") && PortalButton.interactable)
+            if (Main.IsModOn.Value && __0.Contains("Cannot Create Portal") && 
+                GameObject.Find("UserInterface/MenuContent/Screens/WorldInfo/WorldButtons/PortalButton").GetComponent<Button>().interactable)
             {
                 PopupV2("Failed to create portal", "Error: " + __1 + "\nPress continue to try again.", "Continue", new Action(delegate { Main.EnablePointer(); }));
                 return false;
