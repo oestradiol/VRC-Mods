@@ -49,10 +49,7 @@ namespace BetterPortalPlacement
             {
                 while (VRCUiManager.prop_VRCUiManager_0 == null)
                     yield return null;
-
                 VRChat_OnUiManagerInit();
-
-                yield break;
             }
             MelonCoroutines.Start(OnUiManagerInit());
 

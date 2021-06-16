@@ -25,14 +25,20 @@ namespace BetterDirections
     public class Main : MelonMod
     {
         // Wait for Ui Init so XRDevice.isPresent is defined
-        public override void OnApplicationStart() => MelonCoroutines.Start(WaitForUiInit());
+        public override void OnApplicationStart()
+        {
+            IEnumerator OnUiManagerInit()
+            {
+                while (VRCUiManager.prop_VRCUiManager_0 == null)
+                    yield return null;
+                VRChat_OnUiManagerInit();
+            }
+            MelonCoroutines.Start(OnUiManagerInit());
+        }
 
         // Apply the patch
-        private IEnumerator WaitForUiInit()
+        private void VRChat_OnUiManagerInit()
         {
-            while (GameObject.Find("UserInterface") == null)
-                yield return null;
-
             if (XRDevice.isPresent)
             {
                 MelonLogger.Msg("XRDevice detected. Initializing...");
@@ -51,8 +57,6 @@ namespace BetterDirections
             }
             else
                 MelonLogger.Warning("Mod is VR-Only.");
-
-            yield break;
         }
 
         // Substitute the direction from the original method with our own
