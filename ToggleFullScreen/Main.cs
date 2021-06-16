@@ -30,7 +30,6 @@ namespace ToggleFullScreen
 
         public override void OnApplicationStart()
         {
-            MelonCoroutines.Start(WaitForUIInit());
             Previous = new()
             {
                 width = Screen.width,
@@ -42,14 +41,22 @@ namespace ToggleFullScreen
             MaxRes = Screen.currentResolution;
             Screen.fullScreen = Initial;
 
+            static IEnumerator OnUiManagerInit()
+            {
+                while (VRCUiManager.prop_VRCUiManager_0 == null)
+                    yield return null;
+
+                VRChat_OnUiManagerInit();
+
+                yield break;
+            }
+            MelonCoroutines.Start(OnUiManagerInit());
+
             MelonLogger.Msg("Successfully loaded!");
         }
 
-        public static IEnumerator WaitForUIInit()
+        private static void VRChat_OnUiManagerInit()
         {
-            while (GameObject.Find("UserInterface/MenuContent/Screens/Settings") == null) 
-                yield return null;
-
             // Rescales and repositions Options Panel
             Transform Settings = GameObject.Find("UserInterface/MenuContent/Screens/Settings").transform;
             Transform OtherOptions = Settings.Find("OtherOptionsPanel");
