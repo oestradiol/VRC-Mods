@@ -11,30 +11,37 @@ using Newtonsoft.Json;
 using System.Collections;
 using VRC.SDKBase;
 
-namespace DesktopCamera {
-    public static class ModBuildInfo {
+[assembly: AssemblyCopyright("Created by " + DesktopCamera.BuildInfo.Author)]
+[assembly: MelonInfo(typeof(DesktopCamera.Main), DesktopCamera.BuildInfo.Name, DesktopCamera.BuildInfo.Version, DesktopCamera.BuildInfo.Author)]
+[assembly: MelonGame("VRChat", "VRChat")]
+[assembly: MelonColor(ConsoleColor.DarkMagenta)]
+
+// This mod was firstly developed by nitro. and I continued
+namespace DesktopCamera
+{
+    public static class BuildInfo
+    {
         public const string Name = "DesktopCamera";
-        public const string Author = "nitro.";
-        public const string Company = null;
+        public const string Author = "Davi & nitro.";
         public const string Version = "1.1.3";
-        public const string DownloadLink = "https://github.com/nitrog0d/DesktopCamera/releases/latest/download/DesktopCamera.dll";
-        public const string GameDeveloper = "VRChat";
-        public const string Game = "VRChat";
     }
 
-    public class VersionCheckResponse {
+    public class VersionCheckResponse
+    {
         public string result { get; set; }
         public string latest { get; set; }
     }
 
-    public class Main : MelonMod {
+    public class Main : MelonMod
+    {
         private const string ModCategory = "DesktopCamera";
         private const string CameraSpeedPref = "CameraSpeed";
         private const string CameraSpeedAltPref = "CameraSpeedAlt";
         private static float CameraSpeed = 0.005f;
         private static float CameraSpeedAlt = 0.020f;
 
-        public override void OnApplicationStart() {
+        public override void OnApplicationStart()
+        {
             MelonLogger.Msg("Mod loaded.");
             MelonPreferences.CreateCategory(ModCategory, "DesktopCamera");
             MelonPreferences.CreateEntry(ModCategory, CameraSpeedPref, 5, "Basic camera speed");
@@ -43,7 +50,8 @@ namespace DesktopCamera {
         }
 
 
-        public override void OnPreferencesSaved() {
+        public override void OnPreferencesSaved()
+        {
             CameraSpeed = MelonPreferences.GetEntryValue<int>(ModCategory, CameraSpeedPref);
             CameraSpeedAlt = MelonPreferences.GetEntryValue<int>(ModCategory, CameraSpeedAltPref);
 
@@ -51,7 +59,8 @@ namespace DesktopCamera {
             CameraSpeedAlt /= 1000;
         }
 
-        public override void VRChat_OnUiManagerInit() {
+        public override void VRChat_OnUiManagerInit()
+        {
             MelonCoroutines.Start(Setup());
         }
 
@@ -69,7 +78,8 @@ namespace DesktopCamera {
 
         private SingleButton cameraMovementButton = null;
 
-        private IEnumerator Setup() {
+        private IEnumerator Setup()
+        {
             var request = new UnityWebRequest("https://vrchat.nitro.moe/mods/versioncheck", "POST");
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes("{\"name\":\"" + ModBuildInfo.Name + "\",\"version\":\"" + ModBuildInfo.Version + "\"}"));
             request.downloadHandler = new DownloadHandlerBuffer();
@@ -81,24 +91,32 @@ namespace DesktopCamera {
             var asyncOperation = request.SendWebRequest();
 
             // yield return doesn't work for now, so I had to change it to this.
-            while (!asyncOperation.isDone) {
+            while (!asyncOperation.isDone)
+            {
                 yield return new WaitForEndOfFrame();
             }
 
             bool updated = true;
             string latest = "";
 
-            if (!request.isNetworkError && !request.isHttpError) {
-                try {
+            if (!request.isNetworkError && !request.isHttpError)
+            {
+                try
+                {
                     var response = JsonConvert.DeserializeObject<VersionCheckResponse>(request.downloadHandler.text);
-                    if (response.result == "OUTDATED") {
+                    if (response.result == "OUTDATED")
+                    {
                         updated = false;
                     }
                     latest = response.latest;
-                } catch (Exception) {
+                }
+                catch (Exception)
+                {
                     MelonLogger.Error("Failed to check version!");
                 }
-            } else {
+            }
+            else
+            {
                 MelonLogger.Error("Failed to check version!");
             }
 
@@ -157,10 +175,12 @@ namespace DesktopCamera {
 
             var movementBehaviourButton = new SingleButton("MovementBehaviour", "Movement\nBehaviour\n<color=#ff73fa>None</color>", "Cycles the Camera's movement behaviour", 1, 0, cameraMenu);
             movementBehaviourButton.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     var cameraBehaviour = CameraUtils.GetCameraBehaviour();
                     string behaviour = "?";
-                    switch (cameraBehaviour) {
+                    switch (cameraBehaviour)
+                    {
                         case CameraUtils.CameraBehaviour.None:
                             behaviour = "Smooth";
                             break;
@@ -178,10 +198,12 @@ namespace DesktopCamera {
 
             var movementSpaceButton = new SingleButton("MovementSpace", "Movement\nSpace\n<color=#ff73fa>Attached</color>", "Cycles the Camera's movement space", 2, 0, cameraMenu);
             movementSpaceButton.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     var cameraSpace = CameraUtils.GetCameraSpace();
                     string space = "?";
-                    switch (cameraSpace) {
+                    switch (cameraSpace)
+                    {
                         case CameraUtils.CameraSpace.Attached:
                             space = "Local";
                             break;
@@ -200,7 +222,8 @@ namespace DesktopCamera {
 
             var pinMenuButton = new SingleButton("PinMenu", "Pin Menu\n<color=red>Off</color>", "Toggles the Pin menu", 0, 1, cameraMenu);
             pinMenuButton.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     CameraUtils.TogglePinMenu();
                     pinMenuButton.setText("Pin Menu\n<color=" + (CameraUtils.GetPinsHolder().activeSelf ? "#ff73fa>On" : "red>Off") + "</color>");
                 }
@@ -208,11 +231,13 @@ namespace DesktopCamera {
 
             var switchPinButton = new SingleButton("CyclePin", "Cycle Pin\n<color=#ff73fa>Pin 1</color>", "Cycles between 3 pins (aka profiles)", 1, 1, cameraMenu);
             switchPinButton.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     var currentPin = CameraUtils.GetCurrentPin();
                     string pin = "?";
                     int newPin = 1;
-                    switch (currentPin) {
+                    switch (currentPin)
+                    {
                         case CameraUtils.Pin.Pin1:
                             newPin = 2;
                             pin = "Pin 2";
@@ -236,30 +261,35 @@ namespace DesktopCamera {
 
             var timer1Button = new SingleButton("Timer1", "Timer\n<color=#ff73fa>3s</color>", "Takes a picture after 3 seconds", 3, 0, cameraMenu);
             timer1Button.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     CameraUtils.TakePicture(3);
                 }
             }));
 
             var timer2Button = new SingleButton("Timer2", "Timer\n<color=#ff73fa>5s</color>", "Takes a picture after 5 seconds", 3, 1, cameraMenu);
             timer2Button.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     CameraUtils.TakePicture(5);
                 }
             }));
 
             var timer3Button = new SingleButton("Timer3", "Timer\n<color=#ff73fa>10s</color>", "Takes a picture after 10 seconds", 3, 2, cameraMenu);
             timer3Button.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     CameraUtils.TakePicture(10);
                 }
             }));
 
             var cameraScaleButton = new SingleButton("CameraScale", "Camera\nScale\n<color=#ff73fa>Normal</color>", "Changes the Camera's scale", 2, 1, cameraMenu);
             cameraScaleButton.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     string scale = "?";
-                    switch (Settings.cameraScale) {
+                    switch (Settings.cameraScale)
+                    {
                         case CameraUtils.CameraScale.Normal:
                             scale = "Medium";
                             CameraUtils.GetViewFinder().transform.localScale = new Vector3(1.5f, 1f, 1.5f);
@@ -294,7 +324,8 @@ namespace DesktopCamera {
 
             var toggleLockButton = new SingleButton("ToggleLock", "Lock\n<color=red>Off</color>", "Toggles the Lock (Camera pickup)", 4, -1, cameraMenu);
             toggleLockButton.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     toggleLockButton.setText("Lock\n<color=" + (CameraUtils.GetViewFinder().GetComponent<VRC_Pickup>().pickupable ? "#ff73fa>On" : "red>Off") + "</color>");
                     CameraUtils.ToggleLock();
                 }
@@ -306,16 +337,20 @@ namespace DesktopCamera {
             }));
 
             var childCount = filtersMenu.transform.childCount;
-            for (var i = 0; i < childCount; i++) {
+            for (var i = 0; i < childCount; i++)
+            {
                 var child = filtersMenu.transform.GetChild(i);
-                if (child.name == "BackButton") {
+                if (child.name == "BackButton")
+                {
                     child.localPosition = SingleButton.getButtonPositionFor(4, 2);
                     child.GetComponent<UiTooltip>().field_Public_String_0 = "Go Back to the Camera Menu";
                     child.GetComponent<Button>().onClick.RemoveAllListeners();
                     child.GetComponent<Button>().onClick.AddListener((Action)(() => {
                         VRCUtils.ShowQuickMenuPage(quickMenu, cameraMenu, "FiltersMenu");
                     }));
-                } else {
+                }
+                else
+                {
                     UnityEngine.Object.Destroy(child.gameObject);
                 }
             }
@@ -339,10 +374,12 @@ namespace DesktopCamera {
             int row = 0;
             int position = 0;
 
-            foreach (var filter in filters) {
+            foreach (var filter in filters)
+            {
                 var button = new SingleButton("Filter" + filter.Value, filter.Key, "Sets the filter to " + filter.Key.Replace("\n", " "), position, row, filtersMenu);
                 button.setAction((Action)(() => {
-                    if (Settings.cameraEnabled) {
+                    if (Settings.cameraEnabled)
+                    {
                         // Needed to initialize the buttons apparently
                         CameraUtils.ToggleFilterMenu();
                         CameraUtils.ToggleFilterMenu();
@@ -350,7 +387,8 @@ namespace DesktopCamera {
                     }
                 }));
                 position++;
-                if (position == 4) {
+                if (position == 4)
+                {
                     position = 0;
                     row++;
                 }
@@ -363,7 +401,8 @@ namespace DesktopCamera {
 
             cameraMovementButton = new SingleButton("ToggleCameraMovement", "Camera\nMovement\n<color=#ff73fa>Viewer</color>", "Toggles the arrow/numpad keys movement between the actual Camera and the Viewer\nViewer requires Movement Space to be \"World\" <color=orange>(for more info check the GitHub page)</color>", 2, 2, cameraMenu);
             cameraMovementButton.setAction((Action)(() => {
-                if (Settings.cameraEnabled) {
+                if (Settings.cameraEnabled)
+                {
                     Settings.moveCamera = !Settings.moveCamera;
                     cameraMovementButton.setText("Camera\nMovement\n<color=#ff73fa>" + (Settings.moveCamera ? "Camera" : "Viewer") + "</color>");
                 }
@@ -372,7 +411,8 @@ namespace DesktopCamera {
 
         // This is a mess please don't look
         // and also pull request to improve it thx
-        public override void OnUpdate() {
+        public override void OnUpdate()
+        {
             // Testing
             /*if (Input.GetKeyDown(KeyCode.F1)) {
                 MelonLogger.Msg("test");
@@ -388,14 +428,18 @@ namespace DesktopCamera {
                     MelonLogger.Log(child.name + " - " + child.GetIl2CppType().Name);
                 }
             }*/
-            if (Settings.cameraEnabled && Settings.arrowKeysEnabled) {
+            if (Settings.cameraEnabled && Settings.arrowKeysEnabled)
+            {
                 var cameraRotation = CameraUtils.worldCameraQuaternion.ToEuler();
                 var actualCameraSpeed = (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
                     ? CameraSpeedAlt
                     : CameraSpeed;
-                if (Input.GetKey(KeyCode.DownArrow)) {
-                    if (Settings.moveCamera) {
-                        if (Settings.allowCameraMovement) {
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    if (Settings.moveCamera)
+                    {
+                        if (Settings.allowCameraMovement)
+                        {
                             if (Settings.rotateAroundUserCamera)
                                 CameraUtils.RotateAround(VRCUtils.GetMainCamera().transform.position,
                                     VRCUtils.GetMainCamera().transform.up,
@@ -405,131 +449,187 @@ namespace DesktopCamera {
                                     (float)Math.Sin(cameraRotation.y) * actualCameraSpeed, 0f,
                                     (float)Math.Cos(cameraRotation.y) * actualCameraSpeed);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         CameraUtils.GetViewFinder().transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -0.01f : -0.005f);
                     }
                 }
-                if (Input.GetKey(KeyCode.UpArrow)) {
-                    if (Settings.moveCamera) {
-                        if (Settings.allowCameraMovement) {
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    if (Settings.moveCamera)
+                    {
+                        if (Settings.allowCameraMovement)
+                        {
                             if (Settings.rotateAroundUserCamera) CameraUtils.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.up, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 2f : 1f);
                             else CameraUtils.worldCameraVector += new Vector3(
                                 (float)Math.Sin(cameraRotation.y) * actualCameraSpeed, 0f,
                                 (float)Math.Cos(cameraRotation.y) * actualCameraSpeed);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         CameraUtils.GetViewFinder().transform.localPosition += new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 0.01f : 0.005f);
                     }
                 }
-                if (Input.GetKey(KeyCode.PageUp)) {
-                    if (Settings.moveCamera) {
-                        if (Settings.allowCameraMovement) {
+                if (Input.GetKey(KeyCode.PageUp))
+                {
+                    if (Settings.moveCamera)
+                    {
+                        if (Settings.allowCameraMovement)
+                        {
                             if (Settings.rotateAroundUserCamera) CameraUtils.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -2f : -1f);
                             else CameraUtils.worldCameraVector += new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? CameraSpeedAlt : CameraSpeed, 0f);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         if (Settings.rotateAroundUserCamera) CameraUtils.GetViewFinder().transform.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -2f : -1f);
                         else CameraUtils.GetViewFinder().transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 0.01f : 0.005f, 0f);
                     }
                 }
-                if (Input.GetKey(KeyCode.PageDown)) {
-                    if (Settings.moveCamera) {
-                        if (Settings.allowCameraMovement) {
+                if (Input.GetKey(KeyCode.PageDown))
+                {
+                    if (Settings.moveCamera)
+                    {
+                        if (Settings.allowCameraMovement)
+                        {
                             if (Settings.rotateAroundUserCamera) CameraUtils.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 2f : 1f);
                             else CameraUtils.worldCameraVector += new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -CameraSpeedAlt : -CameraSpeed, 0f);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         if (Settings.rotateAroundUserCamera) CameraUtils.GetViewFinder().transform.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.right, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 2f : 1f);
                         else CameraUtils.GetViewFinder().transform.localPosition += new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -0.01f : -0.005f, 0f);
                     }
                 }
-                if (Input.GetKey(KeyCode.LeftArrow)) {
-                    if (Settings.moveCamera) {
+                if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    if (Settings.moveCamera)
+                    {
                         if (Settings.allowCameraMovement) CameraUtils.worldCameraVector -= new Vector3(
                             (float)Math.Cos(cameraRotation.y) * actualCameraSpeed, 0f,
                             (float)-Math.Sin(cameraRotation.y) * actualCameraSpeed);
-                    } else {
+                    }
+                    else
+                    {
                         if (Settings.rotateAroundUserCamera) CameraUtils.GetViewFinder().transform.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.up, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -2f : -1f);
                         else CameraUtils.GetViewFinder().transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -0.01f : -0.005f, 0f, 0f);
                     }
                 }
-                if (Input.GetKey(KeyCode.RightArrow)) {
-                    if (Settings.moveCamera) {
+                if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    if (Settings.moveCamera)
+                    {
                         if (Settings.allowCameraMovement) CameraUtils.worldCameraVector += new Vector3(
                             (float)Math.Cos(cameraRotation.y) * actualCameraSpeed, 0f,
                             (float)-Math.Sin(cameraRotation.y) * actualCameraSpeed);
-                    } else {
+                    }
+                    else
+                    {
                         if (Settings.rotateAroundUserCamera) CameraUtils.GetViewFinder().transform.RotateAround(VRCUtils.GetMainCamera().transform.position, VRCUtils.GetMainCamera().transform.up, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 2f : 1f);
                         else CameraUtils.GetViewFinder().transform.localPosition += new Vector3((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 0.01f : 0.005f, 0f, 0f);
                     }
                 }
 
                 // Rotation
-                if (Input.GetKey(KeyCode.Keypad8)) {
-                    if (Settings.moveCamera) {
+                if (Input.GetKey(KeyCode.Keypad8))
+                {
+                    if (Settings.moveCamera)
+                    {
                         if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt) ? -2f : -1f, 0f, 0f);
-                    } else {
+                    }
+                    else
+                    {
                         CameraUtils.GetViewFinder().transform.Rotate(new Vector3((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -2f : -1f, 0f));
                     }
                 }
-                if (Input.GetKey(KeyCode.Keypad2)) {
-                    if (Settings.moveCamera) {
+                if (Input.GetKey(KeyCode.Keypad2))
+                {
+                    if (Settings.moveCamera)
+                    {
                         if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt) ? 2f : 1f, 0f, 0f);
-                    } else {
+                    }
+                    else
+                    {
                         CameraUtils.GetViewFinder().transform.Rotate(new Vector3((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 2f : 1f, 0f));
                     }
                 }
-                if (Input.GetKey(KeyCode.Keypad4)) {
-                    if (Settings.moveCamera) {
+                if (Input.GetKey(KeyCode.Keypad4))
+                {
+                    if (Settings.moveCamera)
+                    {
                         if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(0f, Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt) ? -2f : -1f, 0f);
-                    } else {
+                    }
+                    else
+                    {
                         CameraUtils.GetViewFinder().transform.Rotate(new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -2f : -1f));
                     }
                 }
-                if (Input.GetKey(KeyCode.Keypad6)) {
-                    if (Settings.moveCamera) {
+                if (Input.GetKey(KeyCode.Keypad6))
+                {
+                    if (Settings.moveCamera)
+                    {
                         if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(0f, Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt) ? 2f : 1f, 0f);
-                    } else {
+                    }
+                    else
+                    {
                         CameraUtils.GetViewFinder().transform.Rotate(new Vector3(0f, 0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 2f : 1f));
                     }
                 }
-                if (Input.GetKey(KeyCode.Keypad7)) {
-                    if (Settings.moveCamera) {
+                if (Input.GetKey(KeyCode.Keypad7))
+                {
+                    if (Settings.moveCamera)
+                    {
                         if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(0f, 0f, Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt) ? 2f : 1f);
-                    } else {
+                    }
+                    else
+                    {
                         CameraUtils.GetViewFinder().transform.Rotate(new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? -2f : -1f, 0f));
                     }
                 }
-                if (Input.GetKey(KeyCode.Keypad9)) {
-                    if (Settings.moveCamera) {
+                if (Input.GetKey(KeyCode.Keypad9))
+                {
+                    if (Settings.moveCamera)
+                    {
                         if (Settings.allowCameraMovement) CameraUtils.worldCameraQuaternion *= Quaternion.Euler(0f, 0f, Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt) ? -2f : -1f);
-                    } else {
+                    }
+                    else
+                    {
                         CameraUtils.GetViewFinder().transform.Rotate(new Vector3(0f, (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 2f : 1f, 0f));
                     }
                 }
 
                 // Reset
-                if (Input.GetKeyDown(KeyCode.Keypad3)) {
+                if (Input.GetKeyDown(KeyCode.Keypad3))
+                {
                     if (Settings.cameraEnabled) CameraUtils.ResetCamera();
                 }
 
                 // Look at player
-                if (Input.GetKeyDown(KeyCode.Keypad1)) {
-                    if (Settings.cameraEnabled) {
+                if (Input.GetKeyDown(KeyCode.Keypad1))
+                {
+                    if (Settings.cameraEnabled)
+                    {
                         CameraUtils.GetViewFinder().transform.LookAt(VRCUtils.GetMainCamera().transform);
                         CameraUtils.GetViewFinder().transform.rotation *= Quaternion.Euler(90f, 0f, 0f);
                     }
                 }
 
                 // Take pic
-                if (Input.GetKeyDown(KeyCode.KeypadPlus)) {
+                if (Input.GetKeyDown(KeyCode.KeypadPlus))
+                {
                     if (Settings.cameraEnabled) CameraUtils.TakePicture(0);
                 }
 
                 // Toggle camera movement
-                if (Input.GetKeyDown(KeyCode.KeypadMinus)) {
-                    if (Settings.cameraEnabled) {
-                        if (cameraMovementButton != null) {
+                if (Input.GetKeyDown(KeyCode.KeypadMinus))
+                {
+                    if (Settings.cameraEnabled)
+                    {
+                        if (cameraMovementButton != null)
+                        {
                             Settings.moveCamera = !Settings.moveCamera;
                             cameraMovementButton.setText("Camera\nMovement\n<color=#ff73fa>" + (Settings.moveCamera ? "Camera" : "Viewer") + "</color>");
                             VRCUtils.QueueHudMessage("Camera Movement set to " + (Settings.moveCamera ? "Camera" : "Viewer"));

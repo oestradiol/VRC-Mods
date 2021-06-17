@@ -7,7 +7,6 @@ using System;
 using System.Linq;
 using UnityEngine.Events;
 
-
 [assembly: AssemblyCopyright("Created by " + BetterSteadycam.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(BetterSteadycam.Main), BetterSteadycam.BuildInfo.Name, BetterSteadycam.BuildInfo.Version, BetterSteadycam.BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
