@@ -51,25 +51,21 @@ namespace TrackingRotator
         private static void Integrations()
         {
             if (AMAPIIntegration.Value)
-            {
                 if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("ActionMenuApi")))
                 {
                     Assets.OnApplicationStart();
                     IsUsingAMAPI = true;
                 }
                 else MelonLogger.Warning("For a better experience, please consider using ActionMenuApi.");
-            }
             else MelonLogger.Warning("Integration with ActionMenuApi has been deactivated on Settings.");
 
             if (UIXIntegration.Value)
-            {
                 if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
                 {
                     typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
                     IsUsingUIX = true;
                 }
                 else MelonLogger.Warning("For a better experience, please consider using UIExpansionKit.");
-            }
             else MelonLogger.Warning("Integration with UIExpansionKit has been deactivated on Settings.");
 
             if (!AMAPIIntegration.Value && !UIXIntegration.Value)
@@ -78,9 +74,7 @@ namespace TrackingRotator
                     "please consider activating at least one of the integrations on Settings.");
 
             if (!IsUsingAMAPI && !IsUsingUIX)
-            {
                 MelonLogger.Error("Failed to load both integrations with UIExpansionKit and ActionMenuApi! The mod will not be loaded.");
-            }
             else
             {
                 static IEnumerator OnUiManagerInit()
@@ -100,6 +94,7 @@ namespace TrackingRotator
             cameraTransform = Transform.GetValue(camera).Cast<Transform>();
             originalRotation = cameraTransform.localRotation;
             transform = Camera.main.transform;
+            if (IsUsingAMAPI) typeof(AMAPIManager).GetMethod("ActionMenuIntegration").Invoke(null, null);
         }
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName) 

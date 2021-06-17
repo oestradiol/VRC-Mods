@@ -16,7 +16,6 @@ using UnityEngine.Events;
 // This mod was firstly developed by nitro. and I continued
 namespace BetterSteadycam
 {
-
     public static class BuildInfo
     {
         public const string Name = "BetterSteadycam";
@@ -48,7 +47,7 @@ namespace BetterSteadycam
             LoadPreferences();
 
             HInstance.Patch(typeof(FPVCameraController).GetMethod(nameof(FPVCameraController.Update)),
-                new HarmonyMethod(typeof(Main).GetMethod(nameof(FPVCameraControllerUpdatePatch))));
+                new HarmonyMethod(typeof(Main).GetMethod(nameof(FPVCameraControllerUpdatePatch), BindingFlags.NonPublic | BindingFlags.Static)));
 
             static IEnumerator OnUiManagerInit()
             {
