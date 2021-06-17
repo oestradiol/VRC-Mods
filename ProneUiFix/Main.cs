@@ -19,7 +19,7 @@ namespace ProneUiFix
     {
         public const string Name = "ProneUiFix";
         public const string Author = "Davi";
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
     }
 
     internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
