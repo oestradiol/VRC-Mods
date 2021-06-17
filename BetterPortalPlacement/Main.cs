@@ -13,6 +13,7 @@ using VRC;
 [assembly: MelonInfo(typeof(BetterPortalPlacement.Main), BetterPortalPlacement.BuildInfo.Name, BetterPortalPlacement.BuildInfo.Version, BetterPortalPlacement.BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(ConsoleColor.DarkMagenta)]
+[assembly: MelonOptionalDependencies("UIExpansionKit")]
 
 // This mod was firstly proposed and pre-developed by gompo and I continued/finished it
 namespace BetterPortalPlacement
@@ -23,6 +24,8 @@ namespace BetterPortalPlacement
         public const string Author = "Davi";
         public const string Version = "1.0.3";
     }
+
+    internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
 
     public class Main : MelonMod
     {
@@ -45,18 +48,29 @@ namespace BetterPortalPlacement
             IsOnlyOnError = MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsOnlyOnError), false, "Use only on error?");
             Patches.ApplyPatches();
 
-            static IEnumerator OnUiManagerInit()
-            {
-                while (VRCUiManager.prop_VRCUiManager_0 == null)
-                    yield return null;
-                VRChat_OnUiManagerInit();
-            }
-            MelonCoroutines.Start(OnUiManagerInit());
+            WaitForUiInit();
 
             MelonLogger.Msg("Successfully loaded!");
         }
 
-        private static void VRChat_OnUiManagerInit()
+        private static void WaitForUiInit()
+        {
+            if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
+                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+            else
+            {
+                MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
+                static IEnumerator OnUiManagerInit()
+                {
+                    while (VRCUiManager.prop_VRCUiManager_0 == null)
+                        yield return null;
+                    VRChat_OnUiManagerInit();
+                }
+                MelonCoroutines.Start(OnUiManagerInit());
+            }
+        }
+
+        public static void VRChat_OnUiManagerInit()
         {
             portalPtr = Utilities.GetPtrObj().AddComponent<PortalPtr>();
             if (XRDevice.isPresent) VRUtils.VRChat_OnUiManagerInit();

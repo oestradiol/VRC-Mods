@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using Il2CppSystem.Reflection;
 using UnhollowerRuntimeLib;
+using MelonLoader;
 using UnityEngine;
 using VRC.UserCamera;
+using MethodInfo = System.Reflection.MethodInfo;
 
 namespace DesktopCamera.Utils
 {
@@ -41,7 +43,18 @@ namespace DesktopCamera.Utils
         public static Camera GetMainCamera() => VRCVrCamera.field_Private_Static_VRCVrCamera_0.field_Public_Camera_0;
 
         public static UserCameraController GetUserCameraController() => UserCameraController.field_Internal_Static_UserCameraController_0;
-        
-        public static void QueueHudMessage(string message) => VRCUiManager.prop_VRCUiManager_0.Method_Public_Void_String_PDM_0(message);
+
+        private static MethodInfo QueueHudMessageMethod;
+        private static MethodInfo GetQueueHudMessageMethod
+        {
+            get
+            {
+                if (QueueHudMessageMethod == null) QueueHudMessageMethod = typeof(VRCUiManager).GetMethods()
+                     .Where(m => m.Name.StartsWith("Method_Public_Void_String_") && m.GetParameters().First().Name == "screenType")
+                     .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).First();
+                return QueueHudMessageMethod;
+            }
+        }
+        public static void QueueHudMessage(string message) => GetQueueHudMessageMethod.Invoke(VRCUiManager.prop_VRCUiManager_0, new object[] { message });
     }
 }

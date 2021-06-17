@@ -11,6 +11,7 @@ using UnityEngine.XR;
 [assembly: MelonInfo(typeof(ProneUiFix.Main), ProneUiFix.BuildInfo.Name, ProneUiFix.BuildInfo.Version, ProneUiFix.BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(System.ConsoleColor.DarkMagenta)]
+[assembly: MelonOptionalDependencies("UIExpansionKit")]
 
 namespace ProneUiFix
 {
@@ -20,6 +21,8 @@ namespace ProneUiFix
         public const string Author = "Davi";
         public const string Version = "1.0.2";
     }
+
+    internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
 
     public class Main : MelonMod
     {
@@ -41,18 +44,29 @@ namespace ProneUiFix
         {
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
 
-            static IEnumerator OnUiManagerInit()
-            {
-                while (VRCUiManager.prop_VRCUiManager_0 == null)
-                    yield return null;
-                VRChat_OnUiManagerInit();
-            }
-            MelonCoroutines.Start(OnUiManagerInit());
+            WaitForUiInit();
 
             MelonLogger.Msg("Successfully loaded!");
         }
 
-        private static void VRChat_OnUiManagerInit()
+        private static void WaitForUiInit()
+        {
+            if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
+                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+            else
+            {
+                MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
+                static IEnumerator OnUiManagerInit()
+                {
+                    while (VRCUiManager.prop_VRCUiManager_0 == null)
+                        yield return null;
+                    VRChat_OnUiManagerInit();
+                }
+                MelonCoroutines.Start(OnUiManagerInit());
+            }
+        }
+
+        public static void VRChat_OnUiManagerInit()
         {
             if (!XRDevice.isPresent)
                 GameObject.Find("UserInterface/MenuContent/Backdrop/Backdrop")
