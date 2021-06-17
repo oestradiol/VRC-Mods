@@ -13,15 +13,16 @@ using Object = UnityEngine.Object;
 [assembly: MelonInfo(typeof(TrackingRotator.Main), TrackingRotator.BuildInfo.Name, TrackingRotator.BuildInfo.Version, TrackingRotator.BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(ConsoleColor.DarkMagenta)]
+[assembly: MelonOptionalDependencies("UIExpansionKit", "ActionMenuApi")]
 
-// This mod was firstly developed by nitro. and I continued it
+// This mod was firstly developed by nitro. and I continued
 namespace TrackingRotator
 {
     public static class BuildInfo
     {
         public const string Name = "TrackingRotator";
         public const string Author = "Davi & nitro.";
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
     }
 
     public class Main : MelonMod
@@ -56,7 +57,7 @@ namespace TrackingRotator
                     Assets.OnApplicationStart();
                     IsUsingAMAPI = true;
                 }
-                else MelonLogger.Warning("For a better experience, please consider using ActionMenuApi.");
+                else MelonLogger.Warning("For a better experience, please consider installing ActionMenuApi.");
             else MelonLogger.Warning("Integration with ActionMenuApi has been deactivated on Settings.");
 
             if (UIXIntegration.Value)
@@ -65,7 +66,7 @@ namespace TrackingRotator
                     typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
                     IsUsingUIX = true;
                 }
-                else MelonLogger.Warning("For a better experience, please consider using UIExpansionKit.");
+                else MelonLogger.Warning("For a better experience, please consider installing UIExpansionKit.");
             else MelonLogger.Warning("Integration with UIExpansionKit has been deactivated on Settings.");
 
             if (!AMAPIIntegration.Value && !UIXIntegration.Value)
@@ -75,8 +76,9 @@ namespace TrackingRotator
 
             if (!IsUsingAMAPI && !IsUsingUIX)
                 MelonLogger.Error("Failed to load both integrations with UIExpansionKit and ActionMenuApi! The mod will not be loaded.");
-            else
+            else if (!IsUsingUIX)
             {
+                MelonLogger.Warning("Using coroutine to wait for UiInit.");
                 static IEnumerator OnUiManagerInit()
                 {
                     while (VRCUiManager.prop_VRCUiManager_0 == null)
@@ -87,7 +89,7 @@ namespace TrackingRotator
             }
         }
 
-        private static void VRChat_OnUiManagerInit()
+        public static void VRChat_OnUiManagerInit()
         {
             var camera = Object.FindObjectOfType<VRCVrCamera>();
             var Transform = camera.GetIl2CppType().GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => f.FieldType == Il2CppType.Of<Transform>()).ToArray()[0];

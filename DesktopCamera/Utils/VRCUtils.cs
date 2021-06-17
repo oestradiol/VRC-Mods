@@ -1,19 +1,16 @@
 ﻿using Il2CppSystem.Reflection;
 using System.Linq;
 using UnityEngine;
-using VRC;
-using VRC.Core;
 using UnhollowerRuntimeLib;
 using VRC.UserCamera;
 
 namespace DesktopCamera.Utils
 {
-
-    public static class VRCUtils
+    // Thanks Emilia (yoshifan#9550) <3
+    internal static class VRCUtils
     {
-
         private static FieldInfo currentPageGetter;
-        // Thanks Emilia (yoshifan#9550) <3
+
         public static void ShowQuickMenuPage(QuickMenu quickMenu, Transform pageTransform, string currentMenu = "ShortcutMenu")
         {
             if (currentPageGetter == null)
@@ -41,39 +38,10 @@ namespace DesktopCamera.Utils
             currentPageGetter.SetValue(quickMenu, pageTransform.gameObject);
         }
 
-        public static QuickMenu GetQuickMenu()
-        {
-            return QuickMenu.prop_QuickMenu_0;
-        }
+        public static Camera GetMainCamera() => VRCVrCamera.field_Private_Static_VRCVrCamera_0.field_Public_Camera_0;
 
-        public static Transform SingleButtonTemplate()
-        {
-            return GetQuickMenu().transform.Find("ShortcutMenu/WorldsButton");
-        }
-
-        public static Transform MenuTemplate()
-        {
-            return GetQuickMenu().transform.Find("CameraMenu");
-        }
-
-        public static Camera GetMainCamera()
-        {
-            return VRCVrCamera.field_Private_Static_VRCVrCamera_0.field_Public_Camera_0;
-        }
-
-        public static UserCameraController GetUserCameraController()
-        {
-            return UserCameraController.field_Internal_Static_UserCameraController_0;
-        }
-
-        public static VRCUiManager GetVRCUiManager()
-        {
-            return VRCUiManager.prop_VRCUiManager_0;
-        }
-
-        public static void QueueHudMessage(string message)
-        {
-            GetVRCUiManager().Method_Public_Void_String_0(message);
-        }
+        public static UserCameraController GetUserCameraController() => UserCameraController.field_Internal_Static_UserCameraController_0;
+        
+        public static void QueueHudMessage(string message) => VRCUiManager.prop_VRCUiManager_0.Method_Public_Void_String_PDM_0(message);
     }
 }
