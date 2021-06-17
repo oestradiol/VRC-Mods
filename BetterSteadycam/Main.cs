@@ -7,18 +7,24 @@ using System;
 using System.Linq;
 using UnityEngine.Events;
 
-namespace BetterSteadycam {
 
-    public static class ModBuildInfo {
+[assembly: AssemblyCopyright("Created by " + BetterSteadycam.BuildInfo.Author)]
+[assembly: MelonInfo(typeof(BetterSteadycam.Main), BetterSteadycam.BuildInfo.Name, BetterSteadycam.BuildInfo.Version, BetterSteadycam.BuildInfo.Author)]
+[assembly: MelonGame("VRChat", "VRChat")]
+[assembly: MelonColor(ConsoleColor.DarkMagenta)]
+
+// This mod was firstly developed by nitro. and I continued
+namespace BetterSteadycam 
+{
+
+    public static class BuildInfo
+    {
         public const string Name = "BetterSteadycam";
-        public const string Author = "nitro.";
+        public const string Author = "Davi & nitro.";
         public const string Version = "1.0.0";
-        public const string DownloadLink = "https://github.com/nitrog0d/BetterSteadycam/releases/latest/download/BetterSteadycam.dll";
-        public const string GameDeveloper = "VRChat";
-        public const string Game = "VRChat";
     }
 
-    public class BetterSteadycamMod : MelonMod {
+    public class Main : MelonMod {
         private const string ModCategory = "BetterSteadycam";
         private const string FieldOfViewPref = "FieldOfView";
         private const string SmoothingPref = "Smoothing";
@@ -54,7 +60,7 @@ namespace BetterSteadycam {
             LoadPreferences();
 
             var harmony = HarmonyInstance.Create("BetterSteadycam");
-            harmony.Patch(typeof(FPVCameraController).GetMethod("Update", BindingFlags.Instance | BindingFlags.Public), new HarmonyMethod(typeof(BetterSteadycamMod).GetMethod("FPVCameraControllerUpdatePatch", BindingFlags.NonPublic | BindingFlags.Static)));
+            harmony.Patch(typeof(FPVCameraController).GetMethod("Update", BindingFlags.Instance | BindingFlags.Public), new HarmonyMethod(typeof(Main).GetMethod("FPVCameraControllerUpdatePatch", BindingFlags.NonPublic | BindingFlags.Static)));
         }
 
         public override void OnPreferencesLoaded() => LoadPreferences();

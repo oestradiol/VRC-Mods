@@ -6,18 +6,21 @@ using System.Collections;
 using TrackingRotator.Utils;
 using Il2CppSystem.Reflection;
 
+[assembly: AssemblyCopyright("Created by " + TrackingRotator.BuildInfo.Author)]
+[assembly: MelonInfo(typeof(TrackingRotator.Main), TrackingRotator.BuildInfo.Name, TrackingRotator.BuildInfo.Version, TrackingRotator.BuildInfo.Author)]
+[assembly: MelonGame("VRChat", "VRChat")]
+[assembly: MelonColor(ConsoleColor.DarkMagenta)]
+
+// This mod was firstly developed by nitro. and I continued it
 namespace TrackingRotator 
 {
-    public static class ModBuildInfo {
+    public static class BuildInfo {
         public const string Name = "TrackingRotator";
-        public const string Author = "Davi & nitro."; // <3
+        public const string Author = "Davi & nitro.";
         public const string Version = "1.0.2";
-        public const string DownloadLink = "https://github.com/nitrog0d/TrackingRotator/releases/latest/download/TrackingRotator.dll";
-        public const string GameDeveloper = "VRChat";
-        public const string Game = "VRChat";
     }
 
-    public class TrackingRotatorMod : MelonMod 
+    public class Main : MelonMod 
     {
 
         private const string ModCategory = "TrackingRotator";

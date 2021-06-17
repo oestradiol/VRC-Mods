@@ -5,7 +5,7 @@ using System.Collections;
 using MelonLoader;
 using System.IO;
 using System.Reflection;
-using static TrackingRotator.TrackingRotatorMod;
+using static TrackingRotator.Main;
 
 namespace TrackingRotator.Utils
 {

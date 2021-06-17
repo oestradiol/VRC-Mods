@@ -1,5 +1,5 @@
 ﻿using UIExpansionKit.API;
-using static TrackingRotator.TrackingRotatorMod;
+using static TrackingRotator.Main;
 
 namespace TrackingRotator.Utils
 {
