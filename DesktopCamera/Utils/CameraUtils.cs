@@ -1,33 +1,40 @@
 ﻿using UnityEngine;
 using VRC.UserCamera;
 
-namespace DesktopCamera.Utils {
-    public class CameraUtils {
+namespace DesktopCamera.Utils
+{
+    public class CameraUtils
+    {
 
         private static GameObject viewFinder = null;
         private static GameObject photoCamera = null;
         private static GameObject pinsHolder = null;
 
-        public static GameObject GetViewFinder() {
+        public static GameObject GetViewFinder()
+        {
             if (!viewFinder) viewFinder = VRCUtils.GetUserCameraController().transform.Find("ViewFinder").gameObject;
             return viewFinder;
         }
 
-        public static GameObject GetPhotoCamera() {
+        public static GameObject GetPhotoCamera()
+        {
             if (!photoCamera) photoCamera = VRCUtils.GetUserCameraController().transform.Find("PhotoCamera").gameObject;
             return photoCamera;
         }
 
-        public static GameObject GetPinsHolder() {
+        public static GameObject GetPinsHolder()
+        {
             if (!pinsHolder) pinsHolder = GetViewFinder().transform.Find("UI_Pin-TRAY").gameObject;
             return pinsHolder;
         }
 
-        public static void SetCameraMode(CameraMode mode) {
+        public static void SetCameraMode(CameraMode mode)
+        {
             VRCUtils.GetUserCameraController().prop_UserCameraMode_0 = (UserCameraMode)mode;
         }
 
-        public static void ResetCamera() {
+        public static void ResetCamera()
+        {
             SetCameraMode(CameraMode.Off);
             SetCameraMode(CameraMode.Photo);
             var viewFinder = GetViewFinder();
@@ -39,73 +46,88 @@ namespace DesktopCamera.Utils {
             photoCamera.transform.rotation = viewFinder.transform.rotation;
         }
 
-        public static void TakePicture(int timer) {
+        public static void TakePicture(int timer)
+        {
             var camInstance = VRCUtils.GetUserCameraController();
             camInstance.StartCoroutine(camInstance.Method_Private_IEnumerator_Int32_PDM_0(timer));
         }
 
         // This used to be an obfuscated enum but I'll leave it like this anyway
-        public static CameraBehaviour GetCameraBehaviour() {
+        public static CameraBehaviour GetCameraBehaviour()
+        {
             return (CameraBehaviour)VRCUtils.GetUserCameraController().prop_UserCameraMovementBehaviour_0;
         }
 
         // This used to be an obfuscated enum but I'll leave it like this anyway
-        public static CameraSpace GetCameraSpace() {
+        public static CameraSpace GetCameraSpace()
+        {
             return (CameraSpace)VRCUtils.GetUserCameraController().prop_UserCameraSpace_0;
         }
 
-        public static Pin GetCurrentPin() {
+        public static Pin GetCurrentPin()
+        {
             return (Pin)VRCUtils.GetUserCameraController().prop_Int32_0;
         }
 
-        public static void CycleCameraBehaviour() {
+        public static void CycleCameraBehaviour()
+        {
             GetViewFinder().transform.Find("PhotoControls/Left_CameraMode").GetComponent<CameraInteractable>().Interact();
         }
 
-        public static void CycleCameraSpace() {
+        public static void CycleCameraSpace()
+        {
             GetViewFinder().transform.Find("PhotoControls/Left_Space").GetComponent<CameraInteractable>().Interact();
         }
 
-        public static void SetPin(int pin) {
+        public static void SetPin(int pin)
+        {
             GetPinsHolder().transform.Find("button-Pin-" + pin).GetComponent<CameraInteractable>().Interact();
         }
 
-        public static void SetFilter(string filter) {
+        public static void SetFilter(string filter)
+        {
             GetViewFinder().transform.Find("Filters/" + filter).GetComponent<CameraInteractable>().Interact();
         }
 
-        public static void TogglePinMenu() {
+        public static void TogglePinMenu()
+        {
             GetViewFinder().transform.Find("PhotoControls/Left_Pins").GetComponent<CameraInteractable>().Interact();
         }
 
-        public static void ToggleLock() {
+        public static void ToggleLock()
+        {
             GetViewFinder().transform.Find("PhotoControls/Right_Lock").GetComponent<CameraInteractable>().Interact();
         }
 
-        public static void ToggleFilterMenu() {
+        public static void ToggleFilterMenu()
+        {
             GetViewFinder().transform.Find("PhotoControls/Right_Filters").GetComponent<CameraInteractable>().Interact();
         }
 
 
-        public enum CameraMode {
+        public enum CameraMode
+        {
             Off,
             Photo,
             Video
         }
 
-        public enum CameraScale {
+        public enum CameraScale
+        {
             Normal,
             Medium,
             Big
         }
 
-        public enum CameraBehaviour {
+        public enum CameraBehaviour
+        {
             None,
             Smooth,
             LookAt
         }
 
-        public enum CameraSpace {
+        public enum CameraSpace
+        {
             Attached,
             Local,
             World,
@@ -113,32 +135,40 @@ namespace DesktopCamera.Utils {
             COUNT
         }
 
-        public enum Pin {
+        public enum Pin
+        {
             Pin1,
             Pin2,
             Pin3
         }
 
-        public static Vector3 worldCameraVector {
-            get {
+        public static Vector3 worldCameraVector
+        {
+            get
+            {
                 return VRCUtils.GetUserCameraController().field_Private_Vector3_0;
             }
-            set {
+            set
+            {
                 VRCUtils.GetUserCameraController().field_Private_Vector3_0 = value;
             }
         }
 
-        public static Quaternion worldCameraQuaternion {
-            get {
+        public static Quaternion worldCameraQuaternion
+        {
+            get
+            {
                 return VRCUtils.GetUserCameraController().field_Private_Quaternion_0;
             }
-            set {
+            set
+            {
                 VRCUtils.GetUserCameraController().field_Private_Quaternion_0 = value;
             }
         }
 
         // https://answers.unity.com/questions/489350/rotatearound-without-transform.html
-        public static void RotateAround(Vector3 center, Vector3 axis, float angle) {
+        public static void RotateAround(Vector3 center, Vector3 axis, float angle)
+        {
             var pos = worldCameraVector;
             var rot = Quaternion.AngleAxis(angle, axis);
             var dir = pos - center;
