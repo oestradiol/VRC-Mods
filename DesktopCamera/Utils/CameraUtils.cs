@@ -5,7 +5,6 @@ namespace DesktopCamera.Utils
 {
     public class CameraUtils
     {
-
         private static GameObject viewFinder = null;
         private static GameObject photoCamera = null;
         private static GameObject pinsHolder = null;

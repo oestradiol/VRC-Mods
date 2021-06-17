@@ -4,14 +4,11 @@ using UnityEngine.Events;
 
 namespace DesktopCamera.Utils
 {
-
     // Based on https://github.com/DubyaDude/RubyButtonAPI
     // Thanks DubyaDude and Emilia (yoshifan#9550) <3
     // I promise that one day I'll actually use the repo above, I just don't feel like rewriting the buttons codes in Main.cs right now :c
-
     internal class SingleButton
     {
-
         public Transform Button;
 
         public SingleButton(string name, string text, string tooltip, float x, float y, Transform childOf = null, UnityAction action = null)
