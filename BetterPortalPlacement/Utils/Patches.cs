@@ -31,65 +31,39 @@ namespace BetterPortalPlacement.Utils
         public static void CloseMenu(bool __0, bool __1) => GetCloseMenuDelegate(__0, __1);
         private delegate void CloseMenuDelegate(bool __0, bool __1);
         private static CloseMenuDelegate closeMenuDelegate;
-        private static CloseMenuDelegate GetCloseMenuDelegate
-        {
-            get
-            {
-                if (closeMenuDelegate == null) 
-                    closeMenuDelegate = (CloseMenuDelegate)Delegate.CreateDelegate(typeof(CloseMenuDelegate), 
-                        VRCUiManager.prop_VRCUiManager_0, 
-                        typeof(VRCUiManager).GetMethods()
-                        .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_"))
-                        .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last());
-                return closeMenuDelegate;
-            }
-        }
+        private static CloseMenuDelegate GetCloseMenuDelegate => 
+            closeMenuDelegate ??= (CloseMenuDelegate)Delegate.CreateDelegate(
+                typeof(CloseMenuDelegate), 
+                VRCUiManager.prop_VRCUiManager_0, 
+                typeof(VRCUiManager).GetMethods()
+                .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_"))
+                .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last());
 
         public static bool CreatePortal(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool) =>
             GetCreatePortalDelegate(apiWorld, apiWorldInstance, pos, foward, someBool);
         private delegate bool CreatePortalDelegate(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool);
         private static CreatePortalDelegate createPortalDelegate;
         private static MethodInfo createPortalMethod;
-        private static CreatePortalDelegate GetCreatePortalDelegate
-        {
-            get
-            {
-                if (createPortalDelegate == null) 
-                    createPortalDelegate = (CreatePortalDelegate)Delegate.CreateDelegate(typeof(CreatePortalDelegate), null, CreatePortalMethod);
-                return createPortalDelegate;
-            }
-        }
-        private static MethodInfo CreatePortalMethod
-        { 
-            get
-            {
-                if (createPortalMethod == null)
-                    createPortalMethod = typeof(PortalInternal).GetMethods()
-                        .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
-                        .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
-                return createPortalMethod;
-            }
-        }
+        private static CreatePortalDelegate GetCreatePortalDelegate => 
+            createPortalDelegate ??= (CreatePortalDelegate)Delegate.CreateDelegate(typeof(CreatePortalDelegate), null, CreatePortalMethod);
+        private static MethodInfo CreatePortalMethod => 
+            createPortalMethod ??= typeof(PortalInternal).GetMethods()
+                .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
+                .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
 
         public static void PopupV2(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null) => 
             GetPopupV2Delegate(title, innertxt, buttontxt, buttonOk, action);
         private delegate void PopupV2Delegate(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null);
         private static PopupV2Delegate popupV2Delegate;
-        private static PopupV2Delegate GetPopupV2Delegate
-        {
-            get
-            {
-                if (popupV2Delegate == null) 
-                    popupV2Delegate = (PopupV2Delegate)Delegate.CreateDelegate(typeof(PopupV2Delegate), 
-                        VRCUiPopupManager.prop_VRCUiPopupManager_0, 
-                        typeof(VRCUiPopupManager).GetMethods()
-                            .First(methodBase => methodBase.Name.StartsWith("Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_") &&
-                            !methodBase.Name.Contains("PDM") &&
-                            Utilities.ContainsStr(methodBase, "UserInterface/MenuContent/Popups/StandardPopupV2") &&
-                            Utilities.WasUsedBy(methodBase, "OpenSaveSearchPopup")));
-                return popupV2Delegate;
-            }
-        }
+        private static PopupV2Delegate GetPopupV2Delegate =>
+            popupV2Delegate ??= (PopupV2Delegate)Delegate.CreateDelegate(
+                typeof(PopupV2Delegate), 
+                VRCUiPopupManager.prop_VRCUiPopupManager_0, 
+                typeof(VRCUiPopupManager).GetMethods()
+                    .First(methodBase => methodBase.Name.StartsWith("Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_") &&
+                    !methodBase.Name.Contains("PDM") &&
+                    Utilities.ContainsStr(methodBase, "UserInterface/MenuContent/Popups/StandardPopupV2") &&
+                    Utilities.WasUsedBy(methodBase, "OpenSaveSearchPopup")));
 
         public static bool OnPortalCreated(ApiWorld __0, ApiWorldInstance __1, Vector3 __2, Vector3 __3, bool __4)
         {
