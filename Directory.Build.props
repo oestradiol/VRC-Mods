@@ -5,12 +5,11 @@
 			<DebugType>none</DebugType>
 			<DebugSymbols>false</DebugSymbols>
 			<ClearOutputDirectory>False</ClearOutputDirectory>
-			<VRChatFolder>..\..\..\..\..\Jogos\SteamLibrary\steamapps\common\VRChat</VRChatFolder>
-			<MelonManaged>$(VRChatFolder)\MelonLoader\Managed</MelonManaged>
+			<MelonManaged>..\..\..\..\..\Jogos\SteamLibrary\steamapps\common\VRChat\MelonLoader\Managed</MelonManaged>
 			<OutputPath>$(MsBuildThisFileDirectory)\Output</OutputPath>
 		</PropertyGroup>  
 		<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)' == 'true'">
-			<Exec Command="xcopy /c /f /y $(OutputPath)\$(AssemblyName).dll $(VRChatFolder)\Mods" />
+			<Exec Command="xcopy /c /f /y $(OutputPath)\$(AssemblyName).dll $(MelonManaged)\..\..\Mods" />
 		</Target>
 		<ItemGroup Condition="'$(VrcReferences)' == 'true'">
 			<Reference Include="System" />
@@ -20,7 +19,7 @@
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="ActionMenuApi">
-				<HintPath>$(VRChatFolder)\Mods\ActionMenuApi.dll</HintPath>
+				<HintPath>$(MelonManaged)\..\..\Mods\ActionMenuApi.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="Il2Cppmscorlib">
@@ -36,7 +35,7 @@
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="UIExpansionKit">
-				<HintPath>$(VRChatFolder)\Mods\UIExpansionKit.dll</HintPath>
+				<HintPath>$(MelonManaged)\..\..\Mods\UIExpansionKit.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="UnhollowerBaseLib">
