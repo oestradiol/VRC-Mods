@@ -1,16 +1,16 @@
-﻿using System.Linq;
-using System.Reflection;
-using System.Collections;
+﻿using System.Reflection;
 using System.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using System;
+using UIExpansionKit.API;
 
 [assembly: AssemblyCopyright("Created by " + ToggleFullScreen.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(ToggleFullScreen.Main), ToggleFullScreen.BuildInfo.Name, ToggleFullScreen.BuildInfo.Version, ToggleFullScreen.BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
-[assembly: MelonColor(System.ConsoleColor.DarkMagenta)]
+[assembly: MelonColor(ConsoleColor.DarkMagenta)]
 [assembly: MelonOptionalDependencies("UIExpansionKit")]
 
 namespace ToggleFullScreen
@@ -19,16 +19,14 @@ namespace ToggleFullScreen
     {
         public const string Name = "ToggleFullScreen";
         public const string Author = "Davi";
-        public const string Version = "1.0.2";
+        public const string Version = "1.1.0";
     }
-
-    internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
 
     public class Main : MelonMod
     {
-        private static readonly bool useHeadLook = false;
-        private static Resolution Previous;
-        private static Resolution MaxRes;
+        private static Resolution Previous, Current, MaxRes, FirstRes, SecondRes, ThirdRes, FourthRes;
+        private static MelonPreferences_Entry<string> FSResolution;
+        private const bool useHeadLook = false;
         private static bool PreviousState;
         private static Toggle toggle;
 
@@ -40,31 +38,54 @@ namespace ToggleFullScreen
                 height = Screen.height
             };
 
-            bool Initial = Screen.fullScreen;
-            Screen.fullScreen = false;
-            MaxRes = Screen.currentResolution;
-            Screen.fullScreen = Initial;
+            // Set preferences
+            var temp = Screen.resolutions;
+            MaxRes = temp[temp.Count - 1];
+            ProcessResolutions();
+            MelonPreferences.CreateCategory("ToggleFullScreen", "Toggle FullScreen");
+            FSResolution = MelonPreferences.CreateEntry("ToggleFullScreen", "FSResolution", "Maximum", "FullScreen Resolution");
+            ExpansionKitApi.RegisterSettingAsStringEnum("ToggleFullScreen", "FSResolution",
+                new[] { 
+                    ("Maximum", $"{MaxRes.width}x{MaxRes.height}"), 
+                    ("High", $"{FirstRes.width}x{FirstRes.height}"), 
+                    ("Medium", $"{SecondRes.width}x{SecondRes.height}"), 
+                    ("Low", $"{ThirdRes.width}x{ThirdRes.height}"), 
+                    ("Minimum", $"{FourthRes.width}x{FourthRes.height}") 
+                });
+            OnPreferencesSaved();
 
-            WaitForUiInit();
-
+            ExpansionKitApi.OnUiManagerInit += VRChat_OnUiManagerInit;
             MelonLogger.Msg("Successfully loaded!");
         }
 
-        private static void WaitForUiInit()
+        // Updates the Resolution after saving prefs
+        public override void OnPreferencesSaved()
         {
-            if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
-                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
-            else
+            switch (FSResolution.Value)
             {
-                MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
-                static IEnumerator OnUiManagerInit()
-                {
-                    while (VRCUiManager.prop_VRCUiManager_0 == null)
-                        yield return null;
-                    VRChat_OnUiManagerInit();
-                }
-                MelonCoroutines.Start(OnUiManagerInit());
+                case "High":
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to High ({FirstRes.width}x{FirstRes.height}).");
+                    Current = FirstRes;
+                    break;
+                case "Medium":
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Medium ({SecondRes.width}x{SecondRes.height}).");
+                    Current = SecondRes;
+                    break;
+                case "Low":
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Low ({ThirdRes.width}x{ThirdRes.height}).");
+                    Current = ThirdRes;
+                    break;
+                case "Minimum":
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Minimum ({FourthRes.width}x{FourthRes.height}).");
+                    Current = FourthRes;
+                    break;
+                default:
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Maximum ({MaxRes.width}x{MaxRes.height}).");
+                    Current = MaxRes;
+                    break;
             }
+            if (Screen.fullScreen)
+                Screen.SetResolution(Current.width, Current.height, true);
         }
 
         public static void VRChat_OnUiManagerInit()
@@ -112,6 +133,7 @@ namespace ToggleFullScreen
             toggle.onValueChanged.AddListener((UnityEngine.Events.UnityAction<bool>)((isOn) => { Screen.fullScreen = isOn; }));
         }
 
+        // Checks for state changes
         public override void OnUpdate()
         {
             if (PreviousState != Screen.fullScreen)
@@ -123,7 +145,7 @@ namespace ToggleFullScreen
                         width = Screen.width,
                         height = Screen.height
                     };
-                    Screen.SetResolution(MaxRes.width, MaxRes.height, true);
+                    Screen.SetResolution(Current.width, Current.height, true);
                 }
                 else
                 {
@@ -132,6 +154,24 @@ namespace ToggleFullScreen
                 if ((toggle != null) && (toggle.isOn != Screen.fullScreen)) toggle.isOn = Screen.fullScreen;
                 PreviousState = Screen.fullScreen;
             }
+        }
+
+        // I didn't know which resolutions to use and I didn't wanna make a set for each monitor so I thought-
+        // "Why not just make them so they all follow the most used ones?"
+        // -and this came of it.
+        private static Resolution CalculatePropRes(Resolution propTo) =>
+            new Resolution()
+            {
+                width = (int)Math.Floor((double)(propTo.width * MaxRes.width / 1920)),
+                height = (int)Math.Floor((double)(propTo.height * MaxRes.height / 1080))
+            };
+        private static void ProcessResolutions()
+        {
+            MaxRes = CalculatePropRes(new Resolution() { width = 1920, height = 1080 });
+            FirstRes = CalculatePropRes(new Resolution() { width = 1600, height = 900 });
+            SecondRes = CalculatePropRes(new Resolution() { width = 1366, height = 768 });
+            ThirdRes = CalculatePropRes(new Resolution() { width = 1280, height = 720 });
+            FourthRes = CalculatePropRes(new Resolution() { width = 852, height = 480 });
         }
     }
 }
