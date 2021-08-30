@@ -78,6 +78,7 @@ This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now
 **Current features:**
 * Fixes Alt+Enter resolution;
 * Adds a simple toggle on "Settings -> Other Options Panel" that allows you to toggle Full-Screen Mode without getting a scuffed resolution and actually using your entire screen.
+* Adds an option to change fullscreen resolution in game, located on MelonPrefs.
 
 ## TrackingRotator
 This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now it's been maintained and updated by me. 
