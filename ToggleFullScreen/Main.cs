@@ -23,11 +23,11 @@ namespace ToggleFullScreen
         public const string Version = "1.1.0";
     }
 
-    internal static class UIXManager 
-    { 
+    internal static class UIXManager
+    {
         public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit;
 
-        public static void RegisterSettingAsStringEnum(string categoryName, string settingName, IList<(string SettingsValue, string DisplayName)> possibleValues) => 
+        public static void RegisterSettingAsStringEnum(string categoryName, string settingName, IList<(string SettingsValue, string DisplayName)> possibleValues) =>
             GetRegisterSettingAsStringEnumDelegate(categoryName, settingName, possibleValues);
         private static RegisterSettingAsStringEnumDelegate GetRegisterSettingAsStringEnumDelegate =>
             registerSettingAsStringEnumDelegate ??= (RegisterSettingAsStringEnumDelegate)Delegate.CreateDelegate(typeof(RegisterSettingAsStringEnumDelegate), null, RegisterSettingAsStringEnumMethod);
@@ -40,73 +40,51 @@ namespace ToggleFullScreen
 
     public class Main : MelonMod
     {
-        private static Resolution Previous, Current, MaxRes, FirstRes, SecondRes, ThirdRes, FourthRes;
-        private static MelonPreferences_Entry<string> FSResolution;
+        private static Toggle toggle;
         private const bool useHeadLook = false;
         private static bool PreviousState, IsUsingUIX;
-        private static Toggle toggle;
+        private static MelonPreferences_Entry<string> FSResolution;
 
+        #region Init
         public override void OnApplicationStart()
         {
             IsUsingUIX = MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit"));
+            InitCachedVars();
+
+            // Set preferences
+            MelonPreferences.CreateCategory("ToggleFullScreen", "Toggle FullScreen");
+            FSResolution = MelonPreferences.CreateEntry("ToggleFullScreen", "FSResolution", "Maximum", "FullScreen Resolution");
+            if (IsUsingUIX) UpdateUIXSwitch();
+
+            WaitForUiInit();
+            MelonLogger.Msg("Successfully loaded!");
+        }
+        private static void InitCachedVars()
+        {
             Previous = new()
             {
                 width = Screen.width,
                 height = Screen.height
             };
-
-            // Set preferences
-            var temp = Screen.resolutions;
-            MaxRes = temp[temp.Count - 1];
-            ProcessResolutions();
-            MelonPreferences.CreateCategory("ToggleFullScreen", "Toggle FullScreen");
-            FSResolution = MelonPreferences.CreateEntry("ToggleFullScreen", "FSResolution", "Maximum", "FullScreen Resolution");
-            if (IsUsingUIX)
-                typeof(UIXManager).GetMethod(nameof(UIXManager.RegisterSettingAsStringEnum)).Invoke(null, 
-                    new object[]{"ToggleFullScreen", "FSResolution",
-                                    new[] {
-                                        ("Maximum", $"{MaxRes.width}x{MaxRes.height}"),
-                                        ("High", $"{FirstRes.width}x{FirstRes.height}"),
-                                        ("Medium", $"{SecondRes.width}x{SecondRes.height}"),
-                                        ("Low", $"{ThirdRes.width}x{ThirdRes.height}"),
-                                        ("Minimum", $"{FourthRes.width}x{FourthRes.height}")
-                                    }});
-            OnPreferencesSaved();
-
-            WaitForUiInit();
-            MelonLogger.Msg("Successfully loaded!");
+            c_MaxRes = GetCurrentMaxRes();
+            c_HighRes = CalculatePropRes(new() { width = 1600, height = 900 });
+            c_MediumRes = CalculatePropRes(new() { width = 1366, height = 768 });
+            c_LowRes = CalculatePropRes(new() { width = 1280, height = 720 });
+            c_MinimumRes = CalculatePropRes(new() { width = 852, height = 480 });
         }
+        #endregion
 
-        // Updates the Resolution after saving prefs
-        public override void OnPreferencesSaved()
-        {
-            switch (FSResolution.Value)
-            {
-                case "High":
-                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to High ({FirstRes.width}x{FirstRes.height}).");
-                    Current = FirstRes;
-                    break;
-                case "Medium":
-                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Medium ({SecondRes.width}x{SecondRes.height}).");
-                    Current = SecondRes;
-                    break;
-                case "Low":
-                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Low ({ThirdRes.width}x{ThirdRes.height}).");
-                    Current = ThirdRes;
-                    break;
-                case "Minimum":
-                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Minimum ({FourthRes.width}x{FourthRes.height}).");
-                    Current = FourthRes;
-                    break;
-                default:
-                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Maximum ({MaxRes.width}x{MaxRes.height}).");
-                    Current = MaxRes;
-                    break;
-            }
-            if (Screen.fullScreen)
-                Screen.SetResolution(Current.width, Current.height, true);
-        }
-
+        #region UI
+        private static void UpdateUIXSwitch() =>
+            typeof(UIXManager).GetMethod(nameof(UIXManager.RegisterSettingAsStringEnum))
+                .Invoke(null, new object[]{"ToggleFullScreen", "FSResolution",
+                    new[] {
+                        ("Maximum", $"{c_MaxRes.width}x{c_MaxRes.height}"),
+                        ("High", $"{c_HighRes.width}x{c_HighRes.height}"),
+                        ("Medium", $"{c_MediumRes.width}x{c_MediumRes.height}"),
+                        ("Low", $"{c_LowRes.width}x{c_LowRes.height}"),
+                        ("Minimum", $"{c_MinimumRes.width}x{c_MinimumRes.height}")
+                    }});
         private static void WaitForUiInit()
         {
             if (IsUsingUIX)
@@ -131,7 +109,7 @@ namespace ToggleFullScreen
             Transform Settings = GameObject.Find("UserInterface/MenuContent/Screens/Settings").transform;
             Transform OtherOptions = Settings.Find("OtherOptionsPanel");
             OtherOptions.position += (Settings.Find("VoiceOptionsPanel").position - OtherOptions.position) / 12;
-            OtherOptions.localScale = new Vector3(1, 1.1f, 1);
+            OtherOptions.localScale = new(1, 1.1f, 1);
 
             // Repositions Ui Toggles
             Vector3 proportion = (OtherOptions.Find("TooltipsToggle").transform.position - OtherOptions.Find("3PRotationToggle").transform.position) / 7;
@@ -148,13 +126,13 @@ namespace ToggleFullScreen
             {
                 var child = Children[i];
                 child.position += proportion * i;
-                child.localScale = new Vector3(1, (float)(1 / 1.1), 1);
+                child.localScale = new(1, (float)(1 / 1.1), 1);
             }
             if (!useHeadLook)
             {
                 Transform HeadLookToggle = OtherOptions.Find("HeadLookToggle");
                 HeadLookToggle.position = Children.Find(x => x.name.Contains("AllowAvatarCopyingToggle")).position;
-                HeadLookToggle.localScale = new Vector3(1, (float)(1 / 1.1), 1);
+                HeadLookToggle.localScale = new(1, (float)(1 / 1.1), 1);
             }
 
             // Creates new Toggle
@@ -166,10 +144,76 @@ namespace ToggleFullScreen
 
             toggle = ToggleButton.GetComponent<Toggle>();
             toggle.isOn = Screen.fullScreen;
-            toggle.onValueChanged = new Toggle.ToggleEvent();
+            toggle.onValueChanged = new();
             toggle.onValueChanged.AddListener((UnityEngine.Events.UnityAction<bool>)((isOn) => { Screen.fullScreen = isOn; }));
         }
+        #endregion
 
+        #region ResolutionProcessing
+        private static Resolution Previous, c_MaxRes, c_HighRes, c_MediumRes, c_LowRes, c_MinimumRes;
+        private static Resolution MaxRes => GetCurrentMaxRes();
+        private static Resolution HighRes => GetCurrentResFor("High");
+        private static Resolution MediumRes => GetCurrentResFor("Medium");
+        private static Resolution LowRes => GetCurrentResFor("Low");
+        private static Resolution MinimumRes => GetCurrentResFor("Minimum");
+        private static Resolution GetCurrentMaxRes() => Screen.resolutions[Screen.resolutions.Length - 1]; // NEEDS URGENT FIX.
+                                                                                                           //var temp = Screen.fullScreen;
+                                                                                                           //Screen.fullScreen = false; Resolution result = Screen.currentResolution; Screen.fullScreen = temp;
+                                                                                                           //return result;
+                                                                                                           //return new() { width = Display.main.systemWidth, height = Display.main.systemHeight };
+        private static Resolution GetCurrentResFor(string Quality)
+        {
+            CheckAndUpdateResolutions();
+            Resolution Current;
+            switch (Quality)
+            {
+                case "Medium":
+                    Current = c_MediumRes;
+                    break;
+                case "Low":
+                    Current = c_LowRes;
+                    break;
+                case "Minimum":
+                    Current = c_MinimumRes;
+                    break;
+                default:
+                    Current = c_HighRes;
+                    break;
+            }
+            return Current;
+        }
+        private static void CheckAndUpdateResolutions()
+        {
+            var temp = MaxRes;
+            if (c_MaxRes.width != temp.width || c_MaxRes.height != temp.height)
+            {
+                c_MaxRes = temp;
+                c_HighRes = CalculatePropRes(new() { width = 1600, height = 900 });
+                c_MediumRes = CalculatePropRes(new() { width = 1366, height = 768 });
+                c_LowRes = CalculatePropRes(new() { width = 1280, height = 720 });
+                c_MinimumRes = CalculatePropRes(new() { width = 852, height = 480 });
+                UpdateUIXSwitch();
+            }
+        }
+        private static Resolution CalculatePropRes(Resolution propTo) =>
+            new()
+            {
+                // I didn't know which resolutions to use and I didn't wanna make a set for each monitor so I thought-
+                // "Why not just make them so they all follow the most used ones?"
+                // -and this came of it.
+                width = (int)Math.Floor((double)(propTo.width * c_MaxRes.width / 1920)),
+                height = (int)Math.Floor((double)(propTo.height * c_MaxRes.height / 1080))
+            };
+        #endregion
+
+        #region ResolutionUpdating
+        // Updates the Resolution after saving prefs
+        public override void OnPreferencesSaved()
+        {
+            Resolution Current = GetCurrentAppliedRes();
+            if (Screen.fullScreen)
+                Screen.SetResolution(Current.width, Current.height, true);
+        }
         // Checks for state changes
         public override void OnUpdate()
         {
@@ -182,34 +226,53 @@ namespace ToggleFullScreen
                         width = Screen.width,
                         height = Screen.height
                     };
+                    var Current = GetCurrentAppliedRes();
                     Screen.SetResolution(Current.width, Current.height, true);
                 }
                 else
-                {
                     Screen.SetResolution(Previous.width, Previous.height, false);
-                }
                 if ((toggle != null) && (toggle.isOn != Screen.fullScreen)) toggle.isOn = Screen.fullScreen;
                 PreviousState = Screen.fullScreen;
             }
         }
-
-        // I didn't know which resolutions to use and I didn't wanna make a set for each monitor so I thought-
-        // "Why not just make them so they all follow the most used ones?"
-        // -and this came of it.
-        private static Resolution CalculatePropRes(Resolution propTo) =>
-            new Resolution()
-            {
-                width = (int)Math.Floor((double)(propTo.width * MaxRes.width / 1920)),
-                height = (int)Math.Floor((double)(propTo.height * MaxRes.height / 1080))
-            };
-
-        private static void ProcessResolutions()
+        private static Resolution GetCurrentAppliedRes()
         {
-            MaxRes = CalculatePropRes(new Resolution() { width = 1920, height = 1080 });
-            FirstRes = CalculatePropRes(new Resolution() { width = 1600, height = 900 });
-            SecondRes = CalculatePropRes(new Resolution() { width = 1366, height = 768 });
-            ThirdRes = CalculatePropRes(new Resolution() { width = 1280, height = 720 });
-            FourthRes = CalculatePropRes(new Resolution() { width = 852, height = 480 });
+            Resolution Current;
+            switch (FSResolution.Value)
+            {
+                case "High":
+                    Current = HighRes;
+#if DEBUG
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to High ({Current.width}x{Current.height}).");
+#endif
+                    break;
+                case "Medium":
+                    Current = MediumRes;
+#if DEBUG
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Medium ({Current.width}x{Current.height}).");
+#endif
+                    break;
+                case "Low":
+                    Current = LowRes;
+#if DEBUG
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Low ({Current.width}x{Current.height}).");
+#endif
+                    break;
+                case "Minimum":
+                    Current = MinimumRes;
+#if DEBUG
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Minimum ({Current.width}x{Current.height}).");
+#endif
+                    break;
+                default:
+                    Current = MaxRes;
+#if DEBUG
+                    MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Maximum ({Current.width}x{Current.height}).");
+#endif
+                    break;
+            }
+            return Current;
         }
+        #endregion
     }
 }
