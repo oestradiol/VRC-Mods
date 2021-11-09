@@ -111,13 +111,13 @@ namespace DesktopCamera.Utils
         public static Vector3 WorldCameraVector
         {
             get => VRCUtils.GetUserCameraController().field_Private_Vector3_0;
-            set { VRCUtils.GetUserCameraController().field_Private_Vector3_0 = value; }
+            set => VRCUtils.GetUserCameraController().field_Private_Vector3_0 = value;
         }
 
         public static Quaternion WorldCameraQuaternion
         {
             get => VRCUtils.GetUserCameraController().field_Private_Quaternion_0;
-            set { VRCUtils.GetUserCameraController().field_Private_Quaternion_0 = value; }
+            set => VRCUtils.GetUserCameraController().field_Private_Quaternion_0 = value;
         }
 
         // https://answers.unity.com/questions/489350/rotatearound-without-transform.html

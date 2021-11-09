@@ -1,16 +1,20 @@
-﻿using ProneUiFix.Utils;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
-using System.Collections;
-using UnhollowerRuntimeLib;
 using MelonLoader;
+using ProneUiFix.Utils;
+using UIExpansionKit.API;
+using UnhollowerRuntimeLib;
 using UnityEngine;
 using UnityEngine.XR;
+using BuildInfo = ProneUiFix.BuildInfo;
+using Main = ProneUiFix.Main;
 
-[assembly: AssemblyCopyright("Created by " + ProneUiFix.BuildInfo.Author)]
-[assembly: MelonInfo(typeof(ProneUiFix.Main), ProneUiFix.BuildInfo.Name, ProneUiFix.BuildInfo.Version, ProneUiFix.BuildInfo.Author)]
+[assembly: AssemblyCopyright("Created by " + BuildInfo.Author)]
+[assembly: MelonInfo(typeof(Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
-[assembly: MelonColor(System.ConsoleColor.DarkMagenta)]
+[assembly: MelonColor(ConsoleColor.DarkMagenta)]
 [assembly: MelonOptionalDependencies("UIExpansionKit")]
 
 namespace ProneUiFix
@@ -22,7 +26,7 @@ namespace ProneUiFix
         public const string Version = "1.0.4";
     }
 
-    internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
+    internal static class UIXManager { public static void OnApplicationStart() => ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
 
     public class Main : MelonMod
     {
