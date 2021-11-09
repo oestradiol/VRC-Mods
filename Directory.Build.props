@@ -5,11 +5,11 @@
 			<DebugType>none</DebugType>
 			<DebugSymbols>false</DebugSymbols>
 			<ClearOutputDirectory>False</ClearOutputDirectory>
-			<MelonManaged>..\..\..\..\..\Jogos\SteamLibrary\steamapps\common\VRChat\MelonLoader\Managed</MelonManaged>
-			<OutputPath>$(MsBuildThisFileDirectory)\Output</OutputPath>
+			<MelonManaged>D:\Jogos\SteamLibrary\steamapps\common\VRChat\MelonLoader\Managed</MelonManaged>
+			<OutputPath>$(MsBuildThisFileDirectory)Output</OutputPath>
 		</PropertyGroup>  
 		<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)' == 'true'">
-			<Exec Command="xcopy /c /f /y $(OutputPath)\$(AssemblyName).dll $(MelonManaged)\..\..\Mods" />
+			<Exec Command="xcopy /c /f /y $(OutputPath)$(AssemblyName).dll $(MelonManaged)\..\..\Mods" />
 		</Target>
 		<ItemGroup Condition="'$(VrcReferences)' == 'true'">
 			<Reference Include="System" />
@@ -100,6 +100,14 @@
 			</Reference>
 			<Reference Include="VRCSDKBase">
 				<HintPath>$(MelonManaged)\VRCSDKBase.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+			<Reference Include="VRC.UI.Core">
+				<HintPath>$(MelonManaged)\VRC.UI.Core.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+			<Reference Include="VRC.UI.Elements">
+				<HintPath>$(MelonManaged)\VRC.UI.Elements.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 		</ItemGroup>

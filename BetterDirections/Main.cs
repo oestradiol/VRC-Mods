@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using MelonLoader;
 using VRC.Animation;
+using NeckMouseRotator = MonoBehaviourPublicObSiBoSiVeBoQuVeBoSiUnique;
 
 [assembly: AssemblyCopyright("Created by " + BetterDirections.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(BetterDirections.Main), BetterDirections.BuildInfo.Name, BetterDirections.BuildInfo.Version, BetterDirections.BuildInfo.Author)]

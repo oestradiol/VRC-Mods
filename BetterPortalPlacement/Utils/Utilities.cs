@@ -5,6 +5,7 @@ using UnhollowerRuntimeLib.XrefScans;
 using UnityEngine;
 using UnityEngine.XR;
 using VRC.Core;
+using NeckMouseRotator = MonoBehaviourPublicObSiBoSiVeBoQuVeBoSiUnique;
 
 namespace BetterPortalPlacement.Utils
 {

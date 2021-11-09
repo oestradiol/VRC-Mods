@@ -87,14 +87,12 @@ namespace BetterPortalPlacement.Utils
         [HideFromIl2Cpp]
         private void LoadBundle()
         {
-            {
-                using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BetterPortalPlacement.betterportalplacement");
-                using var memStream = new MemoryStream((int)stream.Length);
-                stream.CopyTo(memStream);
-                var bundle = AssetBundle.LoadFromMemory_Internal(memStream.ToArray(), 0);
-                myWhiteLaserTexture = bundle.LoadAsset_Internal("Assets/BetterPortalPlacement/sniper_beam_white.png", UnhollowerRuntimeLib.Il2CppType.Of<Texture2D>()).Cast<Texture2D>();
-                myWhiteLaserTexture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-            }
+			using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BetterPortalPlacement.betterportalplacement");
+			using var memStream = new MemoryStream((int)stream.Length);
+			stream.CopyTo(memStream);
+			var bundle = AssetBundle.LoadFromMemory_Internal(memStream.ToArray(), 0);
+			myWhiteLaserTexture = bundle.LoadAsset_Internal("Assets/BetterPortalPlacement/sniper_beam_white.png", UnhollowerRuntimeLib.Il2CppType.Of<Texture2D>()).Cast<Texture2D>();
+			myWhiteLaserTexture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
         }
 
         [HideFromIl2Cpp]

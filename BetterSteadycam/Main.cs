@@ -22,7 +22,7 @@ namespace BetterSteadycam
     {
         public const string Name = "BetterSteadycam";
         public const string Author = "Davi & nitro.";
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
     }
 
     internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
@@ -60,7 +60,7 @@ namespace BetterSteadycam
         private static void WaitForUiInit()
         {
             if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
-                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+                typeof(UIXManager).GetMethod(nameof(UIXManager.OnApplicationStart)).Invoke(null, null);
             else
             {
                 MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
@@ -101,28 +101,26 @@ namespace BetterSteadycam
 
         private static void SetButtonEnabled(bool enabled)
         {
-            var cameraMenu = QuickMenu.prop_QuickMenu_0.transform.Find("CameraMenu");
-            // ffs VRChat team "Stabalize the Desktop Stream of Your View" what the fuck is stabalize
-            cameraMenu.Find("SmoothFPVCamera").GetComponent<UiTooltip>().field_Public_String_0 = "Stabilize the Desktop view of your game";
+            var SteadyCamButton = Resources.FindObjectsOfTypeAll<CameraMenu>()[0].transform.Find("Scrollrect/Viewport/VerticalLayoutGroup/Buttons/Button_Steadycam");
+            // ffs VRChat team "Stabalize the Desktop Stream of Your View" what the fuck is stabalize - 9th of November, 2021 Update: they fixed it 🙏 
+            // cameraMenu.Find("Scrollrect/Viewport/VerticalLayoutGroup/Buttons/Button_Steadycam").GetComponent<UiTooltip>().field_Public_String_0 = "Stabilize the Desktop view of your game";
 
             if (!XRDevice.isPresent)
             {
                 if (enabled && !steadycamDesktopButton)
                 {
-                    steadycamDesktopButton = UnityEngine.Object.Instantiate(cameraMenu.Find("SmoothFPVCamera"), cameraMenu).gameObject;
+                    steadycamDesktopButton = UnityEngine.Object.Instantiate(SteadyCamButton, SteadyCamButton.parent).gameObject;
                     steadycamDesktopButton.SetActive(true);
-                    steadycamDesktopButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent();
-                    steadycamDesktopButton.GetComponent<Button>().onClick.AddListener((UnityAction)(() =>
+                    steadycamDesktopButton.GetComponent<Toggle>().onValueChanged = new();
+                    steadycamDesktopButton.GetComponent<Toggle>().onValueChanged.AddListener(new Action<bool>(isOn =>
                     {
-                        var on = steadycamDesktopButton.transform.Find("Toggle_States_StandingEnabled/ON").gameObject;
-                        var off = steadycamDesktopButton.transform.Find("Toggle_States_StandingEnabled/OFF").gameObject;
-                        var Flag = on.gameObject.activeSelf;
-                        on.SetActive(!Flag);
-                        off.SetActive(Flag);
-                        FPVCameraController.field_Public_Static_FPVCameraController_0.prop_EnumNPublicSealedvaOfSm3vUnique_0 =
-                            Flag ? FPVCameraController.EnumNPublicSealedvaOfSm3vUnique.Off : FPVCameraController.EnumNPublicSealedvaOfSm3vUnique.Smooth;
+                        var on = steadycamDesktopButton.transform.Find("Icon_On").GetComponent<Image>();
+                        var off = steadycamDesktopButton.transform.Find("Icon_Off").GetComponent<Image>();
+                        on.color = new(on.color.r, on.color.g, on.color.b, isOn ? 1 : 0.1f);
+                        off.color = new(off.color.r, off.color.g, off.color.b, !isOn ? 1 : 0.1f);
+                        FPVCameraController.field_Public_Static_FPVCameraController_0.prop_FPVCameraMode_0 =
+                            isOn ? FPVCameraController.FPVCameraMode.Smooth : FPVCameraController.FPVCameraMode.Off;
                     }));
-                    steadycamDesktopButton.transform.localPosition = new Vector3(-630f + (0 * 420f), 1050f + (3 * -420f));
                 }
                 else if (steadycamDesktopButton) UnityEngine.Object.DestroyImmediate(steadycamDesktopButton);
             }
@@ -130,7 +128,7 @@ namespace BetterSteadycam
 
         private static bool FPVCameraControllerUpdatePatch(FPVCameraController __instance)
         {
-            if (__instance.field_Private_EnumNPublicSealedvaOfSm3vUnique_0 == FPVCameraController.EnumNPublicSealedvaOfSm3vUnique.Smooth)
+            if (__instance.field_Private_FPVCameraMode_0 == FPVCameraController.FPVCameraMode.Smooth)
             {
                 Transform cameraToFollow;
 

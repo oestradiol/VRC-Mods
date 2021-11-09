@@ -146,7 +146,7 @@ namespace ToggleFullScreen
             toggle = ToggleButton.GetComponent<Toggle>();
             toggle.isOn = Screen.fullScreen;
             toggle.onValueChanged = new();
-            toggle.onValueChanged.AddListener((UnityEngine.Events.UnityAction<bool>)((isOn) => { Screen.fullScreen = isOn; }));
+            toggle.onValueChanged.AddListener(new System.Action<bool>(isOn => Screen.fullScreen = isOn));
         }
         #endregion
 
