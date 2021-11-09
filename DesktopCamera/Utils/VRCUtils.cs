@@ -35,7 +35,7 @@ namespace DesktopCamera.Utils
             currentPageGetter.GetValue(quickMenu).TryCast<GameObject>().SetActive(false);
             quickMenu.transform.Find("QuickMenu_NewElements/_InfoBar").gameObject.SetActive(false);
             var quickMenuContextualDisplay = quickMenu.field_Private_QuickMenuContextualDisplay_0;
-            quickMenuContextualDisplay.Method_Public_Void_EnumNPublicSealedvaUnNoToUs7vUsNoUnique_0(QuickMenuContextualDisplay.EnumNPublicSealedvaUnNoToUs7vUsNoUnique.NoSelection);
+            quickMenuContextualDisplay.Method_Public_Void_QuickMenuContext_0(QuickMenuContextualDisplay.QuickMenuContext.NoSelection);
             pageTransform.gameObject.SetActive(true);
             currentPageGetter.SetValue(quickMenu, pageTransform.gameObject);
         }
