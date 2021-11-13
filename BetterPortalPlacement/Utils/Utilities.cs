@@ -25,11 +25,21 @@ namespace BetterPortalPlacement.Utils
         public bool WithUIErrors { get; }
     }
 
-    internal static class Utilities 
+    internal static class Utilities
     {
-        public static bool IsQMRightHanded => QuickMenu.prop_QuickMenu_0.prop_Boolean_1;
+        private static VRC.UI.Elements.QuickMenu cachedQuickMemu;
+        public static bool IsQMRightHanded {
+            get
+            {
+                if (cachedQuickMemu is null)
+                {
+                    cachedQuickMemu = Resources.FindObjectsOfTypeAll<VRC.UI.Elements.QuickMenu>()[0];
+                }
+                return cachedQuickMemu.GetComponent<VRC.UI.Elements.QuickMenu>().prop_Boolean_0;
+            }
+        }
 
-        public static GameObject GetPtrObj() 
+    public static GameObject GetPtrObj() 
         {
             var TrackingManager = VRCTrackingManager.field_Private_Static_VRCTrackingManager_0;
             if (!XRDevice.isPresent)
