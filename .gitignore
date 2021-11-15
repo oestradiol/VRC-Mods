@@ -3,14 +3,8 @@
 ################################################################################
 
 /.vs
+/.idea
 /Output
 /ILRepack
 /BetterAVPreview
-/BetterDirections/obj
-/BetterPortalPlacement/obj
-/BetterSteadycam/obj
-/DesktopCamera/obj
-/ProneUiFix/obj
-/ToggleFullScreen/obj
-/TrackingRotator/obj
-/.idea
+/*/obj
