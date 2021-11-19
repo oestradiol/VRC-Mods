@@ -24,7 +24,7 @@ namespace BetterPortalPlacement
     {
         public const string Name = "BetterPortalPlacement";
         public const string Author = "Davi";
-        public const string Version = "1.0.7";
+        public const string Version = "1.0.8";
     }
 
     internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
