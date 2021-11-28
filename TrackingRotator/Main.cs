@@ -8,9 +8,11 @@ using UnityEngine;
 using TrackingRotator.Utils;
 using AssemblyCopyright = System.Reflection.AssemblyCopyrightAttribute;
 using Object = UnityEngine.Object;
+using BuildInfo = TrackingRotator.BuildInfo;
+using Main = TrackingRotator.Main;
 
-[assembly: AssemblyCopyright("Created by " + TrackingRotator.BuildInfo.Author)]
-[assembly: MelonInfo(typeof(TrackingRotator.Main), TrackingRotator.BuildInfo.Name, TrackingRotator.BuildInfo.Version, TrackingRotator.BuildInfo.Author)]
+[assembly: AssemblyCopyright("Created by " + BuildInfo.Author)]
+[assembly: MelonInfo(typeof(Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(ConsoleColor.DarkMagenta)]
 [assembly: MelonOptionalDependencies("UIExpansionKit", "ActionMenuApi")]

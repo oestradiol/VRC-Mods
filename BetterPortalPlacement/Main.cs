@@ -8,9 +8,11 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.XR;
 using VRC;
+using BuildInfo = BetterPortalPlacement.BuildInfo;
+using Main = BetterPortalPlacement.Main;
 
-[assembly: AssemblyCopyright("Created by " + BetterPortalPlacement.BuildInfo.Author)]
-[assembly: MelonInfo(typeof(BetterPortalPlacement.Main), BetterPortalPlacement.BuildInfo.Name, BetterPortalPlacement.BuildInfo.Version, BetterPortalPlacement.BuildInfo.Author)]
+[assembly: AssemblyCopyright("Created by " + BuildInfo.Author)]
+[assembly: MelonInfo(typeof(Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(ConsoleColor.DarkMagenta)]
 [assembly: MelonOptionalDependencies("UIExpansionKit")]
@@ -22,7 +24,7 @@ namespace BetterPortalPlacement
     {
         public const string Name = "BetterPortalPlacement";
         public const string Author = "Davi";
-        public const string Version = "1.0.7";
+        public const string Version = "1.0.8";
     }
 
     internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }

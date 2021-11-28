@@ -7,7 +7,7 @@ namespace TrackingRotator.Utils
     {
         public static void OnApplicationStart()
         {
-            ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Tracking rotation", ShowRotationMenu);
+            ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Tracking Rotator", ShowRotationMenu);
             ExpansionKitApi.OnUiManagerInit += VRChat_OnUiManagerInit;
         }
 
