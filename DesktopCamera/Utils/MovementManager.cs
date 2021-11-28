@@ -10,6 +10,7 @@ namespace DesktopCamera.Utils
 
         public static void KeysListener()
         {
+            /*
             if (Settings.cameraEnabled && Settings.arrowKeysEnabled)
             {
                 cameraRotation = CameraUtils.WorldCameraQuaternion.ToEuler();
@@ -133,6 +134,8 @@ namespace DesktopCamera.Utils
             if (Settings.moveCamera)
             { if (Settings.allowCameraMovement) CameraUtils.WorldCameraQuaternion *= Quaternion.Euler(0f, 0f, (!isNeg ? -1 : 1) * DefaultRotSpeed); }
             else CameraUtils.GetViewFinder().transform.Rotate(new Vector3(0f, (isNeg ? -1 : 1) * DefaultRotSpeed, 0f));
+        }
+        */
         }
     }
 }

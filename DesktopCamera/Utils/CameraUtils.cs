@@ -28,7 +28,9 @@ namespace DesktopCamera.Utils
         }
 
         public static void SetCameraMode(CameraMode mode)
-        { VRCUtils.GetUserCameraController().prop_UserCameraMode_0 = (UserCameraMode)mode; }
+        {
+            VRCUtils.GetUserCameraController().prop_UserCameraMode_0 = (UserCameraMode) mode;
+        }
 
         public static void ResetCamera()
         {
@@ -50,26 +52,29 @@ namespace DesktopCamera.Utils
         }
 
         // This used to be an obfuscated enum but I'll leave it like this anyway
-        public static CameraBehaviour GetCameraBehaviour() => (CameraBehaviour)VRCUtils.GetUserCameraController().prop_UserCameraMovementBehaviour_0;
+        public static CameraBehaviour GetCameraBehaviour() =>
+            CameraBehaviour
+                .None; //(CameraBehaviour)VRCUtils.GetUserCameraController().prop_UserCameraMovementBehaviour_0;
 
         // This used to be an obfuscated enum but I'll leave it like this anyway
-        public static CameraSpace GetCameraSpace() => (CameraSpace)VRCUtils.GetUserCameraController().prop_UserCameraSpace_0;
+        public static CameraSpace GetCameraSpace() =>
+            (CameraSpace) VRCUtils.GetUserCameraController().prop_UserCameraSpace_0;
 
-        public static Pin GetCurrentPin() => (Pin)VRCUtils.GetUserCameraController().prop_Int32_0;
+        public static Pin GetCurrentPin() => (Pin) VRCUtils.GetUserCameraController().prop_Int32_0;
 
-        public static void CycleCameraBehaviour() => GetViewFinder().transform.Find("PhotoControls/Left_CameraMode").GetComponent<CameraInteractable>().Interact();
+        public static void CycleCameraBehaviour() {}//=> GetViewFinder().transform.Find("PhotoControls/Left_CameraMode").GetComponent<CameraInteractable>().Interact();
         
-        public static void CycleCameraSpace() => GetViewFinder().transform.Find("PhotoControls/Left_Space").GetComponent<CameraInteractable>().Interact();
+        public static void CycleCameraSpace() {}//=> GetViewFinder().transform.Find("PhotoControls/Left_Space").GetComponent<CameraInteractable>().Interact();
         
-        public static void SetPin(int pin) => GetPinsHolder().transform.Find("button-Pin-" + pin).GetComponent<CameraInteractable>().Interact();
+        public static void SetPin(int pin) {}//=> GetPinsHolder().transform.Find("button-Pin-" + pin).GetComponent<CameraInteractable>().Interact();
         
-        public static void SetFilter(string filter) =>  GetViewFinder().transform.Find("Filters/" + filter).GetComponent<CameraInteractable>().Interact();
+        public static void SetFilter(string filter) {}//=> GetViewFinder().transform.Find("Filters/" + filter).GetComponent<CameraInteractable>().Interact();
         
-        public static void TogglePinMenu() => GetViewFinder().transform.Find("PhotoControls/Left_Pins").GetComponent<CameraInteractable>().Interact();
+        public static void TogglePinMenu() {}//=> GetViewFinder().transform.Find("PhotoControls/Left_Pins").GetComponent<CameraInteractable>().Interact();
         
-        public static void ToggleLock() => GetViewFinder().transform.Find("PhotoControls/Right_Lock").GetComponent<CameraInteractable>().Interact();
+        public static void ToggleLock() {}//=> GetViewFinder().transform.Find("PhotoControls/Right_Lock").GetComponent<CameraInteractable>().Interact();
         
-        public static void ToggleFilterMenu() => GetViewFinder().transform.Find("PhotoControls/Right_Filters").GetComponent<CameraInteractable>().Interact();
+        public static void ToggleFilterMenu() {}//=> GetViewFinder().transform.Find("PhotoControls/Right_Filters").GetComponent<CameraInteractable>().Interact();
         
         public enum CameraMode
         {
