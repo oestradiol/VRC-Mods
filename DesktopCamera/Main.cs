@@ -23,32 +23,32 @@ namespace DesktopCamera
     {
         public const string Name = "DesktopCamera";
         public const string Author = "Elaina & nitro.";
-        public const string Version = "1.1.5";
+        public const string Version = "2.0.0";
     }
 
     internal static class Settings
     {
-        public static bool arrowKeysEnabled = true;
-        public static bool rotateAroundUserCamera = false;
-        public static bool moveCamera = false;
-        public static bool allowCameraMovement = false;
+        //public static bool arrowKeysEnabled = true;
+        //public static bool rotateAroundUserCamera = false;
+        //public static bool moveCamera = false;
+        //public static bool allowCameraMovement = false;
         public static bool cameraEnabled = false;
-        public static CameraUtils.CameraScale cameraScale = CameraUtils.CameraScale.Normal;
+        //public static CameraUtils.CameraScale cameraScale = CameraUtils.CameraScale.Normal;
     }
 
     internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
 
     public class Main : MelonMod
     {
-        public static MelonPreferences_Entry<float> CameraSpeed;
-        public static MelonPreferences_Entry<float> CameraSpeedAlt;
+        //public static MelonPreferences_Entry<float> CameraSpeed;
+        //public static MelonPreferences_Entry<float> CameraSpeedAlt;
         internal static SingleButton CameraMovementButton;
 
         public override void OnApplicationStart()
         {
-            MelonPreferences.CreateCategory("DesktopCamera", "DesktopCamera");
-            CameraSpeed = MelonPreferences.CreateEntry("DesktopCamera", nameof(CameraSpeed), 5f, "Basic camera speed");
-            CameraSpeedAlt = MelonPreferences.CreateEntry("DesktopCamera", nameof(CameraSpeedAlt), 20f, "Alt camera speed (ALT pressed)");
+            //MelonPreferences.CreateCategory("DesktopCamera", "DesktopCamera");
+            //CameraSpeed = MelonPreferences.CreateEntry("DesktopCamera", nameof(CameraSpeed), 5f, "Basic camera speed");
+            //CameraSpeedAlt = MelonPreferences.CreateEntry("DesktopCamera", nameof(CameraSpeedAlt), 20f, "Alt camera speed (ALT pressed)");
 
             WaitForUiInit();
 
@@ -72,21 +72,38 @@ namespace DesktopCamera
             }
         }
 
-        public override void OnUpdate() => MovementManager.KeysListener();
+        //public override void OnUpdate() => MovementManager.KeysListener();
 
         public static void VRChat_OnUiManagerInit()
         {
             // Thank you JanNyaa (Janni9009#1751) <3
-            var qmBoxCollider = QuickMenu.prop_QuickMenu_0.GetComponent<BoxCollider>();
-            if (qmBoxCollider.size.y < 3768) qmBoxCollider.size += new Vector3(0f, 840f, 0f);
-            QuickMenu.prop_QuickMenu_0.transform.Find("QuickMenu_NewElements/_CONTEXT/QM_Context_ToolTip/_ToolTipPanel/Text").GetComponent<Text>().supportRichText = true;
+            //var qmBoxCollider = QuickMenu.prop_QuickMenu_0.GetComponent<BoxCollider>();
+            //if (qmBoxCollider.size.y < 3768) qmBoxCollider.size += new Vector3(0f, 840f, 0f);
+            //QuickMenu.prop_QuickMenu_0.transform.Find("QuickMenu_NewElements/_CONTEXT/QM_Context_ToolTip/_ToolTipPanel/Text").GetComponent<Text>().supportRichText = true;
 
             SetupCameraMenu();
         }
 
         private static void SetupCameraMenu()
         {
-            var CameraMenu = QuickMenu.prop_QuickMenu_0.transform.Find("CameraMenu");
+            var photoCameraButton = Resources.FindObjectsOfTypeAll<CameraMenu>()[0].transform.Find("Scrollrect/Viewport/VerticalLayoutGroup/Buttons/Button_PhotoCamera");
+            
+            
+            
+            if (!XRDevice.isPresent)
+            {
+                var desktopCameraEnableDisableButton = UnityEngine.Object.Instantiate(photoCameraButton, photoCameraButton.parent).gameObject;
+                desktopCameraEnableDisableButton.SetActive(true);
+                desktopCameraEnableDisableButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent();
+                desktopCameraEnableDisableButton.GetComponent<Button>().onClick.AddListener(new Action(delegate
+                {
+                    Settings.cameraEnabled = !Settings.cameraEnabled;
+                    //MyCameraMenu.gameObject.SetActive(Settings.cameraEnabled);
+                    CameraUtils.SetCameraMode(Settings.cameraEnabled ? CameraUtils.CameraMode.Photo : CameraUtils.CameraMode.Off);
+                }));
+            }
+
+            /*var CameraMenu = QuickMenu.prop_QuickMenu_0.transform.Find("CameraMenu");
             var MyCameraMenu = UnityEngine.Object.Instantiate(new GameObject("DesktopCameraMenu"), CameraMenu).transform;
             MyCameraMenu.name = "DesktopCameraMenu";
 
@@ -279,15 +296,16 @@ namespace DesktopCamera
                     Settings.moveCamera = !Settings.moveCamera;
                     CameraMovementButton.SetText("Camera\nMovement\n<color=#ff73fa>" + (Settings.moveCamera ? "Camera" : "Viewer") + "</color>");
                 }
-            }));
+            }));*/
 
-            SetupFiltersMenu(MyCameraMenu);
+            //SetupFiltersMenu(MyCameraMenu);
 
-            SetupDefaultUiButtons(MyCameraMenu, cameraButton);
+            //SetupDefaultUiButtons(MyCameraMenu, cameraButton);
 
-            MyCameraMenu.gameObject.SetActive(false);
+            //MyCameraMenu.gameObject.SetActive(false);
         }
 
+        /*
         private static void SetupFiltersMenu(Transform MyCameraMenu)
         {
             var filtersMenu = UnityEngine.Object.Instantiate(MyCameraMenu.parent, QuickMenu.prop_QuickMenu_0.transform);
@@ -403,5 +421,6 @@ namespace DesktopCamera
             var lightButton = MyCameraMenu.parent.Find("Light");
             lightButton.localPosition = SingleButton.GetButtonPositionFor(4, 3);
         }
+        */
     }
 }

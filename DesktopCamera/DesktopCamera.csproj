@@ -5,6 +5,6 @@
 		<CopyToMods>true</CopyToMods>
 		<LangVersion>latest</LangVersion>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-		<Version>1.0.0</Version>
+		<Version>2.0.0</Version>
 	</PropertyGroup>
 </Project>
