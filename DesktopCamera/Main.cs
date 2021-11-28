@@ -25,7 +25,7 @@ namespace DesktopCamera
     {
         public const string Name = "DesktopCamera";
         public const string Author = "Elaina & nitro.";
-        public const string Version = "2.0.0";
+        public const string Version = "1.2.0";
     }
 
     internal static class Settings
