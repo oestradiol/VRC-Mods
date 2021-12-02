@@ -11,6 +11,7 @@ using DesktopCamera.Utils;
 using UnityEngine.XR;
 using BuildInfo = DesktopCamera.BuildInfo;
 using Main = DesktopCamera.Main;
+using CameraMenu = MonoBehaviour1PublicBuToBuGaBuGaBuGaBuGaUnique;
 
 [assembly: AssemblyCopyright("Created by " + BuildInfo.Author)]
 [assembly: MelonInfo(typeof(Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author)]
@@ -25,7 +26,7 @@ namespace DesktopCamera
     {
         public const string Name = "DesktopCamera";
         public const string Author = "Davi & nitro.";
-        public const string Version = "1.2.0";
+        public const string Version = "1.2.1";
     }
 
     internal static class Settings
@@ -88,12 +89,10 @@ namespace DesktopCamera
 
         private static void SetupCameraMenu()
         {
-            var photoCameraButton = Resources.FindObjectsOfTypeAll<CameraMenu>()[0].transform.Find("Scrollrect/Viewport/VerticalLayoutGroup/Buttons/Button_PhotoCamera");
-            
-            
             
             if (!XRDevice.isPresent)
             {
+                var photoCameraButton = Resources.FindObjectsOfTypeAll<CameraMenu>()[0].transform.Find("Scrollrect/Viewport/VerticalLayoutGroup/Buttons/Button_PhotoCamera");
                 var desktopCameraEnableDisableButton = UnityEngine.Object.Instantiate(photoCameraButton, photoCameraButton.parent).gameObject;
                 desktopCameraEnableDisableButton.SetActive(true);
                 desktopCameraEnableDisableButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent();
