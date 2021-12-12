@@ -148,10 +148,11 @@ namespace ToggleFullScreen
             Minimum = 0,
             Low = 1,
             Medium = 2,
-            High = 3
+            High = 3,
+            Max = 4
         }
         private static Resolution Previous, c_MaxRes, c_HighRes, c_MediumRes, c_LowRes, c_MinimumRes;
-        private static Resolution MaxRes => GetCurrentMaxRes();
+        private static Resolution MaxRes => GetCurrentResFor(ResTypes.Max);
         private static Resolution HighRes => GetCurrentResFor(ResTypes.High);
         private static Resolution MediumRes => GetCurrentResFor(ResTypes.Medium);
         private static Resolution LowRes => GetCurrentResFor(ResTypes.Low);
@@ -177,15 +178,16 @@ namespace ToggleFullScreen
             CheckAndUpdateResolutions();
             return Quality switch
             {
+                ResTypes.High => c_HighRes,
                 ResTypes.Medium => c_MediumRes,
                 ResTypes.Low => c_LowRes,
                 ResTypes.Minimum => c_MinimumRes,
-                _ => c_HighRes
+                _ => c_MaxRes
             };
         }
         private static void CheckAndUpdateResolutions()
         {
-            Resolution temp = MaxRes;
+            Resolution temp = GetCurrentMaxRes();
             if (c_MaxRes.width != temp.width || c_MaxRes.height != temp.height)
             {
                 c_MaxRes = temp;
