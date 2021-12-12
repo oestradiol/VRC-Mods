@@ -23,7 +23,7 @@ namespace ToggleFullScreen
     {
         public const string Name = "ToggleFullScreen";
         public const string Author = "Davi";
-        public const string Version = "1.1.1";
+        public const string Version = "1.1.2";
     }
 
     internal static class UIXManager
