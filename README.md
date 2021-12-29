@@ -16,16 +16,17 @@ Current features:
 	* If while laying down you look straight up and spin your view direction around the global Y axis (which naturally occurs because it’s impossible to perfectly align to it), the movement behavior will keep alternating the directions, which can be a little confusing or uncomfortable. This mod will make it unified so it gets really easy to move no matter where you’re looking, while still maintaining the direction you’re looking at as the “forward” one when walking without looking up.
 
 ## BetterPortalPlacement
-I guess [Gompo](https://github.com/gompocp) needs a special thanks on this one because he gave me a pre-version of it that wasn't really very functional, but it guided me on the entire thing so it helped a lot. He also helped a bit with organization and the code itself. <3
+I guess [Gompo](https://github.com/gompocp) needs a special thanks on this one because he gave me a pre-version of it that wasn't really functional, but it guided me on the entire thing so it helped a lot. He also helped a bit with organization and the code itself. <3
 
 This mod is based on a feature that was requested on VRChat's [Feature Requests'](https://feedback.vrchat.com/feature-requests/p/improved-portal-drop-system) page.
 
 Current features:
 * When you click the "Drop Portal" button, you enter "Drop Portal" mode. Triggering will result in the portal being created at the indicated location;
-	* This mode will show up a white ring on where the portal is to be placed;
+	* This mode will show up a ring at the position where the portal is to be placed;
 		* On VR, the default hand will be the one that was free when you lastly opened the Quick Menu;
 		* If you click the trigger with that hand, the portal will be placed, if you use the other trigger, it'll alternate hands. Opening the QM again will cancel;
 		* On Desktop, the placing position will be the cursor at the screen's center. To place, simply click with the mouse's left button.
+	* If placing the portal is possible, the preview will be green as an indicator;
 	* You won't be able to place if close to a player or spawn, and the preview will get red to show that. In exceptional cases, a popup with the error message will show. Clicking "Continue" will allow you to keep trying;
 	* The radius in which you can drop a portal is [1.1m, 5.1m] (total range: 4m) from the local player.
 * Current settings are:
@@ -72,7 +73,7 @@ This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now
 
 ## ProneUiFix
 **Current features:**
-* Simple fix to the Desktop Ui glitch that happens on some avatars, that opening the menu while you're proning will cause it be mispositioned.
+* Simple fix to the Desktop Ui glitch that happens on some avatars, that opening the menu while you're proning will cause it be mispositioned. (Update: bug has been fixed by VRChat and this is now useless)
 
 ## ToggleFullScreen
 **Current features:**
