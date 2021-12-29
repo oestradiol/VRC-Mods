@@ -7,7 +7,6 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
-using UnityEngine.Events;
 
 [assembly: AssemblyCopyright("Created by " + BetterSteadycam.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(BetterSteadycam.Main), BetterSteadycam.BuildInfo.Name, BetterSteadycam.BuildInfo.Version, BetterSteadycam.BuildInfo.Author)]
@@ -22,7 +21,7 @@ namespace BetterSteadycam
     {
         public const string Name = "BetterSteadycam";
         public const string Author = "Davi & nitro.";
-        public const string Version = "1.0.3";
+        public const string Version = "1.0.4";
     }
 
     internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
