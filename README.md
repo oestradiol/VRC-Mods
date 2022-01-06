@@ -46,7 +46,7 @@ This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now
 	* This can also be toggled by pressing F10.
 	
 ## DesktopCamera
-**This mod is manly broken rn, most of its features have been disabled because since VRChat updated the camera and UI, the entire code became outdated and needs proper care.**
+**This mod is mainly broken rn, most of its features have been disabled because since VRChat updated the camera and UI, the entire code became outdated and needs proper care.**
 **I am too busy and not in conditions to focus on remaking this right now, therefore, any pull requests or maybe messages on my DMs to negotiate passing this on would be appreciated.**
 **I do not usually accept friend requests from people I do not know, therefore, the chances of you reaching me through [VRCMG](https://discord.gg/rCqKSvR) are much higher, since my DMs are not closed.**
 **My Discord: [Davi#0003](https://discord.com/users/227477384356429824).**

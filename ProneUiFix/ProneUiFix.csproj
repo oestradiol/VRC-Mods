@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
 		<VrcReferences>true</VrcReferences>
-		<CopyToMods>true</CopyToMods>
+		<CopyToMods>false</CopyToMods>
 		<LangVersion>latest</LangVersion>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
 		<Version>1.0.0</Version>
