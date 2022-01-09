@@ -12,13 +12,14 @@ namespace BetterPortalPlacement.Utils
     internal class PortalPtr : MonoBehaviour
     {
         public PortalPtr(IntPtr obj0) : base(obj0) { }
-        public static readonly float defaultLength = Single.PositiveInfinity;
+        public const float DefaultLength = float.PositiveInfinity;
         public Vector3 position = Vector3.zero;
         public AudioSource audio;
-        private GameObject previewObj;
-        private LineRenderer lineRenderer;
-        private LineRenderer RightHandLR;
-        private Texture2D myWhiteLaserTexture;
+        private GameObject _previewObj;
+        private LineRenderer _lineRenderer;
+        private LineRenderer _rightHandLr;
+        private Texture2D _myWhiteLaserTexture;
+        private static readonly int TintColor = Shader.PropertyToID("_TintColor");
 
         private void Awake()
         {
@@ -31,13 +32,13 @@ namespace BetterPortalPlacement.Utils
         private void Update()
         {
             var endPos = CalculateEndPoint();
-            previewObj.transform.position = endPos;
+            _previewObj.transform.position = endPos;
             position = endPos;
-            if (lineRenderer != null)
+            if (_lineRenderer != null)
             {
-                if (lineRenderer.startWidth != RightHandLR.startWidth) lineRenderer.SetWidth(RightHandLR.startWidth, RightHandLR.endWidth);
-                lineRenderer.SetPosition(0, endPos);
-                lineRenderer.SetPosition(1, VRUtils.GetControllerTransform().position);
+                if (Math.Abs(_lineRenderer.startWidth - _rightHandLr.startWidth) > 0.001f) _lineRenderer.SetWidth(_rightHandLr.startWidth, _rightHandLr.endWidth);
+                _lineRenderer.SetPosition(0, endPos);
+                _lineRenderer.SetPosition(1, VRUtils.GetControllerTransform().position);
             }
             SetupColors(Main.CanPlace());
             if (Input.GetKeyUp(KeyCode.Mouse0)) Main.RecreatePortal();
@@ -46,53 +47,54 @@ namespace BetterPortalPlacement.Utils
         private void OnDisable() => ToggleOnOff(false);
 
         [HideFromIl2Cpp]
-        private void ToggleOnOff(bool IsOn)
+        private void ToggleOnOff(bool isOn)
         {
             if (XRDevice.isPresent)
             {
-                VRUtils.active = IsOn;
-                lineRenderer.enabled = IsOn;
+                VRUtils.Active = isOn;
+                _lineRenderer.enabled = isOn;
             }
-            previewObj.SetActive(IsOn);
-            if (IsOn) Patches.CloseMenu(true, false);
+            _previewObj.SetActive(isOn);
+            if (isOn) Patches.CloseMenu(true, false);
         }
 
         [HideFromIl2Cpp]
         private void SetupPreviewObj()
         {
-            previewObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            previewObj.GetComponent<Collider>().enabled = false;
-            previewObj.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
-            previewObj.transform.position = position;
-            previewObj.name = "PortalPreview";
-            DontDestroyOnLoad(previewObj);
+            _previewObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            _previewObj.GetComponent<Collider>().enabled = false;
+            _previewObj.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
+            _previewObj.transform.position = position;
+            _previewObj.name = "PortalPreview";
+            DontDestroyOnLoad(_previewObj);
 
-            RightHandLR = Resources.FindObjectsOfTypeAll<LineRenderer>()
-                .Where(lr => lr.gameObject.name.Contains("RightHandBeam")).First();
+            _rightHandLr = Resources.FindObjectsOfTypeAll<LineRenderer>()
+                .First(lr => lr.gameObject.name.Contains("RightHandBeam"));
 
-            previewObj.GetComponent<Renderer>().material = RightHandLR.GetMaterial();
+            _previewObj.GetComponent<Renderer>().material = _rightHandLr.GetMaterial();
             if (XRDevice.isPresent)
             {
-                lineRenderer = previewObj.AddComponent<LineRenderer>();
-                lineRenderer.material = RightHandLR.GetMaterial();
-                lineRenderer.enabled = false;
+                _lineRenderer = _previewObj.AddComponent<LineRenderer>();
+                _lineRenderer.material = _rightHandLr.GetMaterial();
+                _lineRenderer.enabled = false;
             }
 
             LoadBundle();
 
-            if (lineRenderer != null) lineRenderer.material.mainTexture = myWhiteLaserTexture;
-            previewObj.GetComponent<Renderer>().material.mainTexture = myWhiteLaserTexture;
+            if (_lineRenderer != null) _lineRenderer.material.mainTexture = _myWhiteLaserTexture;
+            _previewObj.GetComponent<Renderer>().material.mainTexture = _myWhiteLaserTexture;
         }
 
         [HideFromIl2Cpp]
         private void LoadBundle()
-        {
-			using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BetterPortalPlacement.betterportalplacement");
-			using var memStream = new MemoryStream((int)stream.Length);
-			stream.CopyTo(memStream);
-			var bundle = AssetBundle.LoadFromMemory_Internal(memStream.ToArray(), 0);
-			myWhiteLaserTexture = bundle.LoadAsset_Internal("Assets/BetterPortalPlacement/sniper_beam_white.png", UnhollowerRuntimeLib.Il2CppType.Of<Texture2D>()).Cast<Texture2D>();
-			myWhiteLaserTexture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+        { 
+            var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BetterPortalPlacement.betterportalplacement");
+            if (stream == null) return;
+            var memStream = new MemoryStream((int)stream.Length);
+            stream.CopyTo(memStream);
+            var bundle = AssetBundle.LoadFromMemory_Internal(memStream.ToArray(), 0);
+            _myWhiteLaserTexture = bundle.LoadAsset_Internal("Assets/BetterPortalPlacement/sniper_beam_white.png", UnhollowerRuntimeLib.Il2CppType.Of<Texture2D>()).Cast<Texture2D>();
+            _myWhiteLaserTexture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
         }
 
         [HideFromIl2Cpp]
@@ -115,13 +117,11 @@ namespace BetterPortalPlacement.Utils
         }
 
         [HideFromIl2Cpp]
-        private void SetupColors(bool CanPlace = true)
+        private void SetupColors(bool canPlace = true)
         {
-            Color color;
-            if (CanPlace) color = Color.cyan;
-            else color = Color.red;
-            previewObj.GetComponent<Renderer>().material.SetColor("_TintColor", color);
-            if (lineRenderer != null) lineRenderer.SetColors(color, color);
+            var color = canPlace ? Color.cyan : Color.red;
+            _previewObj.GetComponent<Renderer>().material.SetColor(TintColor, color);
+            if (_lineRenderer != null) _lineRenderer.SetColors(color, color);
         }
 
         [HideFromIl2Cpp]
@@ -134,15 +134,17 @@ namespace BetterPortalPlacement.Utils
         [HideFromIl2Cpp]
         private RaycastHit Raycast()
         {
-            Physics.Raycast(new Ray(transform.position, transform.forward), out RaycastHit hit, defaultLength);
+            var transform1 = transform;
+            Physics.Raycast(new Ray(transform1.position, transform1.forward), out RaycastHit hit, DefaultLength);
             return hit;
         }
 
         [HideFromIl2Cpp]
         private Vector3 DefaultPos()
         {
+            var transform1 = transform;
             return XRDevice.isPresent?
-            VRUtils.ray.origin + VRUtils.ray.direction * defaultLength : transform.position + transform.forward * defaultLength;
+            VRUtils.Ray.origin + VRUtils.Ray.direction * DefaultLength : transform1.position + transform1.forward * DefaultLength;
         }
     }
 }

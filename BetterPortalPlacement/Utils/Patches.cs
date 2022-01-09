@@ -6,6 +6,7 @@ using HarmonyLib;
 using UnhollowerBaseLib;
 using UnhollowerRuntimeLib;
 using MelonLoader;
+using MonoMod.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using VRC;
@@ -23,73 +24,62 @@ namespace BetterPortalPlacement.Utils
             Main.HInstance.Patch(CreatePortalMethod, new HarmonyMethod(typeof(Patches).GetMethod(nameof(OnPortalCreated))));
             Main.HInstance.Patch(typeof(VRCUiPopupManager).GetMethods()
                     .Where(method => method.Name.StartsWith("Method_Public_Void_String_String_Single_"))
-                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last(),
+                    .OrderBy(UnhollowerSupport.GetIl2CppMethodCallerCount).Last(),
                 new HarmonyMethod(typeof(Patches).GetMethod(nameof(ShowAlert))));
             PlayerIEnumerableSetup.Patch();
         }
 
         public static void CloseMenu(bool __0, bool __1) => GetCloseMenuDelegate(__0, __1);
         private delegate void CloseMenuDelegate(bool __0, bool __1);
-        private static CloseMenuDelegate closeMenuDelegate;
+        private static CloseMenuDelegate _closeMenuDelegate;
         private static CloseMenuDelegate GetCloseMenuDelegate => 
-            closeMenuDelegate ??= (CloseMenuDelegate)Delegate.CreateDelegate(
-                typeof(CloseMenuDelegate), 
-                VRCUiManager.prop_VRCUiManager_0, 
-                typeof(VRCUiManager).GetMethods()
+            _closeMenuDelegate ??= typeof(VRCUiManager).GetMethods()
                 .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_"))
-                .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last());
+                .OrderBy(UnhollowerSupport.GetIl2CppMethodCallerCount).Last()
+                .CreateDelegate<CloseMenuDelegate>(VRCUiManager.prop_VRCUiManager_0);
 
         public static bool CreatePortal(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool) =>
             GetCreatePortalDelegate(apiWorld, apiWorldInstance, pos, foward, someBool);
         private delegate bool CreatePortalDelegate(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool);
-        private static CreatePortalDelegate createPortalDelegate;
-        private static MethodInfo createPortalMethod;
+        private static CreatePortalDelegate _createPortalDelegate;
         private static CreatePortalDelegate GetCreatePortalDelegate => 
-            createPortalDelegate ??= (CreatePortalDelegate)Delegate.CreateDelegate(typeof(CreatePortalDelegate), null, CreatePortalMethod);
+            _createPortalDelegate ??= CreatePortalMethod.CreateDelegate<CreatePortalDelegate>();
+        private static MethodInfo _createPortalMethod;
         private static MethodInfo CreatePortalMethod => 
-            createPortalMethod ??= typeof(PortalInternal).GetMethods()
+            _createPortalMethod ??= typeof(PortalInternal).GetMethods()
                 .First(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_") && 
                                  Utilities.ContainsStr(method, "admin_dont_allow_portal"));
 
-        public static void PopupV2(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null) => 
+        private static void PopupV2(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null) => 
             GetPopupV2Delegate(title, innertxt, buttontxt, buttonOk, action);
         private delegate void PopupV2Delegate(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null);
-        private static PopupV2Delegate popupV2Delegate;
+        private static PopupV2Delegate _popupV2Delegate;
         private static PopupV2Delegate GetPopupV2Delegate =>
-            popupV2Delegate ??= (PopupV2Delegate)Delegate.CreateDelegate(
-                typeof(PopupV2Delegate), 
-                VRCUiPopupManager.prop_VRCUiPopupManager_0, 
-                typeof(VRCUiPopupManager).GetMethods()
-                    .First(methodBase => methodBase.Name.StartsWith("Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_") &&
-                    !methodBase.Name.Contains("PDM") &&
-                    Utilities.ContainsStr(methodBase, "UserInterface/MenuContent/Popups/StandardPopupV2") &&
-                    Utilities.WasUsedBy(methodBase, "OpenSaveSearchPopup")));
+            _popupV2Delegate ??= typeof(VRCUiPopupManager).GetMethods()
+                .First(methodBase => methodBase.Name.StartsWith("Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_") &&
+                                     !methodBase.Name.Contains("PDM") &&
+                                     Utilities.ContainsStr(methodBase, "UserInterface/MenuContent/Popups/StandardPopupV2") &&
+                                     Utilities.WasUsedBy(methodBase, "OpenSaveSearchPopup"))
+                .CreateDelegate<PopupV2Delegate>(VRCUiPopupManager.prop_VRCUiPopupManager_0);
 
         public static bool OnPortalCreated(ApiWorld __0, ApiWorldInstance __1, Vector3 __2, Vector3 __3, bool __4)
         {
-            if (Main.IsModOn.Value && !Main.PtrIsOn())
-            {
-                CurrentInfo = new PortalInfo(__0, __1, __2, __3, __4);
-                if (!Main.IsOnlyOnError.Value)
-                {
-                    if (Main.UseConfirmationPopup.Value) PopupV2("Portal Placement", "Manual placement activated.\nPress ok to place portal.", "Ok", 
-                        new Action(delegate { Main.EnablePointer(); }));
-                    else Main.EnablePointer();
-                    return false;
-                }
-            }
-            return true;
+            if (!Main.IsModOn.Value || Main.PtrIsOn()) return true;
+            CurrentInfo = new PortalInfo(__0, __1, __4);
+            if (Main.IsOnlyOnError.Value) return true;
+            if (Main.UseConfirmationPopup.Value) PopupV2("Portal Placement", "Manual placement activated.\nPress ok to place portal.", "Ok", 
+                new Action(Main.EnablePointer));
+            else Main.EnablePointer();
+            return false;
         }
 
         public static bool ShowAlert(ref string __0, ref string __1)
         {
-            if (Main.IsModOn.Value && __0.Contains("Cannot Create Portal") && 
-                GameObject.Find("UserInterface/MenuContent/Screens/WorldInfo/WorldButtons/PortalButton").GetComponent<Button>().interactable)
-            {
-                PopupV2("Failed to create portal", "Error: " + __1 + "\nPress continue to try again.", "Continue", new Action(delegate { Main.EnablePointer(); }));
-                return false;
-            }
-            return true;
+            if (!Main.IsModOn.Value || !__0.Contains("Cannot Create Portal") || !GameObject
+                    .Find("UserInterface/MenuContent/Screens/WorldInfo/WorldButtons/PortalButton")
+                    .GetComponent<Button>().interactable) return true;
+            PopupV2("Failed to create portal", "Error: " + __1 + "\nPress continue to try again.", "Continue", new Action(Main.EnablePointer));
+            return false;
         }
     }
 
@@ -98,42 +88,41 @@ namespace BetterPortalPlacement.Utils
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate IntPtr PlayerIEnumerableSetupDelegate(Vector3 position, float radius, IntPtr something1, IntPtr something2, IntPtr nativeMethodInfo);
-        private static PlayerIEnumerableSetupDelegate playerIEnumerableSetupDelegate;
+        private static PlayerIEnumerableSetupDelegate _playerIEnumerableSetupDelegate;
         public static void Patch()
         {
             unsafe
             {
                 var setupMethod = typeof(PlayerManager).GetMethods()
                     .Where(method => method.Name.StartsWith("Method_Public_Static_IEnumerable_1_Player_Vector3_Single_Nullable_1_Int32_Func_2_Player_Boolean_"))
-                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
+                    .OrderBy(UnhollowerSupport.GetIl2CppMethodCallerCount).Last();
 
                 var originalMethod = *(IntPtr*)(IntPtr)UnhollowerUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(setupMethod).GetValue(null);
 
-                MelonUtils.NativeHookAttach((IntPtr)(&originalMethod), typeof(PlayerIEnumerableSetup).GetMethod(nameof(IEnumerableSetup),
+                MelonUtils.NativeHookAttach((IntPtr)(&originalMethod), typeof(PlayerIEnumerableSetup).GetMethod(nameof(EnumerableSetup),
                     BindingFlags.Static | BindingFlags.Public)!.MethodHandle.GetFunctionPointer());
 
-                playerIEnumerableSetupDelegate = Marshal.GetDelegateForFunctionPointer<PlayerIEnumerableSetupDelegate>(originalMethod);
+                _playerIEnumerableSetupDelegate = Marshal.GetDelegateForFunctionPointer<PlayerIEnumerableSetupDelegate>(originalMethod);
             }
         }
 
         public static bool IsUp;
-        public static IntPtr IEnumerableSetup(Vector3 position, float radius, IntPtr something1, IntPtr something2, IntPtr nativeMethodInfo)
+        public static IntPtr EnumerableSetup(Vector3 position, float radius, IntPtr something1, IntPtr something2, IntPtr nativeMethodInfo)
         {
-            if (IsUp)
-            { 
-                try
-                {
-                    var myFunc = DelegateSupport.ConvertDelegate<Il2CppSystem.Func<Player, bool>>
-                        (new Func<Player, bool>((player) => player.prop_APIUser_0.id == Player.prop_Player_0.prop_APIUser_0.id));
-                    return playerIEnumerableSetupDelegate(position, radius, something1, myFunc.Pointer, nativeMethodInfo);
-                }
-                catch (Exception e)
-                {
-                    MelonLogger.Msg(ConsoleColor.Yellow, "Something went wrong in PlayerIEnumerableSetup Patch, please tell Davi:");
-                    MelonLogger.Error($"{e}");
-                }
+            if (!IsUp)
+                return _playerIEnumerableSetupDelegate(position, radius, something1, something2, nativeMethodInfo);
+            try
+            {
+                var myFunc = DelegateSupport.ConvertDelegate<Il2CppSystem.Func<Player, bool>>
+                    (new Func<Player, bool>(player => player.prop_APIUser_0.id == Player.prop_Player_0.prop_APIUser_0.id));
+                return _playerIEnumerableSetupDelegate(position, radius, something1, myFunc.Pointer, nativeMethodInfo);
             }
-            return playerIEnumerableSetupDelegate(position, radius, something1, something2, nativeMethodInfo);
+            catch (Exception e)
+            {
+                Main.Logger.Msg(ConsoleColor.Yellow, "Something went wrong in PlayerIEnumerableSetup Patch, please tell Davi:");
+                Main.Logger.Error($"{e}");
+            }
+            return _playerIEnumerableSetupDelegate(position, radius, something1, something2, nativeMethodInfo);
         }
     }
 }

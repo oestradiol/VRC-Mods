@@ -15,17 +15,17 @@ namespace TrackingRotator.Utils
         {
             VRCActionMenuPage.AddSubMenu(ActionMenuPage.Main, "<color=#00a2ff>Tracking Rotator</color>", () =>
             {
-                CustomSubMenu.AddButton("Forward", () => Move(transform.right), Assets.Forward); //X+
-                CustomSubMenu.AddButton("Backward", () => Move(-transform.right), Assets.Backward); //X-
-                CustomSubMenu.AddButton("Tilt Left", () => Move(transform.forward), Assets.TLeft); //Z+
-                CustomSubMenu.AddButton("Tilt Right", () => Move(-transform.forward), Assets.TRight); //Z-
-                CustomSubMenu.AddButton("Left", () => Move(-transform.up), Assets.Left); //Y-
-                CustomSubMenu.AddButton("Right", () => Move(transform.up), Assets.Right); //Y+
+                CustomSubMenu.AddButton("Forward", () => Move(Main.Transform.right), Assets.Forward); //X+
+                CustomSubMenu.AddButton("Backward", () => Move(-Main.Transform.right), Assets.Backward); //X-
+                CustomSubMenu.AddButton("Tilt Left", () => Move(Main.Transform.forward), Assets.TLeft); //Z+
+                CustomSubMenu.AddButton("Tilt Right", () => Move(-Main.Transform.forward), Assets.TRight); //Z-
+                CustomSubMenu.AddButton("Left", () => Move(-Main.Transform.up), Assets.Left); //Y-
+                CustomSubMenu.AddButton("Right", () => Move(Main.Transform.up), Assets.Right); //Y+
 
                 CustomSubMenu.AddSubMenu("Other", () =>
                 {
-                    CustomSubMenu.AddButton("Reset", () => cameraTransform.localRotation = originalRotation, Assets.Reset);
-                    CustomSubMenu.AddToggle("High precision", highPrecision, b => highPrecision = b, Assets.HP);
+                    CustomSubMenu.AddButton("Reset", () => CameraTransform.localRotation = OriginalRotation, Assets.Reset);
+                    CustomSubMenu.AddToggle("High precision", HighPrecision, b => HighPrecision = b, Assets.Hp);
                 }, Assets.Other);
             }, Assets.Main);
         }
@@ -37,8 +37,8 @@ namespace TrackingRotator.Utils
         // https://github.com/knah/VRCMods/blob/master/UIExpansionKit
     internal static class Assets
     {
-        private static AssetBundle Bundle;
-        public static Texture2D Main, Forward, Backward, TLeft, TRight, Left, Right, Other, Reset, HP;
+        private static AssetBundle _bundle;
+        public static Texture2D Main, Forward, Backward, TLeft, TRight, Left, Right, Other, Reset, Hp;
 
         public static void OnApplicationStart() { MelonCoroutines.Start(LoadAssets()); }
 
@@ -46,31 +46,33 @@ namespace TrackingRotator.Utils
         {
             try
             {
-                using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TrackingRotator.trackingrotator");
-                using var memoryStream = new MemoryStream((int)stream.Length);
-                stream.CopyTo(memoryStream);
-                Bundle = AssetBundle.LoadFromMemory_Internal(memoryStream.ToArray(), 0);
-                Bundle.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-                try { Main = LoadTexture("Main.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Main.png"); }
-                try { Forward = LoadTexture("Forward.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Forward.png"); }
-                try { Backward = LoadTexture("Backward.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Backward.png"); }
-                try { TLeft = LoadTexture("TLeft.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: TLeft.png"); }
-                try { TRight = LoadTexture("TRight.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: TRight.png"); }
-                try { Left = LoadTexture("Left.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Left.png"); }
-                try { Right = LoadTexture("Right.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Right.png"); }
-                try { Other = LoadTexture("Other.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Other.png"); }
-                try { Reset = LoadTexture("Reset.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Reset.png"); }
-                try { HP = LoadTexture("HP.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: HP.png"); }
-            } catch { MelonLogger.Warning("Failed to load AssetBundle! ActionMenuApi will have its icons completely broken."); }
+                var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TrackingRotator.trackingrotator");
+                if (stream != null)
+                {
+                    var memoryStream = new MemoryStream((int)stream.Length);
+                    stream.CopyTo(memoryStream);
+                    _bundle = AssetBundle.LoadFromMemory_Internal(memoryStream.ToArray(), 0);
+                    _bundle.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+                }
+                try { Main = LoadTexture("Main.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: Main.png"); }
+                try { Forward = LoadTexture("Forward.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: Forward.png"); }
+                try { Backward = LoadTexture("Backward.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: Backward.png"); }
+                try { TLeft = LoadTexture("TLeft.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: TLeft.png"); }
+                try { TRight = LoadTexture("TRight.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: TRight.png"); }
+                try { Left = LoadTexture("Left.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: Left.png"); }
+                try { Right = LoadTexture("Right.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: Right.png"); }
+                try { Other = LoadTexture("Other.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: Other.png"); }
+                try { Reset = LoadTexture("Reset.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: Reset.png"); }
+                try { Hp = LoadTexture("HP.png"); } catch { TrackingRotator.Main.Logger.Error("Failed to load image from asset bundle: HP.png"); }
+            } catch { TrackingRotator.Main.Logger.Warning("Failed to load AssetBundle! ActionMenuApi will have its icons completely broken."); }
             yield break;
         }
 
-        private static Texture2D LoadTexture(string Texture)
+        private static Texture2D LoadTexture(string texture)
         {
-            Texture2D Texture2 = Bundle.LoadAsset_Internal(Texture, Il2CppType.Of<Texture2D>()).Cast<Texture2D>();
-            Texture2.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-            Texture2.hideFlags = HideFlags.HideAndDontSave;
-            return Texture2;
+            var texture2 = _bundle.LoadAsset_Internal(texture, Il2CppType.Of<Texture2D>()).Cast<Texture2D>();
+            texture2.hideFlags |= HideFlags.DontUnloadUnusedAsset | HideFlags.HideAndDontSave;
+            return texture2;
         }
     }
 }

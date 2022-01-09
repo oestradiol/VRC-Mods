@@ -1,1 +1,1 @@
-this bug has been fixed by vrc themselves, and therefore this is now useless and doesn't do anything
+**This bug has been fixed by VRC, and therefore this is now useless and doesn't do anything.**

@@ -19,7 +19,7 @@
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="ActionMenuApi">
-				<HintPath>$(MelonManaged)\..\..\Mods\ActionMenuApi.dll</HintPath>
+				<HintPath>$(MelonManaged)\..\..\Mods\NotUsing\ActionMenuApi.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="Il2Cppmscorlib">

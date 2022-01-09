@@ -1,4 +1,4 @@
-﻿﻿This repository contains my VRChat mods and fixes. <br>
+﻿This repository contains my VRChat mods and fixes. <br>
 Join the [VRChat Modding Group (VRCMG) discord](https://discord.gg/rCqKSvR) for official mods and support!
 
 ## Special Thanks
@@ -7,6 +7,9 @@ Thank you [AxisAngle#0001](https://discord.com/users/80798961836752896), that ma
 Also thank you cutie ([Gompo <3](https://github.com/gompocp)) for helping me a lot every time I needed you <3.
 
 ## BetterDirections
+**ARCHIVED** </br>
+**This mod has been archived since it has been merged with another mod.** </br>
+**For now, go check it: [BetterLocomotion](https://github.com/Louka3000/BetterLocomotion)** </br>
 This mod was developed with the help and by request of [AxisAngle#0001](https://discord.com/users/80798961836752896). 
 
 Current features:
@@ -46,13 +49,13 @@ This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now
 	* This can also be toggled by pressing F10.
 	
 ## DesktopCamera
-**This mod is mainly broken rn, most of its features have been disabled because since VRChat updated the camera and UI, the entire code became outdated and needs proper care.**
-**I am too busy and not in conditions to focus on remaking this right now, therefore, any pull requests or maybe messages on my DMs to negotiate passing this on would be appreciated.**
-**I do not usually accept friend requests from people I do not know, therefore, the chances of you reaching me through [VRCMG](https://discord.gg/rCqKSvR) are much higher, since my DMs are not closed.**
+**ARCHIVED**
+**This mod is mainly broken rn, most of its features have been disabled because since VRChat updated the camera and UI, the entire code became outdated and needs proper care.** </br>
+**I am too busy and not in conditions to focus on remaking this right now, therefore, any pull requests or maybe messages on my DMs to negotiate passing this on would be appreciated.** </br>
+**I do not usually accept friend requests from people I do not know, therefore, the chances of you reaching me through [VRCMG](https://discord.gg/rCqKSvR) are much higher, since my DMs are not closed.** </br>
 **My Discord: [Davi#0003](https://discord.com/users/227477384356429824).**
 
-This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now it's been maintained and updated by me. 
-
+This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now it's been maintained and updated by me.
 **Current features:**
 * This mod allows Desktop users to use the VRChat Camera feature and makes it easier to use for VR users;
 * Add new options to the camera menu.
@@ -77,6 +80,9 @@ This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now
 * **Warning: The Camera Space must be in "World" mode, or else the camera won't move**.
 
 ## ProneUiFix
+**ARCHIVED** </br>
+**This bug has been fixed by VRC, and therefore this is now useless and doesn't do anything.** </br>
+
 **Current features:**
 * Simple fix to the Desktop Ui glitch that happens on some avatars, that opening the menu while you're proning will cause it be mispositioned. (Update: bug has been fixed by VRChat and this is now useless)
 
