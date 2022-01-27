@@ -5,11 +5,11 @@
 			<DebugType>none</DebugType>
 			<DebugSymbols>false</DebugSymbols>
 			<ClearOutputDirectory>False</ClearOutputDirectory>
-			<MelonManaged>D:\Jogos\SteamLibrary\steamapps\common\VRChat\MelonLoader\Managed</MelonManaged>
+			<MelonManaged>..\..\..\..\..\Jogos\SteamLibrary\steamapps\common\VRChat\MelonLoader\Managed</MelonManaged>
 			<OutputPath>$(MsBuildThisFileDirectory)Output</OutputPath>
-		</PropertyGroup>  
+		</PropertyGroup>
 		<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)' == 'true'">
-			<Exec Command="xcopy /c /f /y $(OutputPath)$(AssemblyName).dll $(MelonManaged)\..\..\Mods" />
+			<Exec Command="cp $(OutputPath)$(AssemblyName).dll $(MelonManaged)\..\..\Mods" />
 		</Target>
 		<ItemGroup Condition="'$(VrcReferences)' == 'true'">
 			<Reference Include="System" />
