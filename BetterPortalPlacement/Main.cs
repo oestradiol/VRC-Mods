@@ -131,7 +131,7 @@ namespace BetterPortalPlacement
                 Patches.CurrentInfo.ApiWorldInstance,
                 _portalPtr.position - forward * 2,
                 forward,
-                Patches.CurrentInfo.WithUIErrors
+                Patches.CurrentInfo.WhateverThisIs
             );
             PlayerIEnumerableSetup.IsUp = false;
             DisablePointer();

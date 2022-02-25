@@ -38,21 +38,18 @@ namespace BetterPortalPlacement.Utils
                 .OrderBy(UnhollowerSupport.GetIl2CppMethodCallerCount).Last()
                 .CreateDelegate<CloseMenuDelegate>(VRCUiManager.prop_VRCUiManager_0);
 
-        public static bool CreatePortal(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool) =>
-            GetCreatePortalDelegate(apiWorld, apiWorldInstance, pos, foward, someBool);
-        private delegate bool CreatePortalDelegate(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool);
+        public static bool CreatePortal(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 forward, Il2CppSystem.Action<string> someStrAction = null) =>
+            (_createPortalDelegate ??= CreatePortalMethod.CreateDelegate<CreatePortalDelegate>())(apiWorld, apiWorldInstance, pos, forward, someStrAction);
+        private delegate bool CreatePortalDelegate(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 forward, Il2CppSystem.Action<string> someStrAction = null);
         private static CreatePortalDelegate _createPortalDelegate;
-        private static CreatePortalDelegate GetCreatePortalDelegate => 
-            _createPortalDelegate ??= CreatePortalMethod.CreateDelegate<CreatePortalDelegate>();
         private static MethodInfo _createPortalMethod;
-        private static MethodInfo CreatePortalMethod => 
-            _createPortalMethod ??= typeof(PortalInternal).GetMethods()
-                .First(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_") && 
+        private static MethodInfo CreatePortalMethod => _createPortalMethod ??= typeof(PortalInternal).GetMethods()
+                .First(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Action_1_String_") && 
                                  Utilities.ContainsStr(method, "admin_dont_allow_portal"));
 
-        private static void PopupV2(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null) => 
+        private static void PopupV2(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<string> action = null) => 
             GetPopupV2Delegate(title, innertxt, buttontxt, buttonOk, action);
-        private delegate void PopupV2Delegate(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null);
+        private delegate void PopupV2Delegate(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<string> action = null);
         private static PopupV2Delegate _popupV2Delegate;
         private static PopupV2Delegate GetPopupV2Delegate =>
             _popupV2Delegate ??= typeof(VRCUiPopupManager).GetMethods()
@@ -62,7 +59,7 @@ namespace BetterPortalPlacement.Utils
                                      Utilities.WasUsedBy(methodBase, "OpenSaveSearchPopup"))
                 .CreateDelegate<PopupV2Delegate>(VRCUiPopupManager.prop_VRCUiPopupManager_0);
 
-        public static bool OnPortalCreated(ApiWorld __0, ApiWorldInstance __1, Vector3 __2, Vector3 __3, bool __4)
+        public static bool OnPortalCreated(ApiWorld __0, ApiWorldInstance __1, Vector3 __2, Vector3 __3, Il2CppSystem.Action<string> __4)
         {
             if (!Main.IsModOn.Value || Main.PtrIsOn()) return true;
             CurrentInfo = new PortalInfo(__0, __1, __4);
