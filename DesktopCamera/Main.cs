@@ -11,7 +11,7 @@ using DesktopCamera.Utils;
 using UnityEngine.XR;
 using BuildInfo = DesktopCamera.BuildInfo;
 using Main = DesktopCamera.Main;
-using CameraMenu = MonoBehaviour1PublicBuToBuGaBuGaBuGaBuGaUnique;
+using CameraMenu = MonoBehaviour1PublicBuToBuGaTMBuGaBuGaBuUnique;
 
 [assembly: AssemblyCopyright("Created by " + BuildInfo.Author)]
 [assembly: MelonInfo(typeof(Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author)]
@@ -102,6 +102,9 @@ namespace DesktopCamera
                     //MyCameraMenu.gameObject.SetActive(Settings.cameraEnabled);
                     CameraUtils.SetCameraMode(Settings.cameraEnabled ? CameraUtils.CameraMode.Photo : CameraUtils.CameraMode.Off);
                 }));
+
+                //Remove StreamMode
+                VRCUtils.GetUserCameraController().gameObject.transform.Find("ViewFinder/PhotoControls/Primary /ControlGroup_Main/Scroll View/Viewport/Content/StreamToggle").gameObject.SetActive(false);
             }
 
             /*var CameraMenu = QuickMenu.prop_QuickMenu_0.transform.Find("CameraMenu");
