@@ -143,19 +143,19 @@ namespace BetterPortalPlacement.Utils
         public static void OnUpdate()
         {
             if (!active) return;
-            if (a && TriggerIsDown == true)
+            if (a && (TriggerIsDown == true))
             {
                 a = false;
                 if (controller == Controller.Right) Main.RecreatePortal();
                 else controller = Controller.Right;
             }
-            else if (b && TriggerIsDown == false)
+            else if (b && (TriggerIsDown == false))
             {
                 b = false;
                 if (controller == Controller.Left) Main.RecreatePortal();
                 else controller = Controller.Left;
             }
-            else if (!a || !b && TriggerIsDown == null)
+            else if ((!a || !b) && (TriggerIsDown == null))
             {
                 a = true;
                 b = true;

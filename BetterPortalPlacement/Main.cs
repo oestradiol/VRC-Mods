@@ -94,7 +94,7 @@ namespace BetterPortalPlacement
 
         public static bool CanPlace() => 
             !((from p in PlayerManager.field_Private_Static_PlayerManager_0.field_Private_List_1_Player_0.ToArray()
-                where p != Player.prop_Player_0 && Vector3.Distance(p.transform.position, portalPtr.position) <= 1.75f
+                where p != null && Vector3.Distance(p.transform.position, portalPtr.position) <= 1.75f
                 select p).Count() != 0 ||
               (from s in SpawnManager.field_Private_Static_SpawnManager_0.field_Private_List_1_Spawn_0.ToArray()
                 where (portalPtr.position - s.transform.position).sqrMagnitude < 9
