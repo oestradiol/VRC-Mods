@@ -12,35 +12,34 @@ namespace TrackingRotator.Utils
         }
 
         // Based on knah's ViewPointTweaker mod, https://github.com/knah/VRCMods/blob/master/ViewPointTweaker
-        private static ICustomShowableLayoutedMenu RotationMenu = null;
+        private static ICustomShowableLayoutedMenu _rotationMenu;
         private static void ShowRotationMenu()
         {
-            if (RotationMenu == null)
+            if (_rotationMenu == null)
             {
-                RotationMenu = ExpansionKitApi.CreateCustomQuickMenuPage(LayoutDescription.QuickMenu4Columns);
+                _rotationMenu = ExpansionKitApi.CreateCustomQuickMenuPage(LayoutDescription.QuickMenu4Columns);
 
-                RotationMenu.AddSpacer();
-                RotationMenu.AddSimpleButton("Forward", () => Move(transform.right));
-                RotationMenu.AddSpacer();
-                RotationMenu.AddSpacer();
+                _rotationMenu.AddSpacer();
+                _rotationMenu.AddSimpleButton("Forward", () => Move(Transform.right));
+                _rotationMenu.AddSpacer();
+                _rotationMenu.AddSpacer();
 
-                RotationMenu.AddSimpleButton("Tilt Left", () => Move(transform.forward));
-                RotationMenu.AddSimpleButton("Reset", () => cameraTransform.localRotation = originalRotation);
-                RotationMenu.AddSimpleButton("Tilt Right", () => Move(-transform.forward));
-                RotationMenu.AddSpacer();
+                _rotationMenu.AddSimpleButton("Tilt Left", () => Move(Transform.forward));
+                _rotationMenu.AddSimpleButton("Reset", () => CameraTransform.localRotation = OriginalRotation);
+                _rotationMenu.AddSimpleButton("Tilt Right", () => Move(-Transform.forward));
+                _rotationMenu.AddSpacer();
 
-                RotationMenu.AddSpacer();
-                RotationMenu.AddSimpleButton("Backward", () => Move(-transform.right));
-                RotationMenu.AddSimpleButton("Left", () => Move(-transform.up));
-                RotationMenu.AddSimpleButton("Right", () => Move(transform.up));
+                _rotationMenu.AddSpacer();
+                _rotationMenu.AddSimpleButton("Backward", () => Move(-Transform.right));
+                _rotationMenu.AddSimpleButton("Left", () => Move(-Transform.up));
+                _rotationMenu.AddSimpleButton("Right", () => Move(Transform.up));
 
-                RotationMenu.AddToggleButton("High precision", b => highPrecision = b, () => highPrecision);
-                RotationMenu.AddSpacer();
-                RotationMenu.AddSpacer();
-                RotationMenu.AddSimpleButton("Back", RotationMenu.Hide);
+                _rotationMenu.AddToggleButton("High precision", b => HighPrecision = b, () => HighPrecision);
+                _rotationMenu.AddSpacer();
+                _rotationMenu.AddSpacer();
+                _rotationMenu.AddSimpleButton("Back", _rotationMenu.Hide);
             }
-
-            RotationMenu.Show();
+            _rotationMenu.Show();
         }
     }
 }

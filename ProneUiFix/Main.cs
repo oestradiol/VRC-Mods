@@ -30,36 +30,33 @@ namespace ProneUiFix
 
     public class Main : MelonMod
     {
-        private static MethodInfo placeUi;
-        private static MethodInfo PlaceUiMethod
-        {
-            get
-            {
-                if (placeUi == null) placeUi = typeof(VRCUiManager).GetMethods()
+        private static MelonLogger.Instance _logger;
+        private static MethodInfo _placeUi;
+        private static MethodInfo PlaceUiMethod =>
+            _placeUi ??= typeof(VRCUiManager).GetMethods()
                      .Where(m => 
                          m.Name.StartsWith("Method_Public_Void_Boolean_Boolean_") && !m.Name.Contains("PDM") &&
-                         m.GetParameters().Where(p => p.RawDefaultValue.ToString().Contains("False")).Count() == 2)
-                     .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).First();
-                return placeUi;
-            }
-        }
+                         m.GetParameters().Count(p => p.RawDefaultValue.ToString().Contains("False")) == 2)
+                     .OrderBy(UnhollowerSupport.GetIl2CppMethodCallerCount).First();
 
         public override void OnApplicationStart()
         {
+            _logger = LoggerInstance;
+            
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
 
             WaitForUiInit();
 
-            MelonLogger.Msg("Successfully loaded!");
+            _logger.Msg("Successfully loaded!");
         }
 
         private static void WaitForUiInit()
         {
             if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
-                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+                typeof(UIXManager).GetMethod("OnApplicationStart")!.Invoke(null, null);
             else
             {
-                MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
+                _logger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
                 static IEnumerator OnUiManagerInit()
                 {
                     while (VRCUiManager.prop_VRCUiManager_0 == null)

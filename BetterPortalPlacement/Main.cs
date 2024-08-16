@@ -31,17 +31,19 @@ namespace BetterPortalPlacement
 
     public class Main : MelonMod
     {
-        private static MelonMod Instance;
-        private static PortalPtr portalPtr;
+        private static PortalPtr _portalPtr;
         public static MelonPreferences_Entry<bool> IsModOn;
         public static MelonPreferences_Entry<bool> UseConfirmationPopup;
         public static MelonPreferences_Entry<bool> IsOnlyOnError;
-        public static HarmonyLib.Harmony HInstance => Instance.HarmonyInstance;
-        public static bool PtrIsOn() => portalPtr.enabled;
+        public static HarmonyLib.Harmony HInstance;
+        public static MelonLogger.Instance Logger;
+        public static bool PtrIsOn() => _portalPtr.enabled;
 
         public override void OnApplicationStart()
         {
-            Instance = this;
+            Logger = LoggerInstance;
+            HInstance = HarmonyInstance;
+            
             ClassInjector.RegisterTypeInIl2Cpp<PortalPtr>();
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
             MelonPreferences.CreateCategory("BetterPortalPlacement", "BetterPortalPlacement Settings");
@@ -52,16 +54,16 @@ namespace BetterPortalPlacement
 
             WaitForUiInit();
 
-            MelonLogger.Msg("Successfully loaded!");
+            Logger.Msg("Successfully loaded!");
         }
 
         private static void WaitForUiInit()
         {
             if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
-                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+                typeof(UIXManager).GetMethod("OnApplicationStart")!.Invoke(null, null);
             else
             {
-                MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
+                Logger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
                 static IEnumerator OnUiManagerInit()
                 {
                     while (VRCUiManager.prop_VRCUiManager_0 == null)
@@ -74,11 +76,11 @@ namespace BetterPortalPlacement
 
         public static void VRChat_OnUiManagerInit()
         {
-            portalPtr = Utilities.GetPtrObj().AddComponent<PortalPtr>();
+            _portalPtr = Utilities.GetPtrObj().AddComponent<PortalPtr>();
             if (XRDevice.isPresent) VRUtils.VRChat_OnUiManagerInit();
-            EnableDisableListener QMListener = Resources.FindObjectsOfTypeAll<VRC.UI.Elements.QuickMenu>()[0].gameObject.AddComponent<EnableDisableListener>();
-            QMListener.OnEnabled += delegate { if (portalPtr.enabled) DisablePointer(); };
-            QMListener.OnDisabled += delegate { VRUtils.OnQMDisable(); };
+            var qmListener = Resources.FindObjectsOfTypeAll<VRC.UI.Elements.QuickMenu>()[0].gameObject.AddComponent<EnableDisableListener>();
+            qmListener.OnEnabled += () => { if (_portalPtr.enabled) DisablePointer(); };
+            qmListener.OnDisabled += VRUtils.OnQMDisable;
             DisablePointer();
         }
 
@@ -86,30 +88,31 @@ namespace BetterPortalPlacement
 
         public static void EnablePointer()
         {
-            try { VRCUiManager.prop_VRCUiManager_0.HideScreen("POPUP"); } catch { }
-            portalPtr.enabled = true;
+            try { VRCUiManager.prop_VRCUiManager_0.HideScreen("POPUP"); } 
+            catch { /* ignored */ }
+            _portalPtr.enabled = true;
         }
 
-        public static void DisablePointer() => portalPtr.enabled = false;
+        private static void DisablePointer() => _portalPtr.enabled = false;
 
         public static bool CanPlace()
         {
             try
             {
-                var distance = Vector3.Distance(Player.prop_Player_0.transform.position, portalPtr.position);
+                var distance = Vector3.Distance(Player.prop_Player_0.transform.position, _portalPtr.position);
                 return !((from p in PlayerManager.field_Private_Static_PlayerManager_0.field_Private_List_1_Player_0.ToArray()
                            where p != null && p.prop_APIUser_0.id != Player.prop_Player_0.prop_APIUser_0.id && 
-                           Vector3.Distance(p.transform.position, portalPtr.position) <= 1.75f
+                           Vector3.Distance(p.transform.position, _portalPtr.position) <= 1.75f
                            select p).Count() != 0 ||
                           (distance <= 1.1f || distance >= 5.1) ||
                          (from s in SpawnManager.field_Private_Static_SpawnManager_0.field_Private_List_1_Spawn_0.ToArray()
-                           where (portalPtr.position - s.transform.position).sqrMagnitude < 9
+                           where (_portalPtr.position - s.transform.position).sqrMagnitude < 9
                            select s).Count() != 0);
             }
             catch (Exception e)
             {
-                MelonLogger.Warning("Something went wrong in calculating CanPlace bool!");
-                MelonLogger.Error(e);
+                Logger.Warning("Something went wrong in calculating CanPlace bool!");
+                Logger.Error(e);
                 return false;
             }
         }
@@ -118,7 +121,7 @@ namespace BetterPortalPlacement
         {
             if (!CanPlace())
             {
-                portalPtr.audio.Play();
+                _portalPtr.audio.Play();
                 return;
             }
             var forward = XRDevice.isPresent ? VRUtils.GetControllerTransform().forward : VRCPlayer.field_Internal_Static_VRCPlayer_0.transform.forward;
@@ -126,7 +129,7 @@ namespace BetterPortalPlacement
             Patches.CreatePortal(
                 Patches.CurrentInfo.ApiWorld,
                 Patches.CurrentInfo.ApiWorldInstance,
-                portalPtr.position - forward * 2,
+                _portalPtr.position - forward * 2,
                 forward,
                 Patches.CurrentInfo.WithUIErrors
             );

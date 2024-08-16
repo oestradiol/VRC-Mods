@@ -4,7 +4,8 @@
 
 /.vs
 /.idea
+/*/obj
 /Output
 /ILRepack
 /BetterAVPreview
-/*/obj
+/RepositionQM
