@@ -12,12 +12,12 @@ namespace BetterPortalPlacement.Utils
     {
         public readonly ApiWorld ApiWorld;
         public readonly ApiWorldInstance ApiWorldInstance;
-        public readonly bool WithUIErrors;
-        public PortalInfo(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, bool withUIErrors)
+        public readonly Il2CppSystem.Action<string> WhateverThisIs;
+        public PortalInfo(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Il2CppSystem.Action<string> whateverThisIs)
         {
             ApiWorld = apiWorld;
             ApiWorldInstance = apiWorldInstance;
-            WithUIErrors = withUIErrors;
+            WhateverThisIs = whateverThisIs;
         }
     }
 
