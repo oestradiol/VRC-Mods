@@ -74,14 +74,11 @@ namespace BetterPortalPlacement.Utils
 
         private void SetupColors(bool CanPlace)
         {
+            Color color = Color.white;
+            //if (CanPlace) color = Color.green;
+            //else color = Color.red;
             // SetPortalColor(CanPlace);
-            if (lineRenderer != null)
-            {
-                Color color = Color.white;
-                //if (CanPlace) color = Color.green;
-                //else color = Color.red;
-                lineRenderer.SetColors(color, color);
-            }
+            if (lineRenderer != null) lineRenderer.SetColors(color, color);
         }
 
         [HideFromIl2Cpp]
