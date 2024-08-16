@@ -9,7 +9,8 @@
 			<OutputPath>$(MsBuildThisFileDirectory)Output</OutputPath>
 		</PropertyGroup>
 		<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)' == 'true'">
-			<Exec Command="cp $(OutputPath)$(AssemblyName).dll $(MelonManaged)\..\..\Mods" />
+			<Message Text="Copying $(OutputPath)$(AssemblyName).dll to Mods folder" Importance="high" />
+			<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(MelonManaged)\..\Mods\$(AssemblyName).dll" />
 		</Target>
 		<ItemGroup Condition="'$(VrcReferences)' == 'true'">
 			<Reference Include="System" />
@@ -28,6 +29,10 @@
 			</Reference>
 			<Reference Include="MelonLoader">
 				<HintPath>$(MelonManaged)\..\MelonLoader.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+			<Reference Include="0Harmony">
+				<HintPath>$(MelonManaged)\..\0Harmony.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="Newtonsoft.Json">

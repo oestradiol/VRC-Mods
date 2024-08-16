@@ -1,5 +1,12 @@
-﻿This repository contains my VRChat mods and fixes. <br>
-Join the [VRChat Modding Group (VRCMG) discord](https://discord.gg/rCqKSvR) for official mods and support!
+﻿<h2>
+    As VRChat added EAC, this repository is now gonna be archived here for future reference. </br>
+    Meanwhile, we've decided to move to ChilloutVR! Come check us! </br>
+    <a href="https://discord.gg/R6Cr5zDRfB">ChilloutVR Modding Group (CVRMG)</a>
+</h2>
+</br>
+
+This repository contains my VRChat mods and fixes. <br>
+Join the [VRChat Modding Group (VRCMG)](https://discord.gg/rCqKSvR) for official mods and support!
 
 ## Special Thanks
 Thank you [Nitro. <3](https://github.com/nitrog0d) for the idea on the ToggleFullScreen; <br>
