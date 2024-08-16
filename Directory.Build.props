@@ -19,12 +19,24 @@
 				<HintPath>$(MelonManaged)\Assembly-CSharp.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
+			<Reference Include="ActionMenuApi">
+				<HintPath>$(VRChatFolder)\Mods\ActionMenuApi.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
 			<Reference Include="Il2Cppmscorlib">
 				<HintPath>$(MelonManaged)\Il2Cppmscorlib.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="MelonLoader">
 				<HintPath>$(MelonManaged)\..\MelonLoader.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+			<Reference Include="Newtonsoft.Json">
+				<HintPath>$(MelonManaged)\Newtonsoft.Json.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+			<Reference Include="UIExpansionKit">
+				<HintPath>$(VRChatFolder)\Mods\UIExpansionKit.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="UnhollowerBaseLib">
@@ -58,6 +70,10 @@
 			<Reference Include="UnityEngine.UI">
 				<HintPath>$(MelonManaged)\UnityEngine.UI.dll</HintPath>
 				<Private>False</Private>
+			</Reference>
+			<Reference Include="UnityEngine.UnityWebRequestModule">
+				<HintPath>$(MelonManaged)\UnityEngine.UnityWebRequestModule.dll</HintPath>
+				<Private>False</Private>
 			</Reference> 
 			<Reference Include="UnityEngine.AnimationModule">
 				<HintPath>$(MelonManaged)\UnityEngine.AnimationModule.dll</HintPath>
@@ -69,6 +85,10 @@
 			</Reference>
 			<Reference Include="VRCSDK2">
 				<HintPath>$(MelonManaged)\VRCSDK2.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+			<Reference Include="VRCSDK3">
+				<HintPath>$(MelonManaged)\VRCSDK3.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="VRCSDK3A">
