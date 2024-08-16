@@ -43,17 +43,27 @@ namespace ToggleFullScreen
 
     public class Main : MelonMod
     {
-        private static Toggle toggle;
-        private const bool useHeadLook = false;
-        private static bool PreviousState, IsUsingUIX;
-        private static MelonPreferences_Entry<string> FSResolution;
-        // private static MelonMod Instance;
-        // private static MelonLogger.Instance Logger => Instance.LoggerInstance; // To use Logger instead of MelonLogger
-
         #region Init
+        private static MelonMod Instance;
+        private static MelonPreferences_Entry<string> FSResolution;
+        //private static MelonLogger.Instance Logger => Instance.LoggerInstance; // To use Logger instead of MelonLogger
+
+        private static Toggle toggle;
+        private const bool useHeadLook = false; // This is here just in case, since idfk what that headlook button is
+        private static bool PreviousState, IsUsingUIX;
+        private static Resolution Previous, c_MaxRes, c_HighRes, c_MediumRes, c_LowRes, c_MinimumRes;
+        private enum ResTypes
+        {
+            Minimum = 0,
+            Low = 1,
+            Medium = 2,
+            High = 3,
+            Maximum = 4
+        }
+
         public override void OnApplicationStart()
         {
-            // Instance = this;
+            Instance = this;
             IsUsingUIX = MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit"));
 
             // Set preferences
@@ -128,7 +138,7 @@ namespace ToggleFullScreen
             toggle = ToggleButton.GetComponent<Toggle>();
             toggle.isOn = Screen.fullScreen;
             toggle.onValueChanged = new();
-            toggle.onValueChanged.AddListener(new System.Action<bool>(isOn => Screen.fullScreen = isOn));
+            toggle.onValueChanged.AddListener(new Action<bool>(isOn => Screen.fullScreen = isOn));
         }
         private static void UpdateUIXSwitch() =>
             typeof(UIXManager).GetMethod(nameof(UIXManager.RegisterSettingAsStringEnum))
@@ -143,36 +153,6 @@ namespace ToggleFullScreen
         #endregion
 
         #region ResolutionProcessing
-        private enum ResTypes
-        {
-            Minimum = 0,
-            Low = 1,
-            Medium = 2,
-            High = 3,
-            Max = 4
-        }
-        private static Resolution Previous, c_MaxRes, c_HighRes, c_MediumRes, c_LowRes, c_MinimumRes;
-        private static Resolution MaxRes => GetCurrentResFor(ResTypes.Max);
-        private static Resolution HighRes => GetCurrentResFor(ResTypes.High);
-        private static Resolution MediumRes => GetCurrentResFor(ResTypes.Medium);
-        private static Resolution LowRes => GetCurrentResFor(ResTypes.Low);
-        private static Resolution MinimumRes => GetCurrentResFor(ResTypes.Minimum);
-        // Had to use Natives below because all C# AND Unity methods failed me so why not :)
-        [DllImport("gdi32.dll")]
-        private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
-        [DllImport("User32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr GetWindowDC(IntPtr hWnd);
-        private enum DeviceCap
-        { HORZRES = 8, VERTRES = 10 }
-        private static Resolution GetCurrentMaxRes()
-        {
-            IntPtr CurrentHdc = GetWindowDC(System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle);
-            return new Resolution()
-            {
-                width = GetDeviceCaps(CurrentHdc, (int)DeviceCap.HORZRES),
-                height = GetDeviceCaps(CurrentHdc, (int)DeviceCap.VERTRES)
-            };
-        }
         private static Resolution GetCurrentResFor(ResTypes Quality)
         {
             CheckAndUpdateResolutions();
@@ -198,6 +178,18 @@ namespace ToggleFullScreen
                 if (IsUsingUIX) UpdateUIXSwitch();
             }
         }
+        // Had to use Natives below because all C# AND Unity methods failed me so why not :)
+        private static Resolution GetCurrentMaxRes()
+        {
+            IntPtr CurrentHdc = GetWindowDC(System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle);
+            return new Resolution()
+            {
+                width = GetDeviceCaps(CurrentHdc, 8), // DeviceCap.HORZRES = 8
+                height = GetDeviceCaps(CurrentHdc, 10) // DeviceCap.VERTRES = 10
+            };
+        }
+        [DllImport("User32.dll", CharSet = CharSet.Auto)] private static extern IntPtr GetWindowDC(IntPtr hWnd);
+        [DllImport("gdi32.dll")] private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
         private static Resolution CalculatePropRes(Resolution propTo) =>
             new()
             {
@@ -245,11 +237,11 @@ namespace ToggleFullScreen
         private static Resolution GetCurrentAppliedRes() => 
             FSResolution.Value switch
             {
-                "High" => HighRes,
-                "Medium" => MediumRes,
-                "Low" => LowRes,
-                "Minimum" => MinimumRes,
-                _ => MaxRes
+                "High" => GetCurrentResFor(ResTypes.High),
+                "Medium" => GetCurrentResFor(ResTypes.Medium),
+                "Low" => GetCurrentResFor(ResTypes.Low),
+                "Minimum" => GetCurrentResFor(ResTypes.Minimum),
+                _ => GetCurrentResFor(ResTypes.Maximum)
             };
         #endregion
     }
