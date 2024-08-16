@@ -3,65 +3,69 @@
 			<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 			<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 			<VRChatFolder>..\..\..\..\..\Jogos\SteamLibrary\steamapps\common\VRChat</VRChatFolder>
-			<MelonFolder>$(VRChatFolder)\MelonLoader</MelonFolder>
+			<MelonManaged>$(VRChatFolder)\MelonLoader\Managed</MelonManaged>
 			<OutputPath>$(VRChatFolder)\Mods</OutputPath>
 		</PropertyGroup>
-		<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 			<Exec Command="xcopy /c /f /y $(OutputPath)\$(AssemblyName).dll $(OutputPath)\PreviousMods\" />
-		</Target>
+		</Target>-->
 		<ItemGroup Condition="'$(VrcReferences)' == 'true'">
 			<Reference Include="System" />
 			<Reference Include="Microsoft.CSharp" />
 			<Reference Include="Assembly-CSharp">
-				<HintPath>$(MelonFolder)\Managed\Assembly-CSharp.dll</HintPath>
+				<HintPath>$(MelonManaged)\Assembly-CSharp.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="Il2Cppmscorlib">
-				<HintPath>$(MelonFolder)\Managed\Il2Cppmscorlib.dll</HintPath>
+				<HintPath>$(MelonManaged)\Il2Cppmscorlib.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="MelonLoader">
-				<HintPath>$(MelonFolder)\MelonLoader.dll</HintPath>
+				<HintPath>$(MelonManaged)\..\MelonLoader.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="UnhollowerBaseLib">
-				<HintPath>$(MelonFolder)\Managed\UnhollowerBaseLib.dll</HintPath>
+				<HintPath>$(MelonManaged)\UnhollowerBaseLib.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="UnityEngine">
-				<HintPath>$(MelonFolder)\Managed\UnityEngine.dll</HintPath>
+				<HintPath>$(MelonManaged)\UnityEngine.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="UnityEngine.CoreModule">
-				<HintPath>$(MelonFolder)\Managed\UnityEngine.CoreModule.dll</HintPath>
+				<HintPath>$(MelonManaged)\UnityEngine.CoreModule.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+			<Reference Include="UnityEngine.PhysicsModule">
+				<HintPath>$(MelonManaged)\UnityEngine.PhysicsModule.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="UnityEngine.VRModule">
-				<HintPath>$(MelonFolder)\Managed\UnityEngine.VRModule.dll</HintPath>
+				<HintPath>$(MelonManaged)\UnityEngine.VRModule.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="UnityEngine.UI">
-				<HintPath>$(MelonFolder)\Managed\UnityEngine.UI.dll</HintPath>
+				<HintPath>$(MelonManaged)\UnityEngine.UI.dll</HintPath>
 				<Private>False</Private>
 			</Reference> 
 			<Reference Include="UnityEngine.AnimationModule">
-				<HintPath>$(MelonFolder)\Managed\UnityEngine.AnimationModule.dll</HintPath>
+				<HintPath>$(MelonManaged)\UnityEngine.AnimationModule.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="VRCCore-Standalone">
-				<HintPath>$(MelonFolder)\Managed\VRCCore-Standalone.dll</HintPath>
+				<HintPath>$(MelonManaged)\VRCCore-Standalone.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="VRCSDK2">
-				<HintPath>$(MelonFolder)\Managed\VRCSDK2.dll</HintPath>
+				<HintPath>$(MelonManaged)\VRCSDK2.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="VRCSDK3A">
-				<HintPath>$(MelonFolder)\Managed\VRCSDK3A.dll</HintPath>
+				<HintPath>$(MelonManaged)\VRCSDK3A.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 			<Reference Include="VRCSDKBase">
-				<HintPath>$(MelonFolder)\Managed\VRCSDKBase.dll</HintPath>
+				<HintPath>$(MelonManaged)\VRCSDKBase.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
 		</ItemGroup>
