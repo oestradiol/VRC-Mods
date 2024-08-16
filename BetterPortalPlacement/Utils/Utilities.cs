@@ -28,7 +28,7 @@ namespace BetterPortalPlacement.Utils
         public bool WithUIErrors { get; }
     }
 
-    //Almost this entire class came from Gompog :) //I'm going to bonk you one day - Gompo
+    // Almost this entire class came from Gompog :) // I'm going to bonk you one day - Gompo // Please don't? Love you x3 <3
     internal static class Utilities 
     {
         public static bool IsQMRightHanded => QuickMenu.prop_QuickMenu_0.prop_Boolean_1;
@@ -52,7 +52,6 @@ namespace BetterPortalPlacement.Utils
         public static void CloseMenu(bool __0, bool __1) => GetCloseMenuDelegate(__0, __1);
         private static CloseMenuDelegate closeMenuDelegate;
         private delegate void CloseMenuDelegate(bool __0, bool __1);
-        
         
         private static CreatePortalDelegate GetCreatePortalDelegate
         {
