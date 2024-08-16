@@ -22,7 +22,7 @@ namespace BetterPortalPlacement
     {
         public const string Name = "BetterPortalPlacement";
         public const string Author = "Elaina";
-        public const string Version = "1.0.6";
+        public const string Version = "1.0.7";
     }
 
     internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
@@ -74,7 +74,7 @@ namespace BetterPortalPlacement
         {
             portalPtr = Utilities.GetPtrObj().AddComponent<PortalPtr>();
             if (XRDevice.isPresent) VRUtils.VRChat_OnUiManagerInit();
-            EnableDisableListener QMListener = GameObject.Find("UserInterface/QuickMenu/QuickMenu_NewElements").gameObject.AddComponent<EnableDisableListener>();
+            EnableDisableListener QMListener = Resources.FindObjectsOfTypeAll<VRC.UI.Elements.QuickMenu>()[0].gameObject.AddComponent<EnableDisableListener>();
             QMListener.OnEnabled += delegate { if (portalPtr.enabled) DisablePointer(); };
             QMListener.OnDisabled += delegate { VRUtils.OnQMDisable(); };
             DisablePointer();
