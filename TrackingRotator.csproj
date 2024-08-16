@@ -62,6 +62,7 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(MelonLoaderPath)\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <EmbeddedResource Include="trackingrotator" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

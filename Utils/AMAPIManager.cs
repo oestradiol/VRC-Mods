@@ -46,7 +46,7 @@ namespace TrackingRotator.Utils
         {
             try
             {
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TrackingRotator.trackingrotator.assets"))
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TrackingRotator.trackingrotator"))
                 {
                     using (var memoryStream = new MemoryStream((int)stream.Length))
                     {
