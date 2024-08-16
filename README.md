@@ -1,4 +1,4 @@
-This repository contains a VRChat Mod that allows you to be able to use Avatar features on Avatar Preview. 
+This repository contains a VRChat Mod that allows you to Toggle Full-Screen mode in-game with the correct resolution. 
 Join the [VRChat Modding Group discord](https://discord.gg/rCqKSvR) for official mods and support!
 
 ## Special Thanks
