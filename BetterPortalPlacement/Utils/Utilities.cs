@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
-using Harmony;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.XR;
@@ -26,75 +23,17 @@ namespace BetterPortalPlacement.Utils
         public bool WithUIErrors { get; }
     }
 
-    // Almost this entire class came from Gompog :) // I'm going to bonk you one day - Gompo // Please don't? Love you x3 <3
     internal static class Utilities 
     {
         public static bool IsQMRightHanded => QuickMenu.prop_QuickMenu_0.prop_Boolean_1;
-        
-        private static CloseMenuDelegate GetCloseMenuDelegate
-        {
-            get
-            {
-                
-                if (closeMenuDelegate != null) return closeMenuDelegate;
-                MethodInfo closeMenuMethod = typeof(VRCUiManager).GetMethods()
-                    .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_") && !method.Name.Contains("_PDM_"))
-                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
-                closeMenuDelegate = (CloseMenuDelegate)Delegate.CreateDelegate(
-                    typeof(CloseMenuDelegate),
-                    VRCUiManager.prop_VRCUiManager_0,
-                    closeMenuMethod);
-                return closeMenuDelegate;
-            }
-        }
-        public static void CloseMenu(bool __0, bool __1) => GetCloseMenuDelegate(__0, __1);
-        private static CloseMenuDelegate closeMenuDelegate;
-        private delegate void CloseMenuDelegate(bool __0, bool __1);
-        
-        private static CreatePortalDelegate GetCreatePortalDelegate
-        {
-            get
-            {
-                if (createPortalDelegate != null) return createPortalDelegate;
-                createPortalDelegate = (CreatePortalDelegate)Delegate.CreateDelegate(
-                    typeof(CreatePortalDelegate),
-                    null,
-                    CreatePortalMethod);
-                return createPortalDelegate;
-            }
-        }
-        public static bool CreatePortal(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool) => 
-            GetCreatePortalDelegate(apiWorld, apiWorldInstance, pos, foward, someBool);
-        private static CreatePortalDelegate createPortalDelegate;
-        private delegate bool CreatePortalDelegate(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool);
-
-
-        private static MethodInfo CreatePortalMethod
-        {
-            get
-            {
-                return typeof(PortalInternal).GetMethods()
-                    .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
-                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
-            }
-        }
-        
-        public static void ApplyPatches()
-        {
-            Main.HarmonyInstance.Patch(CreatePortalMethod, new HarmonyMethod(typeof(Main).GetMethod(nameof(Main.OnPortalCreated))));
-            Main.HarmonyInstance.Patch(typeof(VRCUiPopupManager).GetMethods()
-                    .Where(method => method.Name.StartsWith("Method_Public_Void_String_String_Single_"))
-                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last(),
-                new HarmonyMethod(typeof(Main).GetMethod(nameof(Main.ShowAlert))));
-        }
 
         public static GameObject GetPtrObj() 
         {
             var TrackingManager = VRCTrackingManager.field_Private_Static_VRCTrackingManager_0;
             if (!XRDevice.isPresent)
             {
-                    return TrackingManager.GetComponentInChildren<NeckMouseRotator>()
-                        .transform.Find(Environment.CurrentDirectory.Contains("vrchat-vrchat") ? "CenterEyeAnchor" : "Camera (head)/Camera (eye)").gameObject;
+                return TrackingManager.GetComponentInChildren<NeckMouseRotator>()
+                    .transform.Find(Environment.CurrentDirectory.Contains("vrchat-vrchat") ? "CenterEyeAnchor" : "Camera (head)/Camera (eye)").gameObject;
             }
             return TrackingManager.gameObject;
         }
