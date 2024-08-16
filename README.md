@@ -6,15 +6,19 @@
 Video preview soon.
 
 A mod that lets you rotate your tracking, it was made with "play while laying down" in mind.
+* UIExpansionKit Integration, first releases and actual algorithm by [nitro.](https://github.com/nitrog0d)
+* AssetBundle, AMAPI Integration and Integrations' Management/Organization by [Elaina](https://github.com/oestradiol).
 
 * **Warning:** The VRChat team is not very keen on modding or reverse engineering the game, while the mod does not include anything that would ruin the fun for others, using it may still be a bannable offence.
 
-* **USE IT AT YOUR OWN RISK**, I am not responsible for any bans or any punishments you may get by using this mod!
+* **USE IT AT YOUR OWN RISK**, we are not responsible for any bans or any punishments you may get by using this mod!
 
 ## Installation
 * **Make sure you have run the [MelonLoader Installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) by [LavaGang](https://github.com/LavaGang) first (feel free to join the [VRChat Modding Group Discord](https://discord.gg/jgvc9Fd) for help!).**
 * Download the [latest version](https://github.com/nitrog0d/TrackingRotator/releases/latest/download/TrackingRotator.dll) of the mod.
-* **Install the mod [UIExpansionKit](https://github.com/knah/VRCMods) by [knah](https://github.com/knah), it is required.**
+* **Install (at least one is required):**
+  * [UIExpansionKit](https://github.com/knah/VRCMods) by [knah](https://github.com/knah), or/and
+  * [ActionMenuApi](https://github.com/gompocp/ActionMenuApi) by [gompo](https://github.com/gompocp).
 * Drag/copy the DLL files that you have downloaded into the Mods folder.
 * That's it! Now just run the game and the mod should be installed!
 
