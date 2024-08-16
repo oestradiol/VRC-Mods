@@ -101,7 +101,8 @@ namespace BetterSteadycam
 
         private static void SetButtonEnabled(bool enabled)
         {
-            var SteadyCamButton = Resources.FindObjectsOfTypeAll<CameraMenu>()[0].transform.Find("Scrollrect/Viewport/VerticalLayoutGroup/Buttons/Button_Steadycam");
+            var SteadyCamButton = GameObject.Find("UserInterface").transform // This is like this because GameObject.Find can't find inactive objects.
+                                    .Find("Canvas_QuickMenu(Clone)/Container/Window/QMParent/Menu_Camera/Scrollrect/Viewport/VerticalLayoutGroup/Buttons/Button_Steadycam").gameObject;
             // ffs VRChat team "Stabalize the Desktop Stream of Your View" what the fuck is stabalize - 9th of November, 2021 Update: they fixed it 🙏 
             // cameraMenu.Find("Scrollrect/Viewport/VerticalLayoutGroup/Buttons/Button_Steadycam").GetComponent<UiTooltip>().field_Public_String_0 = "Stabilize the Desktop view of your game";
 
@@ -109,7 +110,7 @@ namespace BetterSteadycam
             {
                 if (enabled && !steadycamDesktopButton)
                 {
-                    steadycamDesktopButton = UnityEngine.Object.Instantiate(SteadyCamButton, SteadyCamButton.parent).gameObject;
+                    steadycamDesktopButton = UnityEngine.Object.Instantiate(SteadyCamButton, SteadyCamButton.transform.parent);
                     steadycamDesktopButton.SetActive(true);
                     steadycamDesktopButton.GetComponent<Toggle>().onValueChanged = new();
                     steadycamDesktopButton.GetComponent<Toggle>().onValueChanged.AddListener(new Action<bool>(isOn =>
