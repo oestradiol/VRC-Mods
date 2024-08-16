@@ -20,7 +20,7 @@ namespace BetterDirections
     {
         public const string Name = "BetterDirections";
         public const string Author = "Elaina & AxisAngle";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
     }
 
     internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
