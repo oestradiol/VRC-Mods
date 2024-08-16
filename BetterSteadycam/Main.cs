@@ -122,7 +122,7 @@ namespace BetterSteadycam
                             isOn ? FPVCameraController.FPVCameraMode.Smooth : FPVCameraController.FPVCameraMode.Off;
                     }));
                 }
-                else if (steadycamDesktopButton) UnityEngine.Object.DestroyImmediate(steadycamDesktopButton);
+                else if (!enabled && steadycamDesktopButton) UnityEngine.Object.DestroyImmediate(steadycamDesktopButton);
             }
         }
 
