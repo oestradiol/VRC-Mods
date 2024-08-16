@@ -1,22 +1,25 @@
 ﻿using MelonLoader;
-using UIExpansionKit.API;
 using UnityEngine;
 using System.Linq;
 using UnhollowerRuntimeLib;
+using System.Collections;
+using TrackingRotator.Utils;
 using Il2CppSystem.Reflection;
 
-namespace TrackingRotator {
-
+namespace TrackingRotator 
+{
     public static class ModBuildInfo {
         public const string Name = "TrackingRotator";
-        public const string Author = "nitro.";
-        public const string Version = "1.0.1";
+        public const string Author = "Elaina & nitro."; // <3
+        public const string Version = "1.0.2";
         public const string DownloadLink = "https://github.com/nitrog0d/TrackingRotator/releases/latest/download/TrackingRotator.dll";
         public const string GameDeveloper = "VRChat";
         public const string Game = "VRChat";
     }
 
-    public class TrackingRotatorMod : MelonMod {
+    public class TrackingRotatorMod : MelonMod 
+    {
+
         private const string ModCategory = "TrackingRotator";
         private const string RotationValuePref = "RotationValue";
         private const string HighPrecisionRotationValuePref = "HighPrecisionRotationValue";
@@ -24,74 +27,69 @@ namespace TrackingRotator {
 
         private static float rotationValue = 0f;
         private static float highPrecisionRotationValue = 0f;
-        private static bool highPrecision = false;
-        private static bool resetRotationOnSceneChange = false;
+        private static bool resetRotationOnSceneChange, IsUsingUIX, IsUsingAMAPI = false;
 
-        private static Transform cameraTransform = null;
-        private static Quaternion originalRotation;
+        public static bool highPrecision = false;
 
-        public override void OnApplicationStart() {
+        public static Transform transform;
+        public static Transform cameraTransform = null;
+        public static Quaternion originalRotation;
+
+        public override void OnApplicationStart() 
+        {
             MelonLogger.Msg("Mod loaded.");
             MelonPreferences.CreateCategory(ModCategory, "Tracking Rotator");
             MelonPreferences.CreateEntry(ModCategory, RotationValuePref, 22.5f, "Rotation value");
             MelonPreferences.CreateEntry(ModCategory, HighPrecisionRotationValuePref, 1f, "High precision rotation value");
             MelonPreferences.CreateEntry(ModCategory, ResetRotationOnSceneChangePref, false, "Reset rotation when a new world loads");
-            ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Tracking rotation", ShowRotationMenu);
             OnPreferencesSaved();
+
+            if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("ActionMenuApi")))
+            {
+                Assets.OnApplicationStart();
+                IsUsingAMAPI = true;
+            }
+            else MelonLogger.Warning("For a better experience, please consider using ActionMenuApi.");
+            if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
+            {
+                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+                IsUsingUIX = true;
+            } 
+            else MelonLogger.Warning("For a better experience, please consider using UIExpansionKit.");
+
+            if (!IsUsingAMAPI && !IsUsingUIX) MelonLogger.Error("Failed to load both UIExpansionKit and ActionMenuApi! The mod will not be loaded.");
+            else MelonCoroutines.Start(WaitForUiInit());
         }
 
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName) {
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName) 
+        {
             if (resetRotationOnSceneChange && cameraTransform) cameraTransform.localRotation = originalRotation;
         }
 
-        public override void OnPreferencesSaved() {
+        public override void OnPreferencesSaved() 
+        {
             rotationValue = MelonPreferences.GetEntryValue<float>(ModCategory, RotationValuePref);
             highPrecisionRotationValue = MelonPreferences.GetEntryValue<float>(ModCategory, HighPrecisionRotationValuePref);
             resetRotationOnSceneChange = MelonPreferences.GetEntryValue<bool>(ModCategory, ResetRotationOnSceneChangePref);
         }
 
-        public override void VRChat_OnUiManagerInit() {
+        public static IEnumerator WaitForUiInit() 
+        {
+            while (Object.FindObjectOfType<VRCVrCamera>() == null)
+                yield return null;
+
             var camera = Object.FindObjectOfType<VRCVrCamera>();
-            var transform = camera.GetIl2CppType().GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => f.FieldType == Il2CppType.Of<Transform>()).ToArray()[0];
-            cameraTransform = transform.GetValue(camera).Cast<Transform>();
+            var Transform = camera.GetIl2CppType().GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => f.FieldType == Il2CppType.Of<Transform>()).ToArray()[0];
+            cameraTransform = Transform.GetValue(camera).Cast<Transform>();
             originalRotation = cameraTransform.localRotation;
+            transform = Camera.main.transform;
+
+            if (IsUsingAMAPI) typeof(AMAPIManager).GetMethod("ActionMenuIntegration").Invoke(null, null);
         }
 
-        private static ICustomShowableLayoutedMenu rotationMenu = null;
-
-        // Based on knah's ViewPointTweaker mod, https://github.com/knah/VRCMods/blob/master/ViewPointTweaker
-        private void ShowRotationMenu() {
-            if (rotationMenu == null) {
-                rotationMenu = ExpansionKitApi.CreateCustomQuickMenuPage(LayoutDescription.QuickMenu4Columns);
-
-                void Move(Vector3 direction) {
-                    cameraTransform.Rotate(direction, highPrecision ? highPrecisionRotationValue : rotationValue, Space.World);
-                }
-
-                var transform = Camera.main.transform;
-
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSimpleButton("Forward", () => Move(transform.right));
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSpacer();
-
-                rotationMenu.AddSimpleButton("Tilt Left", () => Move(transform.forward));
-                rotationMenu.AddSimpleButton("Reset", () => cameraTransform.localRotation = originalRotation);
-                rotationMenu.AddSimpleButton("Tilt Right", () => Move(-transform.forward));
-                rotationMenu.AddSpacer();
-
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSimpleButton("Backward", () => Move(-transform.right));
-                rotationMenu.AddSimpleButton("Left", () => Move(-transform.up));
-                rotationMenu.AddSimpleButton("Right", () => Move(transform.up));
-
-                rotationMenu.AddToggleButton("High precision", b => highPrecision = b, () => highPrecision);
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSimpleButton("Back", rotationMenu.Hide);
-            }
-
-            rotationMenu.Show();
+        public static void Move(Vector3 direction)
+        {
+            cameraTransform.Rotate(direction, highPrecision ? highPrecisionRotationValue : rotationValue, Space.World);
         }
     }
 }
