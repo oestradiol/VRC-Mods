@@ -64,7 +64,7 @@ namespace DesktopCamera
             CameraSpeedAlt /= 1000;
         }
 
-        public override void OnUpdate() => MovementManager.OnUpdate();
+        public override void OnUpdate() => MovementManager.KeysListener();
 
         public static void VRChat_OnUiManagerInit()
         {
@@ -84,10 +84,7 @@ namespace DesktopCamera
 
             SingleButton cameraButton;
             if (XRDevice.isPresent)
-            {
-                cameraButton = new SingleButton("Camera", "Camera Status\n<color=red>Off</color>", "Camera is On?", 0, 0, CameraMenu);
-                cameraButton.SetText("Camera\n<color=" + (Settings.cameraEnabled ? "#ff73fa>On" : "red>Off") + "</color>");
-            }
+                cameraButton = new SingleButton("Camera Status", "Camera Status\n<color=red>Off</color>", "Camera is On?", 0, 0, CameraMenu);
             else
             {
                 cameraButton = new SingleButton("Camera", "Camera\n<color=red>Off</color>", "Toggles the Camera", 0, 0, CameraMenu);
@@ -363,7 +360,7 @@ namespace DesktopCamera
             photoModeButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent();
             photoModeButton.GetComponent<Button>().onClick.AddListener((Action)(() => {
                 Settings.cameraEnabled = true;
-                cameraButton.SetText("Camera\n<color=#ff73fa>On</color>");
+                cameraButton.SetText("Camera Status\n<color=#ff73fa>On</color>");
                 MyCameraMenu.gameObject.SetActive(true);
                 CameraUtils.SetCameraMode(CameraUtils.CameraMode.Photo);
             }));
@@ -383,7 +380,7 @@ namespace DesktopCamera
             disableCameraButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent();
             disableCameraButton.GetComponent<Button>().onClick.AddListener((Action)(() => {
                 Settings.cameraEnabled = false;
-                cameraButton.SetText("Camera\n<color=red>Off</color>");
+                cameraButton.SetText("Camera Status\n<color=red>Off</color>");
                 MyCameraMenu.gameObject.SetActive(false);
                 CameraUtils.SetCameraMode(CameraUtils.CameraMode.Off);
             }));
