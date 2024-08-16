@@ -8,6 +8,8 @@ EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterAVPreview", "BetterAVPreview\BetterAVPreview.csproj", "{846520FA-1A22-4327-A210-47B94BADE10A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterDirections", "BetterDirections\BetterDirections.csproj", "{218B09C2-41A3-4A09-B67C-13B507BEB87A}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterPortalPlacement", "BetterPortalPlacement\BetterPortalPlacement.csproj", "{A28C05C3-69F4-4B82-842C-318FBC3F98DF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProneUiFix", "ProneUiFix\ProneUiFix.csproj", "{1A9D70BA-83B3-4E65-86B3-584CAD29804C}"
@@ -24,6 +26,10 @@ Global
 		{846520FA-1A22-4327-A210-47B94BADE10A}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{846520FA-1A22-4327-A210-47B94BADE10A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{846520FA-1A22-4327-A210-47B94BADE10A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{218B09C2-41A3-4A09-B67C-13B507BEB87A}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{218B09C2-41A3-4A09-B67C-13B507BEB87A}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{218B09C2-41A3-4A09-B67C-13B507BEB87A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{218B09C2-41A3-4A09-B67C-13B507BEB87A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A28C05C3-69F4-4B82-842C-318FBC3F98DF}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{A28C05C3-69F4-4B82-842C-318FBC3F98DF}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{A28C05C3-69F4-4B82-842C-318FBC3F98DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
