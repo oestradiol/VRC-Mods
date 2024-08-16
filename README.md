@@ -7,7 +7,7 @@ Also thank you cutie ([Gompo <3](https://github.com/gompocp)) for helping me wit
 
 ## ProneUiFix
 Current features:
-- Simple fix to the Desktop Ui glitch that happens on some avatars that opening the menu while you're proning will cause it be mispositioned.
+- Simple fix to the Desktop Ui glitch that happens on some avatars, that opening the menu while you're proning will cause it be mispositioned.
 
 ## ToggleFullScreen
 Current features:

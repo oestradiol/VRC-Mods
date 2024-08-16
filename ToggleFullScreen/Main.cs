@@ -51,13 +51,13 @@ namespace ToggleFullScreen
             {
                 var child = Children[i];
                 child.position += proportion * i;
-                child.localScale = new Vector3(1, (float)(1 / 1.2), 1);
+                child.localScale = new Vector3(1, (float)(1 / 1.1), 1);
             }
             if (!useHeadLook)
             {
                 Transform HeadLookToggle = OtherOptions.Find("HeadLookToggle");
                 HeadLookToggle.position = Children.Find(x => x.name.Contains("AllowAvatarCopyingToggle")).position;
-                HeadLookToggle.localScale = new Vector3(1, (float)(1 / 1.2), 1);
+                HeadLookToggle.localScale = new Vector3(1, (float)(1 / 1.1), 1);
             }
 
             // Creates new Toggle
