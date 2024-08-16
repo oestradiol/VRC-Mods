@@ -19,16 +19,14 @@ This mod is based on a feature that was requested on VRChat's [Feature Requests'
 
 Current features:
 * When you click the "Drop Portal" button, you enter "Drop Portal" mode. Triggering will result in the portal being created at the indicated location;
-	* This mode will show up a sphere on where the portal is to be placed;
+	* This mode will show up a white ring on where the portal is to be placed;
 		* On VR, the default hand will be the one that was free when you lastly opened the Quick Menu;
 		* If you click the trigger with that hand, the portal will be placed, if you use the other trigger, it'll alternate hands. Opening the QM again will cancel;
 		* On Desktop, the placing position will be the cursor at the screen's center. To place, simply click with the mouse's left button.
-	* You won't be able to place if close to a player or spawn, and in VR the Line Renderer will get red to show that. In exceptional cases, a popup with the error message will show. Clicking "Continue" will allow you to keep trying.
+	* You won't be able to place if close to a player or spawn, and the preview will get red to show that. In exceptional cases, a popup with the error message will show. Clicking "Continue" will allow you to keep trying;
+	* The radius in which you can drop a portal is [1.1, 3] from the player.
 * There is a setting to allow the default VRC placement, and only use the mod in case of error;
 * There is an extra one to deactivate the mod completely.
-
-To do:
-* Use a ring as preview instead?
 
 ## Installation
 Before installing:  
