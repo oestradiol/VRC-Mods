@@ -54,14 +54,22 @@ namespace DesktopCamera
 
             MelonLogger.Msg("Successfully loaded!");
         }
-        
-        public override void OnModSettingsApplied()
-        {
-            CameraSpeed = ModPrefs.GetInt(ModCategory, CameraSpeedPref);
-            CameraSpeedAlt = ModPrefs.GetInt(ModCategory, CameraSpeedAltPref);
 
-            CameraSpeed /= 1000;
-            CameraSpeedAlt /= 1000;
+        private static void WaitForUiInit()
+        {
+            if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
+                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+            else
+            {
+                MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
+                static IEnumerator OnUiManagerInit()
+                {
+                    while (VRCUiManager.prop_VRCUiManager_0 == null)
+                        yield return null;
+                    VRChat_OnUiManagerInit();
+                }
+                MelonCoroutines.Start(OnUiManagerInit());
+            }
         }
 
         public override void OnUpdate() => MovementManager.KeysListener();
