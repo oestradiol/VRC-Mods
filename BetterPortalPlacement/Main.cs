@@ -43,7 +43,7 @@ namespace BetterPortalPlacement
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
             MelonPreferences.CreateCategory("BetterPortalPlacement", "BetterPortalPlacement Settings");
             IsModOn = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsModOn), true, "Enable BetterPortalPlacement");
-            UseConfirmationPopup = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(UseConfirmationPopup), true, "Use confirmation popup when dropping portal?");
+            UseConfirmationPopup = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(UseConfirmationPopup), false, "Use confirmation popup when dropping portal?");
             IsOnlyOnError = (MelonPreferences_Entry<bool>)MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsOnlyOnError), false, "Use only on error?");
             Utils.Patches.ApplyPatches();
             MelonLogger.Msg("Successfully loaded!");
