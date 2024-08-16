@@ -1,4 +1,4 @@
-﻿This repository contains my VRChat mods and fixes. <br>
+﻿﻿This repository contains my VRChat mods and fixes. <br>
 Join the [VRChat Modding Group discord](https://discord.gg/rCqKSvR) for official mods and support!
 
 ## Special Thanks
@@ -26,8 +26,10 @@ Current features:
 		* On Desktop, the placing position will be the cursor at the screen's center. To place, simply click with the mouse's left button.
 	* You won't be able to place if close to a player or spawn, and the preview will get red to show that. In exceptional cases, a popup with the error message will show. Clicking "Continue" will allow you to keep trying;
 	* The radius in which you can drop a portal is [1.1m, 5.1m] (total range: 4m) from the local player.
-* There is a setting to allow the default VRC placement, and only use the mod in case of error;
-* There is an extra one to deactivate the mod completely.
+* Current settings are:
+	* Allow the default VRC placement, and only use the mod in case of error;
+	* Use the confirmation popup or not;
+	* There is an extra one to deactivate the mod completely.
 
 ## Installation
 Before installing:  
