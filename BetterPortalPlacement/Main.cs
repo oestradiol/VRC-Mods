@@ -51,17 +51,18 @@ namespace BetterPortalPlacement
             portalPtr = Utilities.GetPtrObj().AddComponent<PortalPtr>();
             if (XRDevice.isPresent) VRUtils.VRChat_OnUiManagerInit();
             EnableDisableListener QMListener = GameObject.Find("UserInterface/QuickMenu/QuickMenu_NewElements").gameObject.AddComponent<EnableDisableListener>();
-            QMListener.OnEnabled += delegate { if (portalPtr.enabled) portalPtr.enabled = false; };
+            QMListener.OnEnabled += delegate { if (portalPtr.enabled) DisablePointer(); };
             QMListener.OnDisabled += delegate { VRUtils.OnQMDisable(); };
-            portalPtr.enabled = false;
+            DisablePointer();
         }
 
         private static void EnablePointer()
         {
             portalPtr.enabled = true;
             try { VRCUiPopupManager.prop_VRCUiPopupManager_0.Method_Public_Void_0(); } catch { }
-            if (XRDevice.isPresent) VRUtils.SetCursonOnOff(true);
         }
+
+        private static void DisablePointer() => portalPtr.enabled = false;
 
         public static bool OnPortalCreated(ApiWorld __0, ApiWorldInstance __1, Vector3 __2, Vector3 __3, bool __4, MethodInfo __originalMethod)
         {
@@ -98,12 +99,8 @@ namespace BetterPortalPlacement
                 portalPtr.position + (XRDevice.isPresent ? Vector3.up/2 : - forward*2),
                 XRDevice.isPresent ? VRUtils.GetControllerTransform().forward : forward,
                 portalInfo.WithUIErrors
-            ); 
-            var Manager = VRCUiCursorManager.field_Private_Static_VRCUiCursorManager_0;
-            Manager.field_Private_Boolean_2 = false;
-            Manager.field_Private_Boolean_3 = false;
-            portalPtr.enabled = false;
-            if (XRDevice.isPresent && isSuccess) VRUtils.SetCursonOnOff(false);
+            );
+            DisablePointer();
         }
     }
 }

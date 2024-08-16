@@ -30,7 +30,6 @@ Current features:
 To do:
 * Use the portal prefab itself, as the preview object;
 * Make the Previewing be green if placing is possible, or red if not and might as well play the ui error sound when trying to place it, instead of opening a popup;
-* Use the hand laser on VR to make it easier to see.
 
 ## Installation
 Before installing:  

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MelonLoader;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnhollowerBaseLib.Attributes;
 using UnityEngine;
 using UnityEngine.XR;
@@ -7,44 +10,78 @@ namespace BetterPortalPlacement.Utils
 {
     internal class PortalPtr : MonoBehaviour
     {
+        public PortalPtr(IntPtr obj0) : base(obj0) { }
         public static readonly float defaultLength = 3.0f;
         public Vector3 position = Vector3.zero;
+        public LineRenderer lineRenderer;
+        private LineRenderer RightHandLR;
         private GameObject previewObj;
-
-        public PortalPtr(IntPtr obj0) : base(obj0)
-        {
-        }
 
         private void Awake()
         {
             previewObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            if (XRDevice.isPresent)
+            {
+                RightHandLR = Resources.FindObjectsOfTypeAll<LineRenderer>()
+                    .Where(lr => lr.gameObject.name.Contains("RightHandBeam")).First();
+                lineRenderer = previewObj.AddComponent<LineRenderer>();
+                lineRenderer.material = RightHandLR.GetMaterial();
+                SetupColors(true);
+                lineRenderer.enabled = false;
+            }
             DontDestroyOnLoad(previewObj);
             previewObj.GetComponent<Collider>().enabled = false;
             previewObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             previewObj.transform.position = position;
-            previewObj.layer = LayerMask.NameToLayer("UiMenu");
         }
 
         private void OnEnable()
         {
-            if (XRDevice.isPresent) VRUtils.active = true;
+            if (XRDevice.isPresent)
+            {
+                VRUtils.active = true;
+                lineRenderer.enabled = true;
+            }
             Utilities.CloseMenu(true, false);
             previewObj.SetActive(true);
         }
 
         private void Update()
         {
+            bool CanPlace = true;
             var endPos = CalculateEndPoint();
             previewObj.transform.position = endPos;
             position = endPos;
-            // SetPortalColor();
+            if (lineRenderer != null)
+            {
+                if (lineRenderer.startWidth != RightHandLR.startWidth) lineRenderer.SetWidth(RightHandLR.startWidth, RightHandLR.endWidth);
+                lineRenderer.SetPosition(0, endPos);
+                lineRenderer.SetPosition(1, VRUtils.GetControllerTransform().position);
+            }
+            SetupColors(CanPlace);
             if (Input.GetKeyUp(KeyCode.Mouse0)) Main.RecreatePortal();
         }
 
         private void OnDisable()
         {
-            if (XRDevice.isPresent) VRUtils.active = false;
+            if (XRDevice.isPresent)
+            {
+                VRUtils.active = false;
+                lineRenderer.enabled = false;
+            }
             previewObj.SetActive(false);
+        }
+
+        private void SetupColors(bool CanPlace)
+        {
+            // SetPortalColor(CanPlace);
+            if (lineRenderer != null)
+            {
+                Color color = Color.white;
+                //if (CanPlace) color = Color.green;
+                //else color = Color.red;
+                lineRenderer.SetColors(color, color);
+            }
         }
 
         [HideFromIl2Cpp]
