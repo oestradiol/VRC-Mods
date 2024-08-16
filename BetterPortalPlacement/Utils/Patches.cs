@@ -13,7 +13,7 @@ using VRC.Core;
 
 namespace BetterPortalPlacement.Utils
 {
-    // Almost this entire class came from Gompog :) // I'm going to bonk you one day - Gompo // Please don't? Love you x3 <3
+    // Almost this entire class came from Gompog :) // I'm going to bonk you one day - Gompo // Please don't? Love you~
     internal static class Patches
     {
         public static PortalInfo CurrentInfo;
@@ -48,8 +48,8 @@ namespace BetterPortalPlacement.Utils
             createPortalDelegate ??= (CreatePortalDelegate)Delegate.CreateDelegate(typeof(CreatePortalDelegate), null, CreatePortalMethod);
         private static MethodInfo CreatePortalMethod => 
             createPortalMethod ??= typeof(PortalInternal).GetMethods()
-                .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
-                .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
+                .First(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_") && 
+                                 Utilities.ContainsStr(method, "admin_dont_allow_portal"));
 
         public static void PopupV2(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null) => 
             GetPopupV2Delegate(title, innertxt, buttontxt, buttonOk, action);

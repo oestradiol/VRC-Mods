@@ -40,17 +40,18 @@ namespace BetterPortalPlacement.Utils
             return TrackingManager.gameObject;
         }
 
-        // The methods below came from https://github.com/FenrixTheFox/DynamicBonesSafety/blob/89383d706623a6f425fd2691fa15cf852c7f1ceb/ModPatches.cs#L122.
+        // https://github.com/Psychloor/AdvancedInvites/blob/9675094a24fa9ceb33b07571abbbad6bd8e47ac0/AdvancedInvites/Utilities.cs#L405
         public static bool ContainsStr(MethodBase methodBase, string match)
         {
             try
             {
                 return XrefScanner.XrefScan(methodBase)
-                    .Any(instance => instance.Type == XrefType.Global && instance.ReadAsObject() != null && 
-                         instance.ReadAsObject().ToString().Equals(match, StringComparison.OrdinalIgnoreCase));
+                    .Any(instance => instance.Type == XrefType.Global && 
+                         instance.ReadAsObject()?.ToString().IndexOf(match, StringComparison.OrdinalIgnoreCase) >= 0);
             } catch { }
             return false;
         }
+
         public static bool WasUsedBy(MethodBase methodBase, string methodName)
         {
             try
