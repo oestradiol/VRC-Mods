@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.XR;
 using MelonLoader;
@@ -23,21 +24,35 @@ namespace BetterDirections
 
     public class Main : MelonMod
     {
-        // Apply the patch to the method
-        public override void OnApplicationStart()
+        // Wait for Ui Init so XRDevice.isPresent is defined
+        public override void OnApplicationStart() => MelonCoroutines.Start(WaitForUiInit());
+
+        // Apply the patch
+        private IEnumerator WaitForUiInit()
         {
-            try
+            while (GameObject.Find("UserInterface") == null)
+                yield return null;
+
+            if (XRDevice.isPresent)
             {
-                foreach (var info in typeof(VRCMotionState).GetMethods().Where(method =>
-                    method.Name.Contains("Method_Public_Void_Vector3_Single_") && !method.Name.Contains("PDM")))
+                MelonLogger.Msg("XRDevice detected. Initializing...");
+                try
+                {
+                    foreach (var info in typeof(VRCMotionState).GetMethods().Where(method =>
+                        method.Name.Contains("Method_Public_Void_Vector3_Single_") && !method.Name.Contains("PDM")))
                         Harmony.Patch(info, new HarmonyMethod(typeof(Main).GetMethod(nameof(Prefix))));
-                MelonLogger.Msg(ConsoleColor.Green, "Successfully loaded!");
+                    MelonLogger.Msg("Successfully loaded!");
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Warning("Failed to initialize mod!");
+                    MelonLogger.Error(e);
+                }
             }
-            catch (Exception e)
-            {
-                MelonLogger.Warning("Failed to initialize mod!");
-                MelonLogger.Error(e);
-            }
+            else
+                MelonLogger.Warning("Mod is VR-Only.");
+
+            yield break;
         }
 
         // Substitute the direction from the original method with our own
@@ -52,9 +67,7 @@ namespace BetterDirections
                 if (cameraObj == null) 
                     cameraObj = Resources.FindObjectsOfTypeAll<NeckMouseRotator>()[0]
                                     .transform.Find(
-                                        Environment.CurrentDirectory.Contains("vrchat-vrchat") ? 
-                                            "CenterEyeAnchor" : 
-                                            (XRDevice.isPresent ? "" : "Camera (head)/") + "Camera (eye)")
+                                        Environment.CurrentDirectory.Contains("vrchat-vrchat") ? "CenterEyeAnchor" : "Camera (eye)")
                                     .gameObject;
                 return cameraObj;
             }
