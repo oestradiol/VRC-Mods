@@ -1,6 +1,4 @@
-﻿using MelonLoader;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using UnhollowerBaseLib.Attributes;
 using UnityEngine;
@@ -13,7 +11,7 @@ namespace BetterPortalPlacement.Utils
         public PortalPtr(IntPtr obj0) : base(obj0) { }
         public static readonly float defaultLength = 3.0f;
         public Vector3 position = Vector3.zero;
-        public LineRenderer lineRenderer;
+        private LineRenderer lineRenderer;
         private LineRenderer RightHandLR;
         private GameObject previewObj;
 
@@ -26,13 +24,15 @@ namespace BetterPortalPlacement.Utils
                     .Where(lr => lr.gameObject.name.Contains("RightHandBeam")).First();
                 lineRenderer = previewObj.AddComponent<LineRenderer>();
                 lineRenderer.material = RightHandLR.GetMaterial();
-                SetupColors(true);
                 lineRenderer.enabled = false;
             }
             DontDestroyOnLoad(previewObj);
             previewObj.GetComponent<Collider>().enabled = false;
+            //previewObj.GetComponent<Renderer>().material = RightHandLR.GetMaterial();
             previewObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             previewObj.transform.position = position;
+            previewObj.name = "PortalPreview";
+            SetupColors();
         }
 
         private void OnEnable()
@@ -48,7 +48,6 @@ namespace BetterPortalPlacement.Utils
 
         private void Update()
         {
-            bool CanPlace = true;
             var endPos = CalculateEndPoint();
             previewObj.transform.position = endPos;
             position = endPos;
@@ -58,7 +57,7 @@ namespace BetterPortalPlacement.Utils
                 lineRenderer.SetPosition(0, endPos);
                 lineRenderer.SetPosition(1, VRUtils.GetControllerTransform().position);
             }
-            SetupColors(CanPlace);
+            SetupColors(Main.CanPlace());
             if (Input.GetKeyUp(KeyCode.Mouse0)) Main.RecreatePortal();
         }
 
@@ -72,12 +71,13 @@ namespace BetterPortalPlacement.Utils
             previewObj.SetActive(false);
         }
 
-        private void SetupColors(bool CanPlace)
+        [HideFromIl2Cpp]
+        private void SetupColors(bool CanPlace = true)
         {
-            Color color = Color.white;
-            //if (CanPlace) color = Color.green;
-            //else color = Color.red;
-            // SetPortalColor(CanPlace);
+            Color color;
+            if (CanPlace) color = Color.cyan;
+            else color = Color.red;
+            //previewObj.GetComponent<Renderer>().material.color = color; // This failed sadly
             if (lineRenderer != null) lineRenderer.SetColors(color, color);
         }
 
