@@ -4,7 +4,7 @@ Join the [VRChat Modding Group discord](https://discord.gg/rCqKSvR) for official
 ## Special Thanks
 To nitro. that gave the idea x)
 
-## BetterAVPreview
+## ToggleFullScreen
 Current features:
 - Adds a simple toggle on "Settings -> Other Options Panel" that allows you to toggle Full-Screen Mode without getting a scuffed resolution and actually using your entire screen lol.
 
