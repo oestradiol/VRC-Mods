@@ -1,2 +1,6 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=_002Fmnt_002Fsdb5_002FJogos_002FSteamLibrary_002Fsteamapps_002Fcommon_002FVRChat_002FMelonLoader_002FMelonLoader_002Edll/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=1a9d70ba_002D83b3_002D4e65_002D86b3_002D584cad29804c_0023ProneUiFix/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=218b09c2_002D41a3_002D4a09_002Db67c_002D13b507beb87a_0023BetterDirections/@EntryIndexedValue">True</s:Boolean>
+	
+	
+	</wpf:ResourceDictionary>
