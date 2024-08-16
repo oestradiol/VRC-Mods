@@ -117,7 +117,7 @@ namespace ToggleFullScreen
             List<Transform> Children = new();
             for (int i = 0; i < OtherOptions.GetChildCount(); i++)
             {
-                var child = OtherOptions.GetChild(i);
+                Transform child = OtherOptions.GetChild(i);
                 if (!child.name.Contains("Panel_Header") && !child.name.Contains("TitleText")) Children.Add(child);
             }
             if (!useHeadLook) Children.Remove(Children.Find(x => x.name.Contains("HeadLookToggle")));
@@ -125,7 +125,7 @@ namespace ToggleFullScreen
 
             for (int i = 0; i < Children.Count; i++)
             {
-                var child = Children[i];
+                Transform child = Children[i];
                 child.position += proportion * i;
                 child.localScale = new(1, (float)(1 / 1.1), 1);
             }
@@ -196,7 +196,7 @@ namespace ToggleFullScreen
         }
         private static void CheckAndUpdateResolutions()
         {
-            var temp = MaxRes;
+            Resolution temp = MaxRes;
             if (c_MaxRes.width != temp.width || c_MaxRes.height != temp.height)
             {
                 c_MaxRes = temp;
@@ -238,7 +238,7 @@ namespace ToggleFullScreen
                         width = Screen.width,
                         height = Screen.height
                     };
-                    var Current = GetCurrentAppliedRes();
+                    Resolution Current = GetCurrentAppliedRes();
                     Screen.SetResolution(Current.width, Current.height, true);
                 }
                 else
@@ -254,33 +254,23 @@ namespace ToggleFullScreen
             {
                 case "High":
                     Current = HighRes;
-#if DEBUG
                     MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to High ({Current.width}x{Current.height}).");
-#endif
                     break;
                 case "Medium":
                     Current = MediumRes;
-#if DEBUG
                     MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Medium ({Current.width}x{Current.height}).");
-#endif
                     break;
                 case "Low":
                     Current = LowRes;
-#if DEBUG
                     MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Low ({Current.width}x{Current.height}).");
-#endif
                     break;
                 case "Minimum":
                     Current = MinimumRes;
-#if DEBUG
                     MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Minimum ({Current.width}x{Current.height}).");
-#endif
                     break;
                 default:
                     Current = MaxRes;
-#if DEBUG
                     MelonLogger.Msg(ConsoleColor.Green, $"Setting FullScreen resolution to Maximum ({Current.width}x{Current.height}).");
-#endif
                     break;
             }
             return Current;
