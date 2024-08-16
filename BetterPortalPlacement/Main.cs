@@ -22,7 +22,7 @@ namespace BetterPortalPlacement
     {
         public const string Name = "BetterPortalPlacement";
         public const string Author = "Elaina";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
     }
 
     public class Main : MelonMod
