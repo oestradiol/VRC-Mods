@@ -47,47 +47,27 @@ namespace ToggleFullScreen
         private const bool useHeadLook = false;
         private static bool PreviousState, IsUsingUIX;
         private static MelonPreferences_Entry<string> FSResolution;
+        // private static MelonMod Instance;
+        // private static MelonLogger.Instance Logger => Instance.LoggerInstance; // To use Logger instead of MelonLogger
 
         #region Init
         public override void OnApplicationStart()
         {
+            // Instance = this;
             IsUsingUIX = MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit"));
-            InitCachedVars();
 
             // Set preferences
             MelonPreferences.CreateCategory("ToggleFullScreen", "Toggle FullScreen");
             FSResolution = MelonPreferences.CreateEntry("ToggleFullScreen", "FSResolution", "Maximum", "FullScreen Resolution");
-            if (IsUsingUIX) UpdateUIXSwitch();
+            Previous = new() { width = Screen.width, height = Screen.height };
+            CheckAndUpdateResolutions();
 
             WaitForUiInit();
             MelonLogger.Msg("Successfully loaded!");
         }
-        private static void InitCachedVars()
-        {
-            Previous = new()
-            {
-                width = Screen.width,
-                height = Screen.height
-            };
-            c_MaxRes = GetCurrentMaxRes();
-            c_HighRes = CalculatePropRes(new() { width = 1600, height = 900 });
-            c_MediumRes = CalculatePropRes(new() { width = 1366, height = 768 });
-            c_LowRes = CalculatePropRes(new() { width = 1280, height = 720 });
-            c_MinimumRes = CalculatePropRes(new() { width = 852, height = 480 });
-        }
         #endregion
 
         #region UI
-        private static void UpdateUIXSwitch() =>
-            typeof(UIXManager).GetMethod(nameof(UIXManager.RegisterSettingAsStringEnum))
-                .Invoke(null, new object[]{"ToggleFullScreen", "FSResolution",
-                    new[] {
-                        ("Maximum", $"{c_MaxRes.width}x{c_MaxRes.height}"),
-                        ("High", $"{c_HighRes.width}x{c_HighRes.height}"),
-                        ("Medium", $"{c_MediumRes.width}x{c_MediumRes.height}"),
-                        ("Low", $"{c_LowRes.width}x{c_LowRes.height}"),
-                        ("Minimum", $"{c_MinimumRes.width}x{c_MinimumRes.height}")
-                    }});
         private static void WaitForUiInit()
         {
             if (IsUsingUIX)
@@ -150,15 +130,32 @@ namespace ToggleFullScreen
             toggle.onValueChanged = new();
             toggle.onValueChanged.AddListener(new System.Action<bool>(isOn => Screen.fullScreen = isOn));
         }
+        private static void UpdateUIXSwitch() =>
+            typeof(UIXManager).GetMethod(nameof(UIXManager.RegisterSettingAsStringEnum))
+                .Invoke(null, new object[]{"ToggleFullScreen", "FSResolution",
+                    new[] {
+                        ("Maximum", $"{c_MaxRes.width}x{c_MaxRes.height}"),
+                        ("High", $"{c_HighRes.width}x{c_HighRes.height}"),
+                        ("Medium", $"{c_MediumRes.width}x{c_MediumRes.height}"),
+                        ("Low", $"{c_LowRes.width}x{c_LowRes.height}"),
+                        ("Minimum", $"{c_MinimumRes.width}x{c_MinimumRes.height}")
+                    }});
         #endregion
 
         #region ResolutionProcessing
+        private enum ResTypes
+        {
+            Minimum = 0,
+            Low = 1,
+            Medium = 2,
+            High = 3
+        }
         private static Resolution Previous, c_MaxRes, c_HighRes, c_MediumRes, c_LowRes, c_MinimumRes;
         private static Resolution MaxRes => GetCurrentMaxRes();
-        private static Resolution HighRes => GetCurrentResFor("High");
-        private static Resolution MediumRes => GetCurrentResFor("Medium");
-        private static Resolution LowRes => GetCurrentResFor("Low");
-        private static Resolution MinimumRes => GetCurrentResFor("Minimum");
+        private static Resolution HighRes => GetCurrentResFor(ResTypes.High);
+        private static Resolution MediumRes => GetCurrentResFor(ResTypes.Medium);
+        private static Resolution LowRes => GetCurrentResFor(ResTypes.Low);
+        private static Resolution MinimumRes => GetCurrentResFor(ResTypes.Minimum);
         // Had to use Natives below because all C# AND Unity methods failed me so why not :)
         [DllImport("gdi32.dll")]
         private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
@@ -175,26 +172,16 @@ namespace ToggleFullScreen
                 height = GetDeviceCaps(CurrentHdc, (int)DeviceCap.VERTRES)
             };
         }
-        private static Resolution GetCurrentResFor(string Quality)
+        private static Resolution GetCurrentResFor(ResTypes Quality)
         {
             CheckAndUpdateResolutions();
-            Resolution Current;
-            switch (Quality)
+            return Quality switch
             {
-                case "Medium":
-                    Current = c_MediumRes;
-                    break;
-                case "Low":
-                    Current = c_LowRes;
-                    break;
-                case "Minimum":
-                    Current = c_MinimumRes;
-                    break;
-                default:
-                    Current = c_HighRes;
-                    break;
-            }
-            return Current;
+                ResTypes.Medium => c_MediumRes,
+                ResTypes.Low => c_LowRes,
+                ResTypes.Minimum => c_MinimumRes,
+                _ => c_HighRes
+            };
         }
         private static void CheckAndUpdateResolutions()
         {
@@ -206,7 +193,7 @@ namespace ToggleFullScreen
                 c_MediumRes = CalculatePropRes(new() { width = 1366, height = 768 });
                 c_LowRes = CalculatePropRes(new() { width = 1280, height = 720 });
                 c_MinimumRes = CalculatePropRes(new() { width = 852, height = 480 });
-                UpdateUIXSwitch();
+                if (IsUsingUIX) UpdateUIXSwitch();
             }
         }
         private static Resolution CalculatePropRes(Resolution propTo) =>
