@@ -70,7 +70,6 @@ namespace BetterPortalPlacement.Utils
             {
                 ControllerRight = GameObject.Find("/_Application/TrackingVolume/TrackingOculus(Clone)/OVRCameraRig/TrackingSpace/RightHandAnchor/PointerOrigin (1)");
                 ControllerLeft = GameObject.Find("/_Application/TrackingVolume/TrackingOculus(Clone)/OVRCameraRig/TrackingSpace/LeftHandAnchor/PointerOrigin (1)");
-                MelonLogger.Msg(ConsoleColor.Blue, "Binds set: Oculus");
             }
             else
             {
