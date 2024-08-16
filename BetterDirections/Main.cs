@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -40,7 +40,7 @@ namespace BetterDirections
                 {
                     foreach (var info in typeof(VRCMotionState).GetMethods().Where(method =>
                         method.Name.Contains("Method_Public_Void_Vector3_Single_") && !method.Name.Contains("PDM")))
-                        Harmony.Patch(info, new HarmonyMethod(typeof(Main).GetMethod(nameof(Prefix))));
+                        HarmonyInstance.Patch(info, new HarmonyMethod(typeof(Main).GetMethod(nameof(Prefix))));
                     MelonLogger.Msg("Successfully loaded!");
                 }
                 catch (Exception e)

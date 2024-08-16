@@ -1,7 +1,7 @@
 ﻿using ProneUiFix.Utils;
-using System.Collections;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
+using System.Collections;
 using UnhollowerRuntimeLib;
 using MelonLoader;
 using UnityEngine;
@@ -23,7 +23,6 @@ namespace ProneUiFix
 
     public class Main : MelonMod
     {
-        private static EnableDisableListener Listener;
         private static MethodInfo placeUi;
         private static MethodInfo PlaceUiMethod
         {
@@ -51,10 +50,8 @@ namespace ProneUiFix
                 yield return null;
 
             if (!XRDevice.isPresent)
-            {
-                Listener = GameObject.Find("UserInterface/MenuContent/Backdrop/Backdrop").AddComponent<EnableDisableListener>();
-                Listener.OnEnabled += delegate { MelonCoroutines.Start(PlaceMenuAgain()); };
-            }
+                GameObject.Find("UserInterface/MenuContent/Backdrop/Backdrop")
+                    .AddComponent<EnableDisableListener>().OnEnabled += delegate { MelonCoroutines.Start(PlaceMenuAgain()); };
         }
 
         private static IEnumerator PlaceMenuAgain()
