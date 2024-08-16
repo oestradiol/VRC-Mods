@@ -1,5 +1,5 @@
 ﻿﻿This repository contains my VRChat mods and fixes. <br>
-Join the [VRChat Modding Group discord](https://discord.gg/rCqKSvR) for official mods and support!
+Join the [VRChat Modding Group (VRCMG) discord](https://discord.gg/rCqKSvR) for official mods and support!
 
 ## Special Thanks
 Thank you [Nitro. <3](https://github.com/nitrog0d) for the idea on the ToggleFullScreen; <br>
@@ -46,6 +46,10 @@ This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now
 	* This can also be toggled by pressing F10.
 	
 ## DesktopCamera
+**This mod is manly broken rn, most of its features have been disabled because since VRChat updated the camera and UI, the entire code became outdated and needs proper care.**
+**I am too busy and not in conditions to focus on remaking this right now, therefore, any pull requests or maybe messages on my DMs to negotiate passing this on would be appreciated.**
+**I do not usually accept friend requests from people I do not know, therefore, the chances of you reaching me through [VRCMG](https://discord.gg/rCqKSvR) are much higher, since my DMs are not closed.**
+
 This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now it's been maintained and updated by me. 
 
 **Current features:**
