@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSteadycam", "BetterSt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesktopCamera", "DesktopCamera\DesktopCamera.csproj", "{A02961D7-45A2-42C2-937A-8323FCBA5ED5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLConsoleViewer", "MLConsoleViewer\MLConsoleViewer.csproj", "{2ACE412C-8E34-426C-93BE-E7482236A193}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProneUiFix", "ProneUiFix\ProneUiFix.csproj", "{1A9D70BA-83B3-4E65-86B3-584CAD29804C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositionQM", "RepositionQM\RepositionQM.csproj", "{E6D160BC-9D43-45DC-A35A-7CD72E667924}"
@@ -45,6 +47,10 @@ Global
 		{A02961D7-45A2-42C2-937A-8323FCBA5ED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A02961D7-45A2-42C2-937A-8323FCBA5ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A02961D7-45A2-42C2-937A-8323FCBA5ED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ACE412C-8E34-426C-93BE-E7482236A193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ACE412C-8E34-426C-93BE-E7482236A193}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ACE412C-8E34-426C-93BE-E7482236A193}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ACE412C-8E34-426C-93BE-E7482236A193}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A9D70BA-83B3-4E65-86B3-584CAD29804C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1A9D70BA-83B3-4E65-86B3-584CAD29804C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A9D70BA-83B3-4E65-86B3-584CAD29804C}.Release|Any CPU.ActiveCfg = Release|Any CPU

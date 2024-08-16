@@ -82,6 +82,10 @@
 				<HintPath>$(MelonManaged)\UnityEngine.InputLegacyModule.dll</HintPath>
 				<Private>False</Private>
 			</Reference>
+			<Reference Include="Unity.TextMeshPro">
+				<HintPath>$(MelonManaged)\Unity.TextMeshPro.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
 			<Reference Include="VRCCore-Standalone">
 				<HintPath>$(MelonManaged)\VRCCore-Standalone.dll</HintPath>
 				<Private>False</Private>
