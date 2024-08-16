@@ -9,7 +9,7 @@ namespace BetterPortalPlacement.Utils
     internal class PortalPtr : MonoBehaviour
     {
         public PortalPtr(IntPtr obj0) : base(obj0) { }
-        public static readonly float defaultLength = 3.0f;
+        public static readonly float defaultLength = Single.PositiveInfinity;
         public Vector3 position = Vector3.zero;
         public AudioSource audio;
         private LineRenderer lineRenderer;
