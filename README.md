@@ -78,6 +78,19 @@ This mod was firstly developed by [nitro.](https://github.com/nitrog0d), but now
 * Observation: The Viewer is the Camera view. ;
 * **Warning: The Camera Space must be in "World" mode, or else the camera won't move**.
 
+## MLConsoleViewer
+**This mod is a remake of [an older version (by Benacle James)](https://github.com/benaclejames/MLConsoleViewer).** </br>
+**It has been made together with [PennyBunny](https://github.com/PennyBunny), and so we decided to keep it on her repository.** </br>
+**You can check it here: [MLConsoleViewer](https://github.com/PennyBunny/VRCMods/tree/main/MLConsoleViewer)** 
+
+Obs.: At runtime, this mod will load and utilize [ReMod.Core](https://github.com/RequiDev/ReMod.Core) for building the UI. </br>
+**Current features:**
+* Adds an in-game Melon Console (located on a QuickMenu tab);
+* Configurable font size;
+* Configurable time stamp on/off;
+* Configurable auto scrolling on/off;
+* Configurable line limit (before it starts discarding older ones);
+
 ## ProneUiFix
 **ARCHIVED** </br>
 **This bug has been fixed by VRC, and therefore this is now useless and doesn't do anything.** </br>
