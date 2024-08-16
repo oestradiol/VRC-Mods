@@ -43,11 +43,20 @@ namespace DesktopCamera
 
         public override void OnApplicationStart()
         {
-            MelonLogger.Msg("Mod loaded.");
             MelonPreferences.CreateCategory(ModCategory, "DesktopCamera");
             MelonPreferences.CreateEntry(ModCategory, CameraSpeedPref, 5, "Basic camera speed");
             MelonPreferences.CreateEntry(ModCategory, CameraSpeedAltPref, 20, "Alt camera speed (ALT pressed)");
             OnPreferencesSaved();
+
+            IEnumerator OnUiManagerInit()
+            {
+                while (VRCUiManager.prop_VRCUiManager_0 == null)
+                    yield return null;
+                VRChat_OnUiManagerInit();
+            }
+            MelonCoroutines.Start(OnUiManagerInit());
+
+            MelonLogger.Msg("Successfully loaded!");
         }
         
         public override void OnModSettingsApplied()
@@ -59,22 +68,7 @@ namespace DesktopCamera
             CameraSpeedAlt /= 1000;
         }
 
-        public override void VRChat_OnUiManagerInit()
-        {
-            MelonCoroutines.Start(Setup());
-        }
-
-        /*
-        // Code from DDAkebono, it was a temporary replacement for VRChat_OnUiManagerInit
-        private static int scenesLoaded = 0;
-
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName) {
-            scenesLoaded++;
-
-            if (scenesLoaded != 2) return;
-
-            MelonCoroutines.Start(Setup());
-        }*/
+        private void VRChat_OnUiManagerInit() => MelonCoroutines.Start(Setup());
 
         private SingleButton cameraMovementButton = null;
 

@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A8DEB75-A71F-4396-A78B-B9079BE51419}"
+ProjectSection(SolutionItems) = preProject
+	Directory.Build.props = Directory.Build.props
+EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSteadycam", "BetterSteadycam\BetterSteadycam.csproj", "{9379BCEA-10D3-44FF-B423-C3F197F2FA4B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesktopCamera", "DesktopCamera\DesktopCamera.csproj", "{A02961D7-45A2-42C2-937A-8323FCBA5ED5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackingRotator", "TrackingRotator\TrackingRotator.csproj", "{652FEBB3-E7BD-4F5C-8AC4-51E36B19BC9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9379BCEA-10D3-44FF-B423-C3F197F2FA4B}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{9379BCEA-10D3-44FF-B423-C3F197F2FA4B}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{9379BCEA-10D3-44FF-B423-C3F197F2FA4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9379BCEA-10D3-44FF-B423-C3F197F2FA4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A02961D7-45A2-42C2-937A-8323FCBA5ED5}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{A02961D7-45A2-42C2-937A-8323FCBA5ED5}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{A02961D7-45A2-42C2-937A-8323FCBA5ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A02961D7-45A2-42C2-937A-8323FCBA5ED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{652FEBB3-E7BD-4F5C-8AC4-51E36B19BC9D}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{652FEBB3-E7BD-4F5C-8AC4-51E36B19BC9D}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{652FEBB3-E7BD-4F5C-8AC4-51E36B19BC9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{652FEBB3-E7BD-4F5C-8AC4-51E36B19BC9D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61894390-9C73-4820-880E-0D5B27FD550E}
+	EndGlobalSection
+EndGlobal
