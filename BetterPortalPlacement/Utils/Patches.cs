@@ -60,7 +60,7 @@ namespace BetterPortalPlacement.Utils
         }
         private static MethodInfo CreatePortalMethod => typeof(PortalInternal).GetMethods()
                     .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
-                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
+                    .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).First();
 
         public static void PopupV2(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null) => 
             GetPopupV2Delegate(title, innertxt, buttontxt, buttonOk, action);
@@ -82,7 +82,7 @@ namespace BetterPortalPlacement.Utils
             }
         }
 
-        public static bool OnPortalCreated(ApiWorld __0, ApiWorldInstance __1, Vector3 __2, Vector3 __3, bool __4, MethodInfo __originalMethod)
+        public static bool OnPortalCreated(ApiWorld __0, ApiWorldInstance __1, Vector3 __2, Vector3 __3, bool __4)
         {
             if (Main.IsModOn.Value && !Main.PtrIsOn())
             {
@@ -141,7 +141,7 @@ namespace BetterPortalPlacement.Utils
                 try
                 {
                     var myFunc = DelegateSupport.ConvertDelegate<Il2CppSystem.Func<Player, bool>>
-                        (new Func<Player, bool>((player) => player.field_Private_APIUser_0.id == Player.prop_Player_0.field_Private_APIUser_0.id));
+                        (new Func<Player, bool>((player) => player.prop_APIUser_0.id == Player.prop_Player_0.prop_APIUser_0.id));
                     return playerIEnumerableSetupDelegate(position, radius, something1, myFunc.Pointer, nativeMethodInfo);
                 }
                 catch (Exception e)
