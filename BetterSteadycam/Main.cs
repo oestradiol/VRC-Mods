@@ -22,7 +22,7 @@ namespace BetterSteadycam
     {
         public const string Name = "BetterSteadycam";
         public const string Author = "Elaina & nitro.";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
     }
 
     internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
