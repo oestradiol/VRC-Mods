@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,7 +21,7 @@ namespace ToggleFullScreen
     {
         public const string Name = "ToggleFullScreen";
         public const string Author = "Elaina";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
     }
 
     internal static class UIXManager
@@ -156,11 +157,22 @@ namespace ToggleFullScreen
         private static Resolution MediumRes => GetCurrentResFor("Medium");
         private static Resolution LowRes => GetCurrentResFor("Low");
         private static Resolution MinimumRes => GetCurrentResFor("Minimum");
-        private static Resolution GetCurrentMaxRes() => Screen.resolutions[Screen.resolutions.Length - 1]; // NEEDS URGENT FIX.
-                                                                                                           //var temp = Screen.fullScreen;
-                                                                                                           //Screen.fullScreen = false; Resolution result = Screen.currentResolution; Screen.fullScreen = temp;
-                                                                                                           //return result;
-                                                                                                           //return new() { width = Display.main.systemWidth, height = Display.main.systemHeight };
+        // Had to use Natives below because all C# AND Unity methods failed me so why not :)
+        [DllImport("gdi32.dll")]
+        private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr GetWindowDC(IntPtr hWnd);
+        private enum DeviceCap
+        { HORZRES = 8, VERTRES = 10 }
+        private static Resolution GetCurrentMaxRes()
+        {
+            IntPtr CurrentHdc = GetWindowDC(System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle);
+            return new Resolution()
+            {
+                width = GetDeviceCaps(CurrentHdc, (int)DeviceCap.HORZRES),
+                height = GetDeviceCaps(CurrentHdc, (int)DeviceCap.VERTRES)
+            };
+        }
         private static Resolution GetCurrentResFor(string Quality)
         {
             CheckAndUpdateResolutions();
