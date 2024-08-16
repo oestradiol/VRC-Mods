@@ -9,9 +9,11 @@ using UnityEngine.UI;
 using VRC.SDKBase;
 using DesktopCamera.Utils;
 using UnityEngine.XR;
+using BuildInfo = DesktopCamera.BuildInfo;
+using Main = DesktopCamera.Main;
 
-[assembly: AssemblyCopyright("Created by " + DesktopCamera.BuildInfo.Author)]
-[assembly: MelonInfo(typeof(DesktopCamera.Main), DesktopCamera.BuildInfo.Name, DesktopCamera.BuildInfo.Version, DesktopCamera.BuildInfo.Author)]
+[assembly: AssemblyCopyright("Created by " + BuildInfo.Author)]
+[assembly: MelonInfo(typeof(Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(ConsoleColor.DarkMagenta)]
 [assembly: MelonOptionalDependencies("UIExpansionKit")]

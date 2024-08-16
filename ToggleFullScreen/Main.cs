@@ -8,9 +8,11 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using BuildInfo = ToggleFullScreen.BuildInfo;
+using Main = ToggleFullScreen.Main;
 
-[assembly: AssemblyCopyright("Created by " + ToggleFullScreen.BuildInfo.Author)]
-[assembly: MelonInfo(typeof(ToggleFullScreen.Main), ToggleFullScreen.BuildInfo.Name, ToggleFullScreen.BuildInfo.Version, ToggleFullScreen.BuildInfo.Author)]
+[assembly: AssemblyCopyright("Created by " + BuildInfo.Author)]
+[assembly: MelonInfo(typeof(Main), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(ConsoleColor.DarkMagenta)]
 [assembly: MelonOptionalDependencies("UIExpansionKit")]
