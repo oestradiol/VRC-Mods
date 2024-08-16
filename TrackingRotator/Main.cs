@@ -1,10 +1,13 @@
-﻿using MelonLoader;
-using UnityEngine;
+﻿using System;
 using System.Linq;
-using UnhollowerRuntimeLib;
 using System.Collections;
-using TrackingRotator.Utils;
 using Il2CppSystem.Reflection;
+using UnhollowerRuntimeLib;
+using MelonLoader;
+using UnityEngine;
+using TrackingRotator.Utils;
+using AssemblyCopyright = System.Reflection.AssemblyCopyrightAttribute;
+using Object = UnityEngine.Object;
 
 [assembly: AssemblyCopyright("Created by " + TrackingRotator.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(TrackingRotator.Main), TrackingRotator.BuildInfo.Name, TrackingRotator.BuildInfo.Version, TrackingRotator.BuildInfo.Author)]
@@ -12,86 +15,42 @@ using Il2CppSystem.Reflection;
 [assembly: MelonColor(ConsoleColor.DarkMagenta)]
 
 // This mod was firstly developed by nitro. and I continued it
-namespace TrackingRotator 
+namespace TrackingRotator
 {
-    public static class BuildInfo {
+    public static class BuildInfo
+    {
         public const string Name = "TrackingRotator";
         public const string Author = "Elaina & nitro.";
         public const string Version = "1.0.2";
     }
 
-    public class Main : MelonMod 
+    public class Main : MelonMod
     {
+        private static MelonPreferences_Entry<float> HighPrecisionRotationValue, RotationValue;
+        private static MelonPreferences_Entry<bool> UIXIntegration, AMAPIIntegration, ResetRotationOnSceneChange;
+        private static bool IsUsingUIX, IsUsingAMAPI;
 
-        private const string ModCategory = "TrackingRotator";
-        private const string UIXIntegration = "UIXIntegration";
-        private const string AMAPIIntegration = "AMAPIIntegration";
-        private const string RotationValuePref = "RotationValue";
-        private const string HighPrecisionRotationValuePref = "HighPrecisionRotationValue";
-        private const string ResetRotationOnSceneChangePref = "ResetRotationOnSceneChange";
-
-        private static float rotationValue = 0f;
-        private static float highPrecisionRotationValue = 0f;
-        private static bool resetRotationOnSceneChange, IsUsingUIX, IsUsingAMAPI = false;
-        private static bool UIXintegration, AMAPIintegration = true;
-
-        public static bool highPrecision = false;
-        public static Transform transform;
-        public static Transform cameraTransform;
+        public static bool highPrecision;
+        public static Transform transform, cameraTransform;
         public static Quaternion originalRotation;
 
-        public override void OnApplicationStart() 
+        public override void OnApplicationStart()
         {
-            MelonPreferences.CreateCategory(ModCategory, "Tracking Rotator");
-            MelonPreferences.CreateEntry(ModCategory, UIXIntegration, true, "Integrate with UiExpansionKit?");
-            MelonPreferences.CreateEntry(ModCategory, AMAPIIntegration, true, "Integrate with Action Menu?");
-            MelonPreferences.CreateEntry(ModCategory, RotationValuePref, 22.5f, "Rotation value");
-            MelonPreferences.CreateEntry(ModCategory, HighPrecisionRotationValuePref, 1f, "High precision rotation value");
-            MelonPreferences.CreateEntry(ModCategory, ResetRotationOnSceneChangePref, false, "Reset rotation when a new world loads");
-            OnPreferencesSaved();
+            MelonPreferences.CreateCategory("TrackingRotator", "Tracking Rotator");
+            UIXIntegration = MelonPreferences.CreateEntry("TrackingRotator", nameof(UIXIntegration), true, "Integrate with UiExpansionKit?");
+            AMAPIIntegration = MelonPreferences.CreateEntry("TrackingRotator", nameof(AMAPIIntegration), true, "Integrate with Action Menu?");
+            RotationValue = MelonPreferences.CreateEntry("TrackingRotator", nameof(RotationValue), 22.5f, "Rotation value");
+            HighPrecisionRotationValue = MelonPreferences.CreateEntry("TrackingRotator", nameof(HighPrecisionRotationValue), 1f, "High precision rotation value");
+            ResetRotationOnSceneChange = MelonPreferences.CreateEntry("TrackingRotator", nameof(ResetRotationOnSceneChange), false, "Reset rotation when a new world loads");
 
             Integrations();
 
-            MelonLogger.Msg("Mod loaded.");
-        }
-
-        public override void OnPreferencesSaved() 
-        {
-            UIXintegration = MelonPreferences.GetEntryValue<bool>(ModCategory, UIXIntegration);
-            AMAPIintegration = MelonPreferences.GetEntryValue<bool>(ModCategory, AMAPIIntegration);
-            rotationValue = MelonPreferences.GetEntryValue<float>(ModCategory, RotationValuePref);
-            highPrecisionRotationValue = MelonPreferences.GetEntryValue<float>(ModCategory, HighPrecisionRotationValuePref);
-            resetRotationOnSceneChange = MelonPreferences.GetEntryValue<bool>(ModCategory, ResetRotationOnSceneChangePref);
-        }
-
-
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName) 
-        {
-            if (resetRotationOnSceneChange && cameraTransform) cameraTransform.localRotation = originalRotation;
-        }
-
-        public static IEnumerator WaitForUiInit() 
-        {
-            while (Object.FindObjectOfType<VRCVrCamera>() == null)
-                yield return null;
-
-            var camera = Object.FindObjectOfType<VRCVrCamera>();
-            var Transform = camera.GetIl2CppType().GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => f.FieldType == Il2CppType.Of<Transform>()).ToArray()[0];
-            cameraTransform = Transform.GetValue(camera).Cast<Transform>();
-            originalRotation = cameraTransform.localRotation;
-            transform = Camera.main.transform;
-
-            if (IsUsingAMAPI) typeof(AMAPIManager).GetMethod("ActionMenuIntegration").Invoke(null, null);
-        }
-
-        public static void Move(Vector3 direction)
-        {
-            cameraTransform.Rotate(direction, highPrecision ? highPrecisionRotationValue : rotationValue, Space.World);
+            MelonLogger.Msg("Successfully loaded!");
         }
 
         private static void Integrations()
         {
-            if (AMAPIintegration)
+            if (AMAPIIntegration.Value)
             {
                 if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("ActionMenuApi")))
                 {
@@ -102,7 +61,7 @@ namespace TrackingRotator
             }
             else MelonLogger.Warning("Integration with ActionMenuApi has been deactivated on Settings.");
 
-            if (UIXintegration)
+            if (UIXIntegration.Value)
             {
                 if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
                 {
@@ -113,7 +72,7 @@ namespace TrackingRotator
             }
             else MelonLogger.Warning("Integration with UIExpansionKit has been deactivated on Settings.");
 
-            if (!AMAPIintegration && !UIXintegration)
+            if (!AMAPIIntegration.Value && !UIXIntegration.Value)
                 MelonLogger.Warning("Both integrations (Action Menu and UiExpansionKit) have been deactivated. " +
                     "The mod cannot run without those, therefore, expect it to fail. If this was not intended, " +
                     "please consider activating at least one of the integrations on Settings.");
@@ -122,7 +81,31 @@ namespace TrackingRotator
             {
                 MelonLogger.Error("Failed to load both integrations with UIExpansionKit and ActionMenuApi! The mod will not be loaded.");
             }
-            else MelonCoroutines.Start(WaitForUiInit());
+            else
+            {
+                static IEnumerator OnUiManagerInit()
+                {
+                    while (VRCUiManager.prop_VRCUiManager_0 == null)
+                        yield return null;
+                    VRChat_OnUiManagerInit();
+                }
+                MelonCoroutines.Start(OnUiManagerInit());
+            }
         }
+
+        private static void VRChat_OnUiManagerInit()
+        {
+            var camera = Object.FindObjectOfType<VRCVrCamera>();
+            var Transform = camera.GetIl2CppType().GetFields(BindingFlags.Public | BindingFlags.Instance).Where(f => f.FieldType == Il2CppType.Of<Transform>()).ToArray()[0];
+            cameraTransform = Transform.GetValue(camera).Cast<Transform>();
+            originalRotation = cameraTransform.localRotation;
+            transform = Camera.main.transform;
+        }
+
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName) 
+        { if (ResetRotationOnSceneChange.Value && cameraTransform) cameraTransform.localRotation = originalRotation; }
+
+        public static void Move(Vector3 direction) => 
+            cameraTransform.Rotate(direction, highPrecision ? HighPrecisionRotationValue.Value : RotationValue.Value, Space.World);
     }
 }

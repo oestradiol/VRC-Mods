@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Reflection;
+using System.Collections;
 using System.Collections.Generic;
+using Il2CppSystem.Text;
+using MelonLoader;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
+using VRC.SDKBase;
 using DesktopCamera.Buttons;
 using DesktopCamera.Utils;
-using MelonLoader;
-using UnityEngine.Networking;
-using Il2CppSystem.Text;
-using Newtonsoft.Json;
-using System.Collections;
-using VRC.SDKBase;
 
 [assembly: AssemblyCopyright("Created by " + DesktopCamera.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(DesktopCamera.Main), DesktopCamera.BuildInfo.Name, DesktopCamera.BuildInfo.Version, DesktopCamera.BuildInfo.Author)]
@@ -80,7 +81,7 @@ namespace DesktopCamera
         private IEnumerator Setup()
         {
             var request = new UnityWebRequest("https://vrchat.nitro.moe/mods/versioncheck", "POST");
-            request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes("{\"name\":\"" + ModBuildInfo.Name + "\",\"version\":\"" + ModBuildInfo.Version + "\"}"));
+            request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes("{\"name\":\"" + BuildInfo.Name + "\",\"version\":\"" + BuildInfo.Version + "\"}"));
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
 
@@ -330,7 +331,7 @@ namespace DesktopCamera
                 }
             }));
 
-            var gitHubButton = new SingleButton("GitHubPage", "<color=#ff73fa>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\n<color=#ff73fa><size=20><b>Mod created by nitro. ♥</b></size></color>\nVersion: " + ModBuildInfo.Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update it in the GitHub page.</color>"), -1, -1, cameraMenu);
+            var gitHubButton = new SingleButton("GitHubPage", "<color=#ff73fa>" + (updated ? "GitHub\nPage</color>" : "GitHub Page</color>\n<color=lime>Update\navailable!</color>"), "Opens the GitHub page of the mod\n<color=#ff73fa><size=20><b>Mod created by nitro. ♥</b></size></color>\nVersion: " + BuildInfo.Version + (updated ? "" : "\n<color=lime>New version found (" + latest + "), update it in the GitHub page.</color>"), -1, -1, cameraMenu);
             gitHubButton.setAction((Action)(() => {
                 Application.OpenURL(updated ? "https://github.com/nitrog0d/DesktopCamera" : "https://github.com/nitrog0d/DesktopCamera/releases");
             }));
