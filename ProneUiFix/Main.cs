@@ -35,12 +35,7 @@ namespace ProneUiFix
 
         private static IEnumerator PlaceMenuAgain()
         {
-            float i = 0;
-            while (i < 1) // Wait for 1s
-            {
-                i += Time.deltaTime;
-                yield return null;
-            }
+            yield return new WaitForSeconds(1);
             VRCUiManager.prop_VRCUiManager_0.Method_Public_Void_Boolean_1(true);
         }
     }
