@@ -29,8 +29,8 @@ namespace BetterPortalPlacement.Utils
         }
 
         public static void CloseMenu(bool __0, bool __1) => GetCloseMenuDelegate(__0, __1);
-        private static CloseMenuDelegate closeMenuDelegate;
         private delegate void CloseMenuDelegate(bool __0, bool __1);
+        private static CloseMenuDelegate closeMenuDelegate;
         private static CloseMenuDelegate GetCloseMenuDelegate
         {
             get
@@ -46,8 +46,8 @@ namespace BetterPortalPlacement.Utils
 
         public static bool CreatePortal(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool) =>
             GetCreatePortalDelegate(apiWorld, apiWorldInstance, pos, foward, someBool);
-        private static CreatePortalDelegate createPortalDelegate;
         private delegate bool CreatePortalDelegate(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool);
+        private static CreatePortalDelegate createPortalDelegate;
         private static CreatePortalDelegate GetCreatePortalDelegate
         {
             get
@@ -57,10 +57,28 @@ namespace BetterPortalPlacement.Utils
                 return createPortalDelegate;
             }
         }
-
         private static MethodInfo CreatePortalMethod => typeof(PortalInternal).GetMethods()
                     .Where(method => method.Name.StartsWith("Method_Public_Static_Boolean_ApiWorld_ApiWorldInstance_Vector3_Vector3_Boolean_"))
                     .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
+
+        public static void PopupV2(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null) => 
+            GetPopupV2Delegate(title, innertxt, buttontxt, buttonOk, action);
+        private delegate void PopupV2Delegate(string title, string innertxt, string buttontxt, Il2CppSystem.Action buttonOk, Il2CppSystem.Action<VRCUiPopup> action = null);
+        private static PopupV2Delegate popupV2Delegate;
+        private static PopupV2Delegate GetPopupV2Delegate
+        {
+            get
+            {
+                if (popupV2Delegate != null) return popupV2Delegate;
+                MethodInfo PopupV2Method = typeof(VRCUiPopupManager).GetMethods()
+                    .First(methodBase => methodBase.Name.StartsWith("Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_") &&
+                    !methodBase.Name.Contains("PDM") &&
+                    Utilities.ContainsStr(methodBase, "UserInterface/MenuContent/Popups/StandardPopupV2") &&
+                    Utilities.WasUsedBy(methodBase, "OpenSaveSearchPopup"));
+                popupV2Delegate = (PopupV2Delegate)Delegate.CreateDelegate(typeof(PopupV2Delegate), VRCUiPopupManager.prop_VRCUiPopupManager_0, PopupV2Method);
+                return popupV2Delegate;
+            }
+        }
 
         public static bool OnPortalCreated(ApiWorld __0, ApiWorldInstance __1, Vector3 __2, Vector3 __3, bool __4, MethodInfo __originalMethod)
         {
@@ -69,8 +87,7 @@ namespace BetterPortalPlacement.Utils
                 CurrentInfo = new PortalInfo(__0, __1, __2, __3, __4);
                 if (!Main.IsOnlyOnError.Value)
                 {
-                    VRCUiPopupManager.prop_VRCUiPopupManager_0.Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_1(
-                        "Portal Placement", "Manual placement activated.\nPress ok to place portal.", "Ok", new Action(delegate { Main.EnablePointer(); }));
+                    PopupV2("Portal Placement", "Manual placement activated.\nPress ok to place portal.", "Ok", new Action(delegate { Main.EnablePointer(); }));
                     return false;
                 }
             }
@@ -82,8 +99,7 @@ namespace BetterPortalPlacement.Utils
             var PortalButton = GameObject.Find("UserInterface/MenuContent/Screens/WorldInfo/WorldButtons/PortalButton").GetComponent<Button>();
             if (Main.IsModOn.Value && __0.Contains("Cannot Create Portal") && PortalButton.interactable)
             {
-                VRCUiPopupManager.prop_VRCUiPopupManager_0.Method_Public_Void_String_String_String_Action_Action_1_VRCUiPopup_1(
-                    "Failed to create portal", "Error: " + __1 + "\nPress continue to try again.", "Continue", new Action(delegate { Main.EnablePointer(); }));
+                PopupV2("Failed to create portal", "Error: " + __1 + "\nPress continue to try again.", "Continue", new Action(delegate { Main.EnablePointer(); }));
                 return false;
             }
             return true;

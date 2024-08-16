@@ -1,5 +1,7 @@
 ﻿using System;
-using MelonLoader;
+using System.Linq;
+using System.Reflection;
+using UnhollowerRuntimeLib.XrefScans;
 using UnityEngine;
 using UnityEngine.XR;
 using VRC.Core;
@@ -36,6 +38,28 @@ namespace BetterPortalPlacement.Utils
                     .transform.Find(Environment.CurrentDirectory.Contains("vrchat-vrchat") ? "CenterEyeAnchor" : "Camera (head)/Camera (eye)").gameObject;
             }
             return TrackingManager.gameObject;
+        }
+
+        // The methods below came from https://github.com/FenrixTheFox/DynamicBonesSafety/blob/89383d706623a6f425fd2691fa15cf852c7f1ceb/ModPatches.cs#L122.
+        public static bool ContainsStr(MethodBase methodBase, string match)
+        {
+            try
+            {
+                return XrefScanner.XrefScan(methodBase)
+                    .Any(instance => instance.Type == XrefType.Global && instance.ReadAsObject() != null && 
+                         instance.ReadAsObject().ToString().Equals(match, StringComparison.OrdinalIgnoreCase));
+            } catch { }
+            return false;
+        }
+        public static bool WasUsedBy(MethodBase methodBase, string methodName)
+        {
+            try
+            {
+                return XrefScanner.UsedBy(methodBase)
+                    .Any(instance => instance.TryResolve() != null &&
+                         instance.TryResolve().Name.Equals(methodName, StringComparison.Ordinal));
+            } catch { }
+            return false;
         }
     }
 
