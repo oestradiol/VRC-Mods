@@ -3,6 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Object = UnityEngine.Object;
+using System.Reflection;
+
+[assembly: AssemblyCopyright("Created by " + ToggleFullScreen.BuildInfo.Author)]
+[assembly: MelonInfo(typeof(ToggleFullScreen.Main), ToggleFullScreen.BuildInfo.Name, ToggleFullScreen.BuildInfo.Version, ToggleFullScreen.BuildInfo.Author)]
+[assembly: MelonGame("VRChat", "VRChat")]
+[assembly: MelonColor(System.ConsoleColor.DarkMagenta)]
 
 namespace ToggleFullScreen
 {
