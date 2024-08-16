@@ -1,9 +1,9 @@
-This repository contains my VRChat mods and fixes. 
+This repository contains my VRChat mods and fixes. <br>
 Join the [VRChat Modding Group discord](https://discord.gg/rCqKSvR) for official mods and support!
 
 ## Special Thanks
-Ty nitro. for the idea on the ToggleFullScreen;
-Ty gompo for helping me with literally everything lol.
+Thank you [Nitro. <3](https://github.com/nitrog0d) for the idea on the ToggleFullScreen <br>
+Also thank you cutie ([Gompo <3](https://github.com/gompocp)) for helping me with literally everything lol.
 
 ## ProneUiFix
 Current features:
