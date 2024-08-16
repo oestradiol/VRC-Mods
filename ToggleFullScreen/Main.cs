@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using MelonLoader;
@@ -10,6 +11,7 @@ using Object = UnityEngine.Object;
 [assembly: MelonInfo(typeof(ToggleFullScreen.Main), ToggleFullScreen.BuildInfo.Name, ToggleFullScreen.BuildInfo.Version, ToggleFullScreen.BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(System.ConsoleColor.DarkMagenta)]
+[assembly: MelonOptionalDependencies("UIExpansionKit")]
 
 namespace ToggleFullScreen
 {
@@ -19,6 +21,8 @@ namespace ToggleFullScreen
         public const string Author = "Elaina";
         public const string Version = "1.0.1";
     }
+
+    internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
 
     public class Main : MelonMod
     {
@@ -41,18 +45,29 @@ namespace ToggleFullScreen
             MaxRes = Screen.currentResolution;
             Screen.fullScreen = Initial;
 
-            static IEnumerator OnUiManagerInit()
-            {
-                while (VRCUiManager.prop_VRCUiManager_0 == null)
-                    yield return null;
-                VRChat_OnUiManagerInit();
-            }
-            MelonCoroutines.Start(OnUiManagerInit());
+            WaitForUiInit();
 
             MelonLogger.Msg("Successfully loaded!");
         }
 
-        private static void VRChat_OnUiManagerInit()
+        private static void WaitForUiInit()
+        {
+            if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
+                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+            else
+            {
+                MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
+                static IEnumerator OnUiManagerInit()
+                {
+                    while (VRCUiManager.prop_VRCUiManager_0 == null)
+                        yield return null;
+                    VRChat_OnUiManagerInit();
+                }
+                MelonCoroutines.Start(OnUiManagerInit());
+            }
+        }
+
+        public static void VRChat_OnUiManagerInit()
         {
             // Rescales and repositions Options Panel
             Transform Settings = GameObject.Find("UserInterface/MenuContent/Screens/Settings").transform;
