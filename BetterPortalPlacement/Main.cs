@@ -37,7 +37,6 @@ namespace BetterPortalPlacement
         public override void OnApplicationStart()
         {
             Instance = this;
-            MelonCoroutines.Start(WaitForUIInit());
             ClassInjector.RegisterTypeInIl2Cpp<PortalPtr>();
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
             MelonPreferences.CreateCategory("BetterPortalPlacement", "BetterPortalPlacement Settings");
@@ -45,16 +44,23 @@ namespace BetterPortalPlacement
             UseConfirmationPopup = MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(UseConfirmationPopup), false, "Use confirmation popup when dropping portal?");
             IsOnlyOnError = MelonPreferences.CreateEntry("BetterPortalPlacement", nameof(IsOnlyOnError), false, "Use only on error?");
             Patches.ApplyPatches();
+
+            static IEnumerator OnUiManagerInit()
+            {
+                while (VRCUiManager.prop_VRCUiManager_0 == null)
+                    yield return null;
+
+                VRChat_OnUiManagerInit();
+
+                yield break;
+            }
+            MelonCoroutines.Start(OnUiManagerInit());
+
             MelonLogger.Msg("Successfully loaded!");
         }
 
-        public override void OnUpdate() => VRUtils.OnUpdate();
-
-        public static IEnumerator WaitForUIInit()
+        private static void VRChat_OnUiManagerInit()
         {
-            while (GameObject.Find("UserInterface") == null)
-                yield return null;
-
             portalPtr = Utilities.GetPtrObj().AddComponent<PortalPtr>();
             if (XRDevice.isPresent) VRUtils.VRChat_OnUiManagerInit();
             EnableDisableListener QMListener = GameObject.Find("UserInterface/QuickMenu/QuickMenu_NewElements").gameObject.AddComponent<EnableDisableListener>();
@@ -62,6 +68,8 @@ namespace BetterPortalPlacement
             QMListener.OnDisabled += delegate { VRUtils.OnQMDisable(); };
             DisablePointer();
         }
+
+        public override void OnUpdate() => VRUtils.OnUpdate();
 
         public static void EnablePointer()
         {
