@@ -22,9 +22,8 @@ Current features:
 	* This mode will show up a sphere on where the portal is to be placed;
 		* On VR, the default hand will be the one that was free when you lastly opened the QuickMenu;
 		* If you click the trigger with that hand, the portal will be placed, if you use the other trigger, it'll alternate hands. Opening the QM again will cancel;
-			* You won't be able to place if close to a player or spawn, and the Line Renderer will get red to show that. In exceptional cases, a popup with the error message will show.
 		* On Desktop, the placing position will be the cursor at the screen's center. To place, simply click with the mouse's left button.
-	* For now, trying to place it on an non-placeable position shows up the error message. Clicking "Continue" will allow you to keep trying.
+	* * You won't be able to place if close to a player or spawn, and in VR the Line Renderer will get red to show that. In exceptional cases, a popup with the error message will show. Clicking "Continue" will allow you to keep trying.
 * There is a setting to allow the default VRC placement, and only use the mod in case of error;
 * There is an extra one to deactivate the mod completely.
 
