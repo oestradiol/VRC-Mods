@@ -57,16 +57,17 @@ namespace BetterPortalPlacement.Utils
         {
             get
             {
-                if (ceatePortalDelegate != null) return ceatePortalDelegate;
-                ceatePortalDelegate = (CreatePortalDelegate)Delegate.CreateDelegate(
+                if (createPortalDelegate != null) return createPortalDelegate;
+                createPortalDelegate = (CreatePortalDelegate)Delegate.CreateDelegate(
                     typeof(CreatePortalDelegate),
                     null,
                     CreatePortalMethod);
-                return ceatePortalDelegate;
+                return createPortalDelegate;
             }
         }
-        public static bool CreatePortal(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool) => GetCreatePortalDelegate(apiWorld, apiWorldInstance, pos, foward, someBool);
-        private static CreatePortalDelegate ceatePortalDelegate;
+        public static bool CreatePortal(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool) => 
+            GetCreatePortalDelegate(apiWorld, apiWorldInstance, pos, foward, someBool);
+        private static CreatePortalDelegate createPortalDelegate;
         private delegate bool CreatePortalDelegate(ApiWorld apiWorld, ApiWorldInstance apiWorldInstance, Vector3 pos, Vector3 foward, bool someBool);
 
 
