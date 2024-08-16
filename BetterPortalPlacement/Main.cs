@@ -8,6 +8,7 @@ using BetterPortalPlacement.Utils;
 using UnityEngine.XR;
 using VRC;
 using System.Linq;
+using System.Collections;
 
 [assembly: AssemblyCopyright("Created by " + BetterPortalPlacement.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(BetterPortalPlacement.Main), BetterPortalPlacement.BuildInfo.Name, BetterPortalPlacement.BuildInfo.Version, BetterPortalPlacement.BuildInfo.Author)]
@@ -37,6 +38,7 @@ namespace BetterPortalPlacement
         public override void OnApplicationStart()
         {
             Instance = this;
+            MelonCoroutines.Start(WaitForUIInit());
             ClassInjector.RegisterTypeInIl2Cpp<PortalPtr>();
             ClassInjector.RegisterTypeInIl2Cpp<EnableDisableListener>();
             MelonPreferences.CreateCategory("BetterPortalPlacement", "BetterPortalPlacement Settings");
@@ -48,8 +50,10 @@ namespace BetterPortalPlacement
 
         public override void OnUpdate() => VRUtils.OnUpdate();
 
-        public override void VRChat_OnUiManagerInit()
+        public static IEnumerator WaitForUIInit()
         {
+            while (GameObject.Find("UserInterface/QuickMenu/QuickMenu_NewElements") == null)
+                yield return null;
             portalPtr = Utilities.GetPtrObj().AddComponent<PortalPtr>();
             if (XRDevice.isPresent) VRUtils.VRChat_OnUiManagerInit();
             EnableDisableListener QMListener = GameObject.Find("UserInterface/QuickMenu/QuickMenu_NewElements").gameObject.AddComponent<EnableDisableListener>();

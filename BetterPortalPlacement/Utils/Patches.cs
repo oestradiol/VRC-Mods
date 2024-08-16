@@ -37,7 +37,7 @@ namespace BetterPortalPlacement.Utils
             {
                 if (closeMenuDelegate != null) return closeMenuDelegate;
                 MethodInfo closeMenuMethod = typeof(VRCUiManager).GetMethods()
-                    .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_") && !method.Name.Contains("_PDM_"))
+                    .Where(method => method.Name.StartsWith("Method_Public_Void_Boolean_Boolean_"))
                     .OrderBy(method => UnhollowerSupport.GetIl2CppMethodCallerCount(method)).Last();
                 closeMenuDelegate = (CloseMenuDelegate)Delegate.CreateDelegate(typeof(CloseMenuDelegate), VRCUiManager.prop_VRCUiManager_0, closeMenuMethod);
                 return closeMenuDelegate;

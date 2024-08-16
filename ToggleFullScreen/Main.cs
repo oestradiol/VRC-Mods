@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Object = UnityEngine.Object;
 using System.Reflection;
+using System.Collections;
 
 [assembly: AssemblyCopyright("Created by " + ToggleFullScreen.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(ToggleFullScreen.Main), ToggleFullScreen.BuildInfo.Name, ToggleFullScreen.BuildInfo.Version, ToggleFullScreen.BuildInfo.Author)]
@@ -29,6 +30,7 @@ namespace ToggleFullScreen
 
         public override void OnApplicationStart()
         {
+            MelonCoroutines.Start(WaitForUIInit());
             Previous = new()
             {
                 width = Screen.width,
@@ -43,8 +45,11 @@ namespace ToggleFullScreen
             MelonLogger.Msg("Successfully loaded!");
         }
 
-        public override void VRChat_OnUiManagerInit()
+        public static IEnumerator WaitForUIInit()
         {
+            while (GameObject.Find("UserInterface/MenuContent/Screens/Settings") == null) 
+                yield return null;
+
             // Rescales and repositions Options Panel
             Transform Settings = GameObject.Find("UserInterface/MenuContent/Screens/Settings").transform;
             Transform OtherOptions = Settings.Find("OtherOptionsPanel");
