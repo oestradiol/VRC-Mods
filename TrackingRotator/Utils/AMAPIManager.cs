@@ -46,25 +46,21 @@ namespace TrackingRotator.Utils
         {
             try
             {
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TrackingRotator.trackingrotator"))
-                {
-                    using (var memoryStream = new MemoryStream((int)stream.Length))
-                    {
-                        stream.CopyTo(memoryStream);
-                        Bundle = AssetBundle.LoadFromMemory_Internal(memoryStream.ToArray(), 0);
-                        Bundle.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-                        try { Main = LoadTexture("Main.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Main.png"); }
-                        try { Forward = LoadTexture("Forward.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Forward.png"); }
-                        try { Backward = LoadTexture("Backward.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Backward.png"); }
-                        try { TLeft = LoadTexture("TLeft.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: TLeft.png"); }
-                        try { TRight = LoadTexture("TRight.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: TRight.png"); }
-                        try { Left = LoadTexture("Left.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Left.png"); }
-                        try { Right = LoadTexture("Right.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Right.png"); }
-                        try { Other = LoadTexture("Other.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Other.png"); }
-                        try { Reset = LoadTexture("Reset.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Reset.png"); }
-                        try { HP = LoadTexture("HP.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: HP.png"); }
-                    }
-                }
+                using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TrackingRotator.trackingrotator");
+                using var memoryStream = new MemoryStream((int)stream.Length);
+                stream.CopyTo(memoryStream);
+                Bundle = AssetBundle.LoadFromMemory_Internal(memoryStream.ToArray(), 0);
+                Bundle.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+                try { Main = LoadTexture("Main.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Main.png"); }
+                try { Forward = LoadTexture("Forward.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Forward.png"); }
+                try { Backward = LoadTexture("Backward.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Backward.png"); }
+                try { TLeft = LoadTexture("TLeft.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: TLeft.png"); }
+                try { TRight = LoadTexture("TRight.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: TRight.png"); }
+                try { Left = LoadTexture("Left.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Left.png"); }
+                try { Right = LoadTexture("Right.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Right.png"); }
+                try { Other = LoadTexture("Other.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Other.png"); }
+                try { Reset = LoadTexture("Reset.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: Reset.png"); }
+                try { HP = LoadTexture("HP.png"); } catch { MelonLogger.Error("Failed to load image from asset bundle: HP.png"); }
             } catch { MelonLogger.Warning("Failed to load AssetBundle! ActionMenuApi will have its icons completely broken."); }
             yield break;
         }

@@ -5,38 +5,42 @@ namespace TrackingRotator.Utils
 {
     internal static class UIXManager
     {
-        public static void OnApplicationStart() => ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Tracking rotation", ShowRotationMenu);
+        public static void OnApplicationStart()
+        {
+            ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Tracking rotation", ShowRotationMenu);
+            ExpansionKitApi.OnUiManagerInit += VRChat_OnUiManagerInit;
+        }
 
         // Based on knah's ViewPointTweaker mod, https://github.com/knah/VRCMods/blob/master/ViewPointTweaker
-        private static ICustomShowableLayoutedMenu rotationMenu = null;
+        private static ICustomShowableLayoutedMenu RotationMenu = null;
         private static void ShowRotationMenu()
         {
-            if (rotationMenu == null)
+            if (RotationMenu == null)
             {
-                rotationMenu = ExpansionKitApi.CreateCustomQuickMenuPage(LayoutDescription.QuickMenu4Columns);
+                RotationMenu = ExpansionKitApi.CreateCustomQuickMenuPage(LayoutDescription.QuickMenu4Columns);
 
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSimpleButton("Forward", () => Move(transform.right));
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSpacer();
+                RotationMenu.AddSpacer();
+                RotationMenu.AddSimpleButton("Forward", () => Move(transform.right));
+                RotationMenu.AddSpacer();
+                RotationMenu.AddSpacer();
 
-                rotationMenu.AddSimpleButton("Tilt Left", () => Move(transform.forward));
-                rotationMenu.AddSimpleButton("Reset", () => cameraTransform.localRotation = originalRotation);
-                rotationMenu.AddSimpleButton("Tilt Right", () => Move(-transform.forward));
-                rotationMenu.AddSpacer();
+                RotationMenu.AddSimpleButton("Tilt Left", () => Move(transform.forward));
+                RotationMenu.AddSimpleButton("Reset", () => cameraTransform.localRotation = originalRotation);
+                RotationMenu.AddSimpleButton("Tilt Right", () => Move(-transform.forward));
+                RotationMenu.AddSpacer();
 
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSimpleButton("Backward", () => Move(-transform.right));
-                rotationMenu.AddSimpleButton("Left", () => Move(-transform.up));
-                rotationMenu.AddSimpleButton("Right", () => Move(transform.up));
+                RotationMenu.AddSpacer();
+                RotationMenu.AddSimpleButton("Backward", () => Move(-transform.right));
+                RotationMenu.AddSimpleButton("Left", () => Move(-transform.up));
+                RotationMenu.AddSimpleButton("Right", () => Move(transform.up));
 
-                rotationMenu.AddToggleButton("High precision", b => highPrecision = b, () => highPrecision);
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSpacer();
-                rotationMenu.AddSimpleButton("Back", rotationMenu.Hide);
+                RotationMenu.AddToggleButton("High precision", b => highPrecision = b, () => highPrecision);
+                RotationMenu.AddSpacer();
+                RotationMenu.AddSpacer();
+                RotationMenu.AddSimpleButton("Back", RotationMenu.Hide);
             }
 
-            rotationMenu.Show();
+            RotationMenu.Show();
         }
     }
 }

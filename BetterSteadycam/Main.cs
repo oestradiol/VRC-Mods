@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Collections;
 using HarmonyLib;
@@ -12,6 +13,7 @@ using UnityEngine.Events;
 [assembly: MelonInfo(typeof(BetterSteadycam.Main), BetterSteadycam.BuildInfo.Name, BetterSteadycam.BuildInfo.Version, BetterSteadycam.BuildInfo.Author)]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(ConsoleColor.DarkMagenta)]
+[assembly: MelonOptionalDependencies("UIExpansionKit")]
 
 // This mod was firstly developed by nitro. and I continued
 namespace BetterSteadycam
@@ -20,20 +22,21 @@ namespace BetterSteadycam
     {
         public const string Name = "BetterSteadycam";
         public const string Author = "Elaina & nitro.";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
     }
+
+    internal static class UIXManager { public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit; }
 
     public class Main : MelonMod
     {
         private static MelonMod Instance;
         private static MelonPreferences_Entry<float> SmoothingValue, FieldOfView;
         private static MelonPreferences_Entry<bool> Smoothing, RenderUi, EnableButtonOnDesktop;
-        private static HarmonyLib.Harmony HInstance => Instance.HarmonyInstance;
-
         private static int newCullingMask;
         private static bool updateCullingMask, uiManagerExists;
         private static Camera actualFpvCamera;
         private static GameObject steadycamDesktopButton;
+        private static HarmonyLib.Harmony HInstance => Instance.HarmonyInstance;
 
         public override void OnApplicationStart()
         {
@@ -49,15 +52,26 @@ namespace BetterSteadycam
             HInstance.Patch(typeof(FPVCameraController).GetMethod(nameof(FPVCameraController.Update)),
                 new HarmonyMethod(typeof(Main).GetMethod(nameof(FPVCameraControllerUpdatePatch), BindingFlags.NonPublic | BindingFlags.Static)));
 
-            static IEnumerator OnUiManagerInit()
-            {
-                while (VRCUiManager.prop_VRCUiManager_0 == null)
-                    yield return null;
-                VRChat_OnUiManagerInit();
-            }
-            MelonCoroutines.Start(OnUiManagerInit());
+            WaitForUiInit();
 
             MelonLogger.Msg("Successfully loaded!");
+        }
+
+        private static void WaitForUiInit()
+        {
+            if (MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit")))
+                typeof(UIXManager).GetMethod("OnApplicationStart").Invoke(null, null);
+            else
+            {
+                MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
+                static IEnumerator OnUiManagerInit()
+                {
+                    while (VRCUiManager.prop_VRCUiManager_0 == null)
+                        yield return null;
+                    VRChat_OnUiManagerInit();
+                }
+                MelonCoroutines.Start(OnUiManagerInit());
+            }
         }
 
         public override void OnPreferencesLoaded() => LoadPreferences();
@@ -70,7 +84,7 @@ namespace BetterSteadycam
             if (uiManagerExists) SetButtonEnabled(EnableButtonOnDesktop.Value);
         }
 
-        private static void VRChat_OnUiManagerInit()
+        public static void VRChat_OnUiManagerInit()
         {
             uiManagerExists = true;
             SetButtonEnabled(EnableButtonOnDesktop.Value);
