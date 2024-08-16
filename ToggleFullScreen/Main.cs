@@ -1,11 +1,12 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Collections;
 using System.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using System;
-using UIExpansionKit.API;
 
 [assembly: AssemblyCopyright("Created by " + ToggleFullScreen.BuildInfo.Author)]
 [assembly: MelonInfo(typeof(ToggleFullScreen.Main), ToggleFullScreen.BuildInfo.Name, ToggleFullScreen.BuildInfo.Version, ToggleFullScreen.BuildInfo.Author)]
@@ -22,16 +23,32 @@ namespace ToggleFullScreen
         public const string Version = "1.1.0";
     }
 
+    internal static class UIXManager 
+    { 
+        public static void OnApplicationStart() => UIExpansionKit.API.ExpansionKitApi.OnUiManagerInit += Main.VRChat_OnUiManagerInit;
+
+        public static void RegisterSettingAsStringEnum(string categoryName, string settingName, IList<(string SettingsValue, string DisplayName)> possibleValues) => 
+            GetRegisterSettingAsStringEnumDelegate(categoryName, settingName, possibleValues);
+        private static RegisterSettingAsStringEnumDelegate GetRegisterSettingAsStringEnumDelegate =>
+            registerSettingAsStringEnumDelegate ??= (RegisterSettingAsStringEnumDelegate)Delegate.CreateDelegate(typeof(RegisterSettingAsStringEnumDelegate), null, RegisterSettingAsStringEnumMethod);
+        private static MethodInfo RegisterSettingAsStringEnumMethod =>
+            registerSettingAsStringEnumMethod ??= typeof(UIExpansionKit.API.ExpansionKitApi).GetMethod(nameof(UIExpansionKit.API.ExpansionKitApi.RegisterSettingAsStringEnum));
+        private delegate void RegisterSettingAsStringEnumDelegate(string categoryName, string settingName, IList<(string SettingsValue, string DisplayName)> possibleValues);
+        private static RegisterSettingAsStringEnumDelegate registerSettingAsStringEnumDelegate;
+        private static MethodInfo registerSettingAsStringEnumMethod;
+    }
+
     public class Main : MelonMod
     {
         private static Resolution Previous, Current, MaxRes, FirstRes, SecondRes, ThirdRes, FourthRes;
         private static MelonPreferences_Entry<string> FSResolution;
         private const bool useHeadLook = false;
-        private static bool PreviousState;
+        private static bool PreviousState, IsUsingUIX;
         private static Toggle toggle;
 
         public override void OnApplicationStart()
         {
+            IsUsingUIX = MelonHandler.Mods.Any(x => x.Info.Name.Equals("UI Expansion Kit"));
             Previous = new()
             {
                 width = Screen.width,
@@ -44,17 +61,19 @@ namespace ToggleFullScreen
             ProcessResolutions();
             MelonPreferences.CreateCategory("ToggleFullScreen", "Toggle FullScreen");
             FSResolution = MelonPreferences.CreateEntry("ToggleFullScreen", "FSResolution", "Maximum", "FullScreen Resolution");
-            ExpansionKitApi.RegisterSettingAsStringEnum("ToggleFullScreen", "FSResolution",
-                new[] { 
-                    ("Maximum", $"{MaxRes.width}x{MaxRes.height}"), 
-                    ("High", $"{FirstRes.width}x{FirstRes.height}"), 
-                    ("Medium", $"{SecondRes.width}x{SecondRes.height}"), 
-                    ("Low", $"{ThirdRes.width}x{ThirdRes.height}"), 
-                    ("Minimum", $"{FourthRes.width}x{FourthRes.height}") 
-                });
+            if (IsUsingUIX)
+                typeof(UIXManager).GetMethod(nameof(UIXManager.RegisterSettingAsStringEnum)).Invoke(null, 
+                    new object[]{"ToggleFullScreen", "FSResolution",
+                                    new[] {
+                                        ("Maximum", $"{MaxRes.width}x{MaxRes.height}"),
+                                        ("High", $"{FirstRes.width}x{FirstRes.height}"),
+                                        ("Medium", $"{SecondRes.width}x{SecondRes.height}"),
+                                        ("Low", $"{ThirdRes.width}x{ThirdRes.height}"),
+                                        ("Minimum", $"{FourthRes.width}x{FourthRes.height}")
+                                    }});
             OnPreferencesSaved();
 
-            ExpansionKitApi.OnUiManagerInit += VRChat_OnUiManagerInit;
+            WaitForUiInit();
             MelonLogger.Msg("Successfully loaded!");
         }
 
@@ -88,6 +107,24 @@ namespace ToggleFullScreen
                 Screen.SetResolution(Current.width, Current.height, true);
         }
 
+        private static void WaitForUiInit()
+        {
+            if (IsUsingUIX)
+                typeof(UIXManager).GetMethod(nameof(UIXManager.OnApplicationStart)).Invoke(null, null);
+            else
+            {
+                MelonLogger.Warning("UiExpansionKit (UIX) was not detected. Using coroutine to wait for UiInit. Please consider installing UIX.");
+                MelonLogger.Warning("This also means that the function to change fullscreen resolution will only be usable by changing MelonPrefs directly at the file.");
+                MelonLogger.Warning("Again, please consider installing UIX.");
+                static IEnumerator OnUiManagerInit()
+                {
+                    while (VRCUiManager.prop_VRCUiManager_0 == null)
+                        yield return null;
+                    VRChat_OnUiManagerInit();
+                }
+                MelonCoroutines.Start(OnUiManagerInit());
+            }
+        }
         public static void VRChat_OnUiManagerInit()
         {
             // Rescales and repositions Options Panel
@@ -165,6 +202,7 @@ namespace ToggleFullScreen
                 width = (int)Math.Floor((double)(propTo.width * MaxRes.width / 1920)),
                 height = (int)Math.Floor((double)(propTo.height * MaxRes.height / 1080))
             };
+
         private static void ProcessResolutions()
         {
             MaxRes = CalculatePropRes(new Resolution() { width = 1920, height = 1080 });
